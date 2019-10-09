@@ -1,7 +1,11 @@
 const router = require('express').Router();
-// const cardsRouter = require('./cards')
+const weatherRouter = require('../routes/weather')
 
-// router.use('/cards', cardsRouter)
+
+router.use('/weather', weatherRouter)
+router.get('/', (req, res) => {
+  res.status(200).json('weather index online')
+})
 
 
 module.exports = router;
