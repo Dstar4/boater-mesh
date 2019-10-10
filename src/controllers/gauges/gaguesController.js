@@ -7,22 +7,24 @@ const parser = new xml2js.Parser();
 const baseURL =
   'https://water.weather.gov/ahps2/hydrograph_to_xml.php?gage=avln7&output=xml';
 
-async function parseXML(url) {
-  const text = await axios.get(url);
-  if (text) {
-    // console.log('return txt');
-    return text;
+async function getGaugeData(url) {
+  try {
+    const text = await axios.get(url);
+    if (text) {
+      return text;
+    }
+  } catch (error) {
+    console.log(error);
+    return error;
   }
 }
 
 async function getRiverData(req, res) {
-  parseXML(baseURL).then(response => {
-    // console.log('response', response, 'response');
+  getGaugeData(baseURL).then(response => {
     parser.parseString(response.data, function(err, result) {
       const data = result;
-      const { observed } = data.site;
-      res.status(200).json(observed);
-      // console.log('data', data);
+      // const { observed } = data.site;
+      res.status(200).json(data);
       if (err) {
         console.log(err);
       }
@@ -30,4 +32,4 @@ async function getRiverData(req, res) {
   });
 }
 
-module.exports = { getRiverData };
+module.exports = { getRiverData, getGaugeData };
