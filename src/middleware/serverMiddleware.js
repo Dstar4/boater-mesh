@@ -1,20 +1,53 @@
 const express = require('express');
 const helmet = require('helmet');
 const cors = require('cors');
-const morgan = require('morgan')
-var bodyParser = require('body-parser')
+const morgan = require('morgan');
+const bodyParser = require('body-parser');
+const sequelize = require('../util/database');
+// const path = require('../util/path');
 
-module.exports = server => {
-  server.use(express.json());
-  server.use(bodyParser.json());
-  server.use(helmet());
-  server.use(morgan("dev"));
-  server.use(cors());
-  // server.use(errorHandler)
-}
+module.exports = app => {
+  app.use(express.json());
+  // app.use(bodyParser.json());
+  app.use(bodyParser.urlencoded({ extended: false }));
+  // app.use(express.static(path.join(__dirname, 'public')));
 
+  app.use(helmet());
+  app.use(morgan('dev'));
+  app.use(cors());
 
-// function errorHandler (err, req, res, next) {
-//   res.status(500)
-//   res.render('error', { error: err })
-// }
+  app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader(
+      'Access-Control-Allow-Methods',
+      'OPTIONS, GET, POST, PUT, PATCH, DELETE'
+    );
+    res.setHeader(
+      'Access-Control-Allow-Headers',
+      'Content-Type, Authorization'
+    );
+    next();
+  });
+  app.use((error, req, res, next) => {
+    console.log(error);
+    const status = error.statusCode || 500;
+    const { message } = error;
+    const { data } = error;
+    res.status(status).json({ message, data });
+  });
+  sequelize
+    .sync({ force: true })
+    // .sync()
+    .catch(err => {
+      console.log(err);
+    });
+
+  // sequelize
+  //   .authenticate()
+  //   .then(() => {
+  //     console.log('Connection has been established successfully.');
+  //   })
+  //   .catch(err => {
+  //     console.error('Unable to connect to the database:', err);
+  //   });
+};
