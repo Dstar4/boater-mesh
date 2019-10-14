@@ -10,9 +10,9 @@ const Gauge = sequelize.define('gauge', {
     primaryKey: true,
   },
   name: { type: Sequelize.STRING, allowNull: false },
-  siteCode: { type: Sequelize.INTEGER, allowNull: false },
-  latitude: { type: Sequelize.INTEGER, allowNull: false },
-  longitude: { type: Sequelize.INTEGER, allowNull: false },
+  siteCode: { type: Sequelize.STRING, allowNull: false },
+  latitude: { type: Sequelize.STRING, allowNull: false },
+  longitude: { type: Sequelize.STRING, allowNull: false },
   units: { type: Sequelize.STRING, allowNull: false },
   flowType: { type: Sequelize.STRING, allowNull: false },
 });

@@ -1,8 +1,8 @@
 const request = require('supertest');
 const api = require('../../server');
 
-const zipURL = '/api/weather/now?';
-const cityURL = '/api/weather/city?';
+const zipURL = '/api/weatherData/now?';
+const cityURL = '/api/weatherData/city?';
 
 describe('Weather Router', () => {
   describe('Get By Zip', () => {

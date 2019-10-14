@@ -1,6 +1,6 @@
 const request = require('supertest');
 const api = require('../../server');
-const gauges = require('./gaugesController');
+const gauges = require('./gaugesDataController');
 
 const gaugeURL =
   'https://water.weather.gov/ahps2/hydrograph_to_xml.php?gage=avln7&output=xml';

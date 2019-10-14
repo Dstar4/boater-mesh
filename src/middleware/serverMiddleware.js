@@ -5,13 +5,13 @@ const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const sequelize = require('../util/database');
 // const path = require('../util/path');
+const Gauge = require('../models/gauge');
+const GaugeReadings = require('../models/gaugeReading');
 
 module.exports = app => {
   app.use(express.json());
   // app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: false }));
-  // app.use(express.static(path.join(__dirname, 'public')));
-
   app.use(helmet());
   app.use(morgan('dev'));
   app.use(cors());
@@ -35,9 +35,18 @@ module.exports = app => {
     const { data } = error;
     res.status(status).json({ message, data });
   });
+
+  Gauge.hasMany(GaugeReadings, {
+    foreignKey: 'siteCode',
+    //   sourceKey: 'siteCode',
+  });
+  GaugeReadings.belongsTo(Gauge, {
+    foreignKey: 'siteCode',
+    //   targetKey: 'siteCode',
+  });
   sequelize
-    .sync({ force: true })
-    // .sync()
+    // .sync({ force: true })
+    .sync()
     .catch(err => {
       console.log(err);
     });
