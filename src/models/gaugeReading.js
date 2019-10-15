@@ -17,6 +17,7 @@ const GaugeReading = sequelize.define('gaugeReading', {
   },
   gaugeReading: Sequelize.STRING,
   timeStamp: Sequelize.STRING,
+  variableName: Sequelize.STRING,
 });
 
 module.exports = GaugeReading;

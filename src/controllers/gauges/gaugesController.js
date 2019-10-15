@@ -2,6 +2,8 @@
 const Gauge = require('../../models/gauge');
 const GaugeReading = require('../../models/gaugeReading');
 
+// +++++++++++++++++++++++++++++++++++++++++ All Data +++++++++++++++++++++++++++++++++++++++++++++
+// Get Information on all Gauges
 async function gaugeInformation(req, res, next) {
   const data = await Gauge.findAll();
   if (data) {
@@ -11,21 +13,8 @@ async function gaugeInformation(req, res, next) {
   }
 }
 
-async function getGaugeHistory(req, res, next) {
-  try {
-    const data = await GaugeReading.findAll({
-      where: {
-        gaugeId: 2053500,
-      },
-      include: [{ model: Gauge }],
-    });
-    res.status(200).json(data);
-  } catch (err) {
-    console.log(err);
-  }
-}
+// Get gauge info and site info by siteCode
 async function getSiteById(req, res, next) {
-  // console.log('req.params', req.params);
   const siteCodeId = req.params.id;
   try {
     const GaugeData = await Gauge.findAll({
@@ -35,7 +24,7 @@ async function getSiteById(req, res, next) {
       where: { siteCode: siteCodeId },
     });
     await Promise.all([GaugeData, GaugeReadingData]).then(function(values) {
-      console.log(values[1]);
+      // console.log(values[1]);
       const returnData = {
         GaugeData: values[0],
         GaugeReading: values[1],
@@ -44,22 +33,40 @@ async function getSiteById(req, res, next) {
     });
   } catch (err) {
     console.log(err);
+    res.status(500).json({ error: err });
+  }
+}
+// +++++++++++++++++++++++++++++++++++++++++ Reading Data +++++++++++++++++++++++++++++++++++++++++
+
+// Get information on all gauge readings
+async function getGaugeHistory(req, res, next) {
+  try {
+    const data = await GaugeReading.findAll();
+    res.status(200).json(data);
+  } catch (err) {
+    console.log(err);
   }
 }
 
-// var promise1 = Promise.resolve(3);
-// var promise2 = 42;
-// var promise3 = new Promise(function(resolve, reject) {
-//   setTimeout(resolve, 100, 'foo');
-// });
+// Get all readings for a gauge by site code
+async function getReadingsById(req, res, next) {
+  const siteCodeId = req.params.id;
+  try {
+    const GaugeReadingData = await GaugeReading.findAll({
+      where: { siteCode: siteCodeId },
+    });
+    res.status(200).json(GaugeReadingData);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: err });
+  }
+}
 
-// Promise.all([promise1, promise2, promise3]).then(function(values) {
-//   console.log(values);
-// });
-// expected output: Array [3, 42, "foo"]
+// +++++++++++++++++++++++++++++++++++++++++ Site Data ++++++++++++++++++++++++++++++++++++++++++++
 
 module.exports = {
   gaugeInformation,
   getGaugeHistory,
   getSiteById,
+  getReadingsById,
 };

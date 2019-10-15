@@ -35,6 +35,8 @@ module.exports = app => {
     const { data } = error;
     res.status(status).json({ message, data });
   });
+
+  // TODO ESTABLISH A REAL FK RELATIONSHIP ON SITECODE
   Gauge.hasMany(GaugeReadings, { constraints: false });
 
   sequelize

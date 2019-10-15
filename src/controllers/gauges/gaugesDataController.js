@@ -2,6 +2,8 @@ const axios = require('axios');
 const Gauge = require('../../models/gauge');
 const GaugeReading = require('../../models/gaugeReading');
 
+// ****************************** Helpers ******************************++++
+
 async function getGaugeData(url) {
   try {
     const text = await axios.get(url);
@@ -13,8 +15,9 @@ async function getGaugeData(url) {
   }
 }
 
-const siteURL =
-  'http://waterservices.usgs.gov/nwis/iv/?format=json&stateCd=NC&siteType=ST';
+// ****************************** Site Data *********************************
+
+const siteURL = 'http://waterservices.usgs.gov/nwis/iv/?format=json&stateCd=NC';
 
 // Gets all gauge sites main data
 async function getAllSites(req, res, next) {
@@ -40,11 +43,12 @@ async function getAllSites(req, res, next) {
     res.status(201).json(allSitesData);
   });
 }
+// ****************************** Reading Data ******************************+
 
 const populateURL =
-  'http://waterservices.usgs.gov/nwis/iv/?format=json&stateCd=NC&siteType=ST&period=P1D';
+  'http://waterservices.usgs.gov/nwis/iv/?format=json&stateCd=NC&period=P1D';
 
-// Get Reading For all Gauges
+// Get Readings For all Gauges
 async function populateGaugeData(req, res, next) {
   getGaugeData(populateURL).then(response => {
     const responseData = response.data.value.timeSeries;
@@ -53,11 +57,13 @@ async function populateGaugeData(req, res, next) {
     responseData.map(item => {
       if (item.values[0].value) {
         try {
+          // TODO REMOVE THE HARD CODED 2 AND BRING IN MORE DATA
           for (let i = 0; i < 2; i += 1) {
             const siteData = {
               siteCode: item.sourceInfo.siteCode[0].value,
               gaugeReading: item.values[0].value[i].value,
               timeStamp: item.values[0].value[i].dateTime,
+              variableName: item.variable.variableName,
             };
             allSitesData.push(siteData);
             GaugeReading.create(siteData);
