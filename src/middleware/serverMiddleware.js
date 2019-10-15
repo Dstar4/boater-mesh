@@ -35,15 +35,8 @@ module.exports = app => {
     const { data } = error;
     res.status(status).json({ message, data });
   });
+  Gauge.hasMany(GaugeReadings, { constraints: false });
 
-  Gauge.hasMany(GaugeReadings, {
-    foreignKey: 'siteCode',
-    //   sourceKey: 'siteCode',
-  });
-  GaugeReadings.belongsTo(Gauge, {
-    foreignKey: 'siteCode',
-    //   targetKey: 'siteCode',
-  });
   sequelize
     // .sync({ force: true })
     .sync()
