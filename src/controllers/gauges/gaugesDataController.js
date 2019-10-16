@@ -18,7 +18,7 @@ async function getGaugeData(url) {
 // ****************************** Site Data *********************************
 
 const siteURL = 'http://waterservices.usgs.gov/nwis/iv/?format=json&stateCd=NC';
-
+// TODO ADD 500 response
 /**
  * @swagger
  * /gaugesData/sites:
@@ -83,12 +83,12 @@ const populateURL =
 // TODO UPDATE THIS SWAGGER INFO TO CURRENT ENDPOINT
 /**
  * @swagger
- * /gaugesData/sites:
+ * /gaugesData/readings:
  *   get:
- *     description: Gets Gauge Info from all Gauges.
+ *     description: Gets Gauge Readings from all Gauges.
  *     responses:
- *        '200':    # status code
- *          description: A JSON array of user names
+ *        '200':
+ *          description: A JSON array of gauge readings
  *          content:
  *            application/json:
  *              schema:
@@ -96,24 +96,18 @@ const populateURL =
  *                items:
  *                    type: object
  *                    properties:
- *                      name:
- *                        type: string
- *                        example: NORTHWEST RIVER ABOVE MOUTH NEAR MOYOCK, NC
  *                      siteCode:
  *                        type: string
  *                        example: 02043410
- *                      latitude:
+ *                      gaugeReading:
  *                        type: float
- *                        example: 36.5122222
- *                      longitude:
- *                         type: float
- *                         example: -76.0866667
- *                      units:
+ *                        example: 1.63
+ *                      timestamp:
  *                         type: string
- *                         example: ft3/s
- *                      flowType:
+ *                         example: 2019-10-14T20:30:00.000-04:00
+ *                      variableName:
  *                         type: string
- *                      example: Streamflow, ft&#179;/s
+ *                         example: Streamflow, ft&#179;/s"
  */
 async function populateGaugeData(req, res, next) {
   getGaugeData(populateURL).then(response => {
