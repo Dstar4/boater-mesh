@@ -80,8 +80,9 @@ async function getAllSites(req, res, next) {
   });
 }
 // ****************************** Reading Data ******************************+
-// TODO UPDATE THIS SWAGGER INFO TO CURRENT ENDPOINT
 
+const populateURL =
+  'http://waterservices.usgs.gov/nwis/iv/?format=json&stateCd=NC&period=P1D';
 /**
  * @swagger
  * /gaugesData/readings:
@@ -110,9 +111,6 @@ async function getAllSites(req, res, next) {
  *                         type: string
  *                         example: Streamflow, ft&#179;/s"
  */
-
-const populateURL =
-  'http://waterservices.usgs.gov/nwis/iv/?format=json&stateCd=NC&period=P1D';
 async function populateGaugeData(req, res, next) {
   getGaugeData(populateURL).then(response => {
     const responseData = response.data.value.timeSeries;

@@ -9,7 +9,7 @@
   "paths": {
     "/gauges/all": {
       "get": {
-        "description": "Gets Gauge Info from all Gauges from database.",
+        "description": "Gets Gauge Info on all Gauges from database.",
         "responses": {
           "200": {
             "description": "A JSON array of all available gauges",
@@ -50,6 +50,132 @@
                       },
                       "updatedAt": {
                         "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/gauges/sites/:id": {
+      "get": {
+        "description": "Gets Gauge Readings and Gauge info by siteCode",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "description": "Numeric ID of the site, titled \"siteCode\""
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON array of gauge readings and site data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "siteCode": {
+                        "type": "string",
+                        "example": 542472
+                      },
+                      "gaugeReading": {
+                        "type": "float",
+                        "example": 1.63
+                      },
+                      "timestamp": {
+                        "type": "string",
+                        "example": "2019-10-15T00:30:00.000Z"
+                      },
+                      "variableName": {
+                        "type": "string",
+                        "example": "Streamflow, ft&#179;/s\""
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/gauges/info": {
+      "get": {
+        "description": "Gets all Gauge Readings from DB.",
+        "responses": {
+          "200": {
+            "description": "A JSON array of gauge readings",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "siteCode": {
+                        "type": "string",
+                        "example": 542472
+                      },
+                      "gaugeReading": {
+                        "type": "float",
+                        "example": 1.63
+                      },
+                      "timestamp": {
+                        "type": "string",
+                        "example": "2019-10-15T00:30:00.000Z"
+                      },
+                      "variableName": {
+                        "type": "string",
+                        "example": "Streamflow, ft&#179;/s\""
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/gauges/readings/:id": {
+      "get": {
+        "description": "Gets Gauge Readings from DB by siteCode.",
+        "summary": "Gets Gauge Readings from DB by siteCode.",
+        "responses": {
+          "200": {
+            "description": "A JSON array of gauge readings",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "siteCode": {
+                        "type": "string",
+                        "example": 542472
+                      },
+                      "gaugeReading": {
+                        "type": "float",
+                        "example": 1.63
+                      },
+                      "timestamp": {
+                        "type": "string",
+                        "example": "2019-10-15T00:30:00.000Z"
+                      },
+                      "variableName": {
+                        "type": "string",
+                        "example": "Streamflow, ft&#179;/s\""
                       }
                     }
                   }

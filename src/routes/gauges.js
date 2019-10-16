@@ -12,10 +12,10 @@ router.route('/info').get(gaugesController.getGaugeHistory);
 // *****************Routes to get Gauge site and Reading data**************
 
 // Gets all data by site id
-router.route('/allData/:id').get(gaugesController.getSiteById);
+router.route('/sites/:id').get(gaugesController.getSiteById);
 
 // Routes to only get Reading Data by site id
-router.route('/readingData/:id').get(gaugesController.getReadingsById);
+router.route('/readings/:id').get(gaugesController.getReadingsById);
 
 // ************************* Routes to get Site Data Only ************************
 
