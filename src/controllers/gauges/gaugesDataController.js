@@ -19,7 +19,40 @@ async function getGaugeData(url) {
 
 const siteURL = 'http://waterservices.usgs.gov/nwis/iv/?format=json&stateCd=NC';
 
-// Gets all gauge sites main data
+/**
+ * @swagger
+ * /gaugesData/sites:
+ *   get:
+ *     description: Gets Gauge Info from all Gauges.
+ *     responses:
+ *        '200':    # status code
+ *          description: A JSON array of user names
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: array
+ *                items:
+ *                    type: object
+ *                    properties:
+ *                      name:
+ *                        type: string
+ *                        example: NORTHWEST RIVER ABOVE MOUTH NEAR MOYOCK, NC
+ *                      siteCode:
+ *                        type: string
+ *                        example: 02043410
+ *                      latitude:
+ *                        type: float
+ *                        example: 36.5122222
+ *                      longitude:
+ *                         type: float
+ *                         example: -76.0866667
+ *                      units:
+ *                         type: string
+ *                         example: ft3/s
+ *                      flowType:
+ *                         type: string
+ *                      example: Streamflow, ft&#179;/s
+ */
 async function getAllSites(req, res, next) {
   getGaugeData(siteURL).then(response => {
     const allSitesData = [];
@@ -47,8 +80,41 @@ async function getAllSites(req, res, next) {
 
 const populateURL =
   'http://waterservices.usgs.gov/nwis/iv/?format=json&stateCd=NC&period=P1D';
-
-// Get Readings For all Gauges
+// TODO UPDATE THIS SWAGGER INFO TO CURRENT ENDPOINT
+/**
+ * @swagger
+ * /gaugesData/sites:
+ *   get:
+ *     description: Gets Gauge Info from all Gauges.
+ *     responses:
+ *        '200':    # status code
+ *          description: A JSON array of user names
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: array
+ *                items:
+ *                    type: object
+ *                    properties:
+ *                      name:
+ *                        type: string
+ *                        example: NORTHWEST RIVER ABOVE MOUTH NEAR MOYOCK, NC
+ *                      siteCode:
+ *                        type: string
+ *                        example: 02043410
+ *                      latitude:
+ *                        type: float
+ *                        example: 36.5122222
+ *                      longitude:
+ *                         type: float
+ *                         example: -76.0866667
+ *                      units:
+ *                         type: string
+ *                         example: ft3/s
+ *                      flowType:
+ *                         type: string
+ *                      example: Streamflow, ft&#179;/s
+ */
 async function populateGaugeData(req, res, next) {
   getGaugeData(populateURL).then(response => {
     const responseData = response.data.value.timeSeries;
@@ -73,7 +139,6 @@ async function populateGaugeData(req, res, next) {
         }
       }
     });
-
     res.status(201).json(allSitesData);
   });
 }
