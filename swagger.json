@@ -7,6 +7,59 @@
   "basePath": "/api",
   "swagger": "2.0",
   "paths": {
+    "/gauges/all": {
+      "get": {
+        "description": "Gets Gauge Info from all Gauges from database.",
+        "responses": {
+          "200": {
+            "description": "A JSON array of all available gauges",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": null,
+                      "name": {
+                        "type": "string",
+                        "example": "NORTHWEST RIVER ABOVE MOUTH NEAR MOYOCK, NC"
+                      },
+                      "siteCode": {
+                        "type": "string",
+                        "example": 542472
+                      },
+                      "latitude": {
+                        "type": "float",
+                        "example": 36.5122222
+                      },
+                      "longitude": {
+                        "type": "float",
+                        "example": -76.0866667
+                      },
+                      "units": {
+                        "type": "string",
+                        "example": "ft3/s"
+                      },
+                      "flowType": {
+                        "type": "string"
+                      },
+                      "example": "Streamflow, ft&#179;/s",
+                      "createdAt": {
+                        "type": "string"
+                      },
+                      "updatedAt": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/gaugesData/sites": {
       "get": {
         "description": "Gets Gauge Info from all Gauges.",

@@ -37,8 +37,9 @@
     "supertest": "^4.0.2"
   },
   "scripts": {
-    "test": "jest --watchAll --verbose",
-    "server": "nodemon index.js --verbose",
+    "testAll": "jest --watchAll --verbose",
+    "test": "jest /src/controllers/gauge.spec.js --verbose",
+    "server": "nodemon index.js",
     "start": "node index.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
