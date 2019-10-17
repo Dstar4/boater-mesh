@@ -185,15 +185,37 @@ async function getGaugeHistory(req, res, next) {
  *                         example: Streamflow, ft&#179;/s"
  */
 async function getReadingsById(req, res, next) {
+  // const siteCodeId = req.params.id;
+  // try {
+  //   const GaugeReadingData = await GaugeReading.findAll({
+  //     where: { siteCode: siteCodeId },
+  //   });
+  //   res.status(200).json(GaugeReadingData);
+  // } catch (err) {
+  //   console.log(err);
+  //   res.status(500).json({ error: err });
+  // }
+  // TODO add a check what works for a sitecode that exists but is invalid.
   const siteCodeId = req.params.id;
   try {
-    const GaugeReadingData = await GaugeReading.findAll({
+    const gaugeData = await GaugeReading.findAll({
       where: { siteCode: siteCodeId },
     });
-    res.status(200).json(GaugeReadingData);
+    if (gaugeData) {
+      const returnObject = {
+        message: 'data here',
+        data: gaugeData,
+      };
+      res.status(200).json(returnObject);
+    } else {
+      res.status(500).json({ error: 'invalid siteCode' });
+    }
   } catch (err) {
     console.log(err);
-    res.status(500).json({ error: err });
+    res.status(500).json({
+      message: 'There was an error retrieving that site.',
+      error: err,
+    });
   }
 }
 
