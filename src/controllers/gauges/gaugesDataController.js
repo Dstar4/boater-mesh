@@ -1,7 +1,7 @@
 const axios = require('axios');
+const sequelize = require('sequelize');
 const Gauge = require('../../models/gauge');
 const GaugeReading = require('../../models/gaugeReading');
-
 // ****************************** Helpers ******************************++++
 
 async function getGaugeData(url) {
@@ -17,7 +17,8 @@ async function getGaugeData(url) {
 
 // ****************************** Site Data *********************************
 
-const siteURL = 'http://waterservices.usgs.gov/nwis/iv/?format=json&stateCd=NC';
+const siteURL =
+  'http://waterservices.usgs.gov/nwis/iv/?format=json&stateCd=NC&siteStatus=active';
 // TODO ADD 500 response
 /**
  * @swagger
@@ -120,7 +121,7 @@ async function populateGaugeData(req, res, next) {
       if (item.values[0].value) {
         try {
           // TODO REMOVE THE HARD CODED 2 AND BRING IN MORE DATA
-          for (let i = 0; i < 2; i += 1) {
+          for (let i = 0; i < item.values.length; i += 1) {
             const siteData = {
               siteCode: item.sourceInfo.siteCode[0].value,
               gaugeReading: item.values[0].value[i].value,
@@ -138,9 +139,34 @@ async function populateGaugeData(req, res, next) {
     res.status(201).json(allSitesData);
   });
 }
-
+/*
+{
+	"period":"T1H",
+	"siteCodes": ["0204382800","02069000"],
+	"variable":["00060","00065"],
+	"siteType": "ST"
+}
+*/
+async function getDataBySiteId(req, res, next) {
+  try {
+    const url = 'http://waterservices.usgs.gov/nwis/iv/?format=json';
+    const {
+      period = 'PT6H',
+      siteCodes,
+      variable = ['00060', '00065'],
+      siteType = 'ST',
+    } = req.body;
+    const request = `${url}&period=P${period}&site=${siteCodes}&variable=${variable}&siteType=${siteType}`;
+    const { data } = await axios.get(request);
+    res.status(200).json(data);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json(err);
+  }
+}
 module.exports = {
   getGaugeData,
   getAllSites,
   populateGaugeData,
+  getDataBySiteId,
 };

@@ -40,8 +40,8 @@ module.exports = app => {
   Gauge.hasMany(GaugeReadings, { constraints: false });
 
   sequelize
-    // .sync({ force: true })
-    .sync()
+    .sync({ force: true })
+    // .sync()
     .catch(err => {
       console.log(err);
     });
