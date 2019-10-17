@@ -13,8 +13,5 @@ router.use('/gauges', gaugesRouter);
 
 router.use('/api-docs', swaggerUi.serve);
 router.get('/api-docs', swaggerUi.setup(swaggerDocument));
-router.get('/', (req, res) => {
-  res.status(200).json('weather index online');
-});
 
 module.exports = router;
