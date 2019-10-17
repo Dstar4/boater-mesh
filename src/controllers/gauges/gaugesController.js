@@ -148,6 +148,7 @@ async function getSiteById(req, res, next) {
 async function getGaugeHistory(req, res, next) {
   try {
     const data = await GaugeReading.findAll();
+    console.log(data);
     res.status(200).json(data);
   } catch (err) {
     console.log(err);

@@ -42,11 +42,33 @@ describe('GAUGE CONTROLLER', () => {
       const data = response.req.res;
       // expect(data.text).toBeTruthy();
       const parsedText = JSON.parse(data.text);
-      expect(parsedText.gaugeData[0].siteCode).toBe('0204382800');
+      await expect(parsedText.gaugeData[0].siteCode).toBe('0204382800');
+      // expect(parsedText.gaugeReading[0].siteCode).toBe('0204382800');
     });
   });
 
-  describe('GET GAUGE HISTORY', () => {});
+  describe('GET GAUGE HISTORY', () => {
+    it('returns a 200 on success', async () => {
+      const data = await request(api).get('/api/gauges/info');
+      await expect(data.status).toBe(200);
+    });
+    it('returns defined data', async () => {
+      const response = await request(api).get('/api/gauges/info');
+      const data = response.req.res;
+      console.log('response', data);
+      const parsedText = await JSON.parse(response);
+      // console.log('parsed text', parsedText);
+      // expect(data.text).toBeTruthy();
+      await expect(parsedText).toBe(1);
+    });
+    // it('returns an array with a length', async () => {
+    //   const response = await request(api).get('/api/gauges/info');
+    //   const data = response.req.res;
+    //   const parsedText = JSON.parse(data.text);
+    //   console.log(parsedText);
+    //   expect(parsedText.length).toBeGreaterThan(1);
+    // });
+  });
 
   describe('GET READINGS BY ID', () => {});
 });
