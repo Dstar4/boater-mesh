@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const gaugesDataController = require('../controllers/gauges/gaugesDataController');
+const gaugesDataController = require('../controllers/gaugesData/gaugesDataController');
 
 // ************Routes for populating the database, to be used internally.*****************
 

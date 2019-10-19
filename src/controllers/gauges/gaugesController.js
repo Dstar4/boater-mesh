@@ -1,6 +1,6 @@
 // const Sequelize = require('sequelize');
-const Gauge = require('../../models/gauge');
-const GaugeReading = require('../../models/gaugeReading');
+const Gauge = require('../../data/helpers/gaugesModel');
+const GaugeReading = require('../../data/helpers/readingsModel');
 
 // +++++++++++++++++++++++++++++++++++++++++ All Data +++++++++++++++++++++++++++++++++++++++++++++
 
@@ -44,7 +44,7 @@ const GaugeReading = require('../../models/gaugeReading');
  *                        type: string
  */
 async function gaugeInformation(req, res, next) {
-  const data = await Gauge.findAll();
+  const data = await Gauge.find();
   if (data) {
     res.status(200).json(data);
   } else {
@@ -90,12 +90,9 @@ async function gaugeInformation(req, res, next) {
 async function getSiteById(req, res, next) {
   const siteCodeId = req.params.id;
   try {
-    const GaugeData = await Gauge.findAll({
-      where: { siteCode: siteCodeId },
-    });
-    const GaugeReadingData = await GaugeReading.findAll({
-      where: { siteCode: siteCodeId },
-    });
+    const GaugeData = await Gauge.findBySiteCode(siteCodeId);
+    const GaugeReadingData = await GaugeReading.findBySiteCode(siteCodeId);
+    console.log(GaugeData, GaugeReadingData);
     await Promise.all([GaugeData, GaugeReadingData]).then(values => {
       const returnData = {
         gaugeData: values[0],
@@ -147,8 +144,8 @@ async function getSiteById(req, res, next) {
  */
 async function getGaugeHistory(req, res, next) {
   try {
-    const data = await GaugeReading.findAll();
-    console.log(data);
+    const data = await GaugeReading.find();
+    // console.log(data);
     res.status(200).json(data);
   } catch (err) {
     console.log(err);
@@ -198,9 +195,7 @@ async function getReadingsById(req, res, next) {
   // TODO add a check what works for a sitecode that exists but is invalid.
   const siteCodeId = req.params.id;
   try {
-    const gaugeData = await GaugeReading.findAll({
-      where: { siteCode: siteCodeId },
-    });
+    const gaugeData = await GaugeReading.findBySiteCode(siteCodeId);
     if (gaugeData) {
       const returnObject = {
         message: 'data here',

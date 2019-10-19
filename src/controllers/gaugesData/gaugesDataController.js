@@ -1,7 +1,7 @@
 const axios = require('axios');
-const sequelize = require('sequelize');
-const Gauge = require('../../models/gauge');
-const GaugeReading = require('../../models/gaugeReading');
+
+const Gauge = require('../../data/helpers/gaugesModel');
+const GaugeReading = require('../../data/helpers/readingsModel');
 // ****************************** Helpers ******************************++++
 
 async function getGaugeData(url) {
@@ -68,15 +68,12 @@ async function getAllSites(req, res, next) {
           units: item.variable.unit.unitCode,
           flowType: item.variable.variableName,
         };
-        Gauge.create(siteData);
+        Gauge.add(siteData);
         allSitesData.push(siteData);
       });
     } catch (err) {
       next(err);
     }
-    const returnObject = {
-      data: allSitesData,
-    };
     res.status(201).json(allSitesData);
   });
 }
@@ -120,7 +117,6 @@ async function populateGaugeData(req, res, next) {
     responseData.map(item => {
       if (item.values[0].value) {
         try {
-          // TODO REMOVE THE HARD CODED 2 AND BRING IN MORE DATA
           for (let i = 0; i < item.values.length; i += 1) {
             const siteData = {
               siteCode: item.sourceInfo.siteCode[0].value,
@@ -129,7 +125,7 @@ async function populateGaugeData(req, res, next) {
               variableName: item.variable.variableName,
             };
             allSitesData.push(siteData);
-            GaugeReading.create(siteData);
+            GaugeReading.add(siteData);
           }
         } catch (err) {
           return err;
