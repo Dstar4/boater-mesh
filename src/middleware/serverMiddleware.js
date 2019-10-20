@@ -6,7 +6,6 @@ const bodyParser = require('body-parser');
 
 module.exports = app => {
   app.use(express.json());
-  // app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: false }));
   app.use(helmet());
   app.use(morgan('combined'));
