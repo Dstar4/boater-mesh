@@ -182,16 +182,6 @@ async function getGaugeHistory(req, res, next) {
  *                         example: Streamflow, ft&#179;/s"
  */
 async function getReadingsById(req, res, next) {
-  // const siteCodeId = req.params.id;
-  // try {
-  //   const GaugeReadingData = await GaugeReading.findAll({
-  //     where: { siteCode: siteCodeId },
-  //   });
-  //   res.status(200).json(GaugeReadingData);
-  // } catch (err) {
-  //   console.log(err);
-  //   res.status(500).json({ error: err });
-  // }
   // TODO add a check what works for a sitecode that exists but is invalid.
   const siteCodeId = req.params.id;
   try {
