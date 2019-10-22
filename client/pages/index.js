@@ -13,13 +13,11 @@ const Home = props => (
     <div className="hero">
       <div className="list">
         {props.sites.map(site => (
-          <div className="list-item">
+          <div className="list-item" key={site.id}>
             <p> name: {site.name}</p>
             <p> siteCode: {site.siteCode}</p>
             <p> longitude: {site.longitude}</p>
             <p> latitude: {site.latitude}</p>
-            <p> units: {site.units}</p>
-            <p> flowType: {site.flowType}</p>
           </div>
         ))}
       </div>
