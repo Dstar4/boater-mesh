@@ -81,7 +81,7 @@ const Home = props => (
 );
 
 Home.getInitialProps = async function() {
-  const res = await fetch('http://localhost:5500/api/gauges/all');
+  const res = await fetch('https://boater-mesh.herokuapp.com/api/gauges/all');
   const data = await res.json();
   // const json = await tmp[0];
   // console.log(json);
