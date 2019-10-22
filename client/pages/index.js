@@ -83,6 +83,20 @@ const Home = () => (
       }
     `}</style>
   </div>
+<<<<<<< Updated upstream
 )
 
 export default Home
+=======
+);
+Home.getInitialProps = async function() {
+  const res = await fetch('https://boater-mesh.herokuapp.com/api/gauges/all');
+  const data = await res.json();
+  // const json = await tmp[0];
+  // console.log(data);
+  return {
+    sites: data.map(entry => entry),
+  };
+};
+export default Home;
+>>>>>>> Stashed changes
