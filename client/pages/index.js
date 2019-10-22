@@ -1,38 +1,25 @@
-import React from 'react'
-import Head from 'next/head'
-import Nav from '../components/nav'
+import React from 'react';
+import Head from 'next/head';
+import fetch from 'isomorphic-unfetch';
+import Nav from '../components/nav';
 
-const Home = () => (
+const Home = props => (
   <div>
     <Head>
       <title>Home</title>
-      <link rel='icon' href='/favicon.ico' />
+      <link rel="icon" href="/favicon.ico" />
     </Head>
-
     <Nav />
-
-    <div className='hero'>
-      <h1 className='title'>Welcome to Next.js!</h1>
-      <p className='description'>
-        To get started, edit <code>pages/index.js</code> and save to reload.
-      </p>
-
-      <div className='row'>
-        <a href='https://nextjs.org/docs' className='card'>
-          <h3>Documentation &rarr;</h3>
-          <p>Learn more about Next.js in the documentation.</p>
-        </a>
-        <a href='https://nextjs.org/learn' className='card'>
-          <h3>Next.js Learn &rarr;</h3>
-          <p>Learn about Next.js by following an interactive tutorial!</p>
-        </a>
-        <a
-          href='https://github.com/zeit/next.js/tree/master/examples'
-          className='card'
-        >
-          <h3>Examples &rarr;</h3>
-          <p>Find other example boilerplates on the Next.js GitHub.</p>
-        </a>
+    <div className="hero">
+      <div className="list">
+        {props.sites.map(site => (
+          <div className="list-item" key={site.id}>
+            <p> name: {site.name}</p>
+            <p> siteCode: {site.siteCode}</p>
+            <p> longitude: {site.longitude}</p>
+            <p> latitude: {site.latitude}</p>
+          </div>
+        ))}
       </div>
     </div>
 
@@ -81,8 +68,24 @@ const Home = () => (
         font-size: 13px;
         color: #333;
       }
+      .list {
+        margin: 20px;
+      }
+      .list-item {
+        border: 1px solid black;
+        padding: 10px;
+        margin: 10px;
+      }
     `}</style>
   </div>
-)
-
-export default Home
+);
+Home.getInitialProps = async function() {
+  const res = await fetch('http://localhost:5500/api/gauges/all');
+  const data = await res.json();
+  // const json = await tmp[0];
+  // console.log(json);
+  return {
+    sites: data.map(entry => entry),
+  };
+};
+export default Home;

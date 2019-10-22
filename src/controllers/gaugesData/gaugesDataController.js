@@ -16,10 +16,6 @@ async function getGaugeData(url) {
 }
 
 // ****************************** Site Data *********************************
-
-const siteURL =
-  'http://waterservices.usgs.gov/nwis/iv/?format=json&stateCd=NC&siteStatus=active';
-// TODO ADD 500 response
 /**
  * @swagger
  * /gaugesData/sites:
@@ -55,6 +51,9 @@ const siteURL =
  *                      example: Streamflow, ft&#179;/s
  */
 async function getAllSites(req, res, next) {
+  // TODO ADD 500 response
+  const siteURL =
+    'http://waterservices.usgs.gov/nwis/iv/?format=json&stateCd=NC&siteStatus=active';
   getGaugeData(siteURL).then(response => {
     const allSitesData = [];
     const geoData = response.data.value.timeSeries;
@@ -65,8 +64,8 @@ async function getAllSites(req, res, next) {
           siteCode: item.sourceInfo.siteCode[0].value,
           latitude: item.sourceInfo.geoLocation.geogLocation.latitude,
           longitude: item.sourceInfo.geoLocation.geogLocation.longitude,
-          units: item.variable.unit.unitCode,
-          flowType: item.variable.variableName,
+          // units: item.variable.unit.unitCode,
+          // flowType: item.variable.variableName,
         };
         Gauge.add(siteData);
         allSitesData.push(siteData);
@@ -80,7 +79,7 @@ async function getAllSites(req, res, next) {
 // ****************************** Reading Data ******************************+
 
 const populateURL =
-  'http://waterservices.usgs.gov/nwis/iv/?format=json&stateCd=NC&period=P1D';
+  'http://waterservices.usgs.gov/nwis/iv/?format=json&stateCd=NC&period=PT1H';
 /**
  * @swagger
  * /gaugesData/readings:
@@ -123,6 +122,7 @@ async function populateGaugeData(req, res, next) {
               gaugeReading: item.values[0].value[i].value,
               timeStamp: item.values[0].value[i].dateTime,
               variableName: item.variable.variableName,
+              units: item.variable.unit.unitCode,
             };
             allSitesData.push(siteData);
             GaugeReading.add(siteData);
