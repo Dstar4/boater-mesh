@@ -84,7 +84,7 @@ async function getAllSites(req, res, next) {
 // ****************************** Reading Data ******************************+
 
 const populateURL =
-  'http://waterservices.usgs.gov/nwis/iv/?format=json&stateCd=NC&period=P1D';
+  'http://waterservices.usgs.gov/nwis/iv/?format=json&stateCd=NC&period=PT12H&siteType=ST';
 /**
  * @swagger
  * /gaugesData/readings:
@@ -130,9 +130,16 @@ async function populateGaugeData(req, res, next) {
               units: item.variable.unit.unitCode,
             };
             allSitesData.push(siteData);
-            GaugeReading.add(siteData).catch(
-              console.log(`Error adding reading\n${JSON.stringify(siteData)}`)
+            const compare = await GaugeReading.findBySiteCodeTimestamp(
+              siteData.siteCode,
+              siteData.timeStamp,
+              siteData.units
             );
+            // console.log('COMPARE', compare, compare.length);
+            // console.log('SiteData', siteData);
+            if (compare.length < 1) {
+              GaugeReading.add(siteData);
+            }
           }
         } catch (err) {
           return err;
@@ -151,6 +158,7 @@ async function populateGaugeData(req, res, next) {
 }
 */
 async function getDataBySiteId(req, res, next) {
+  // TODO: save data to readings table, but do not duplicate timestamps.
   try {
     const url = 'http://waterservices.usgs.gov/nwis/iv/?format=json';
     const {
@@ -159,8 +167,10 @@ async function getDataBySiteId(req, res, next) {
       variable = ['00060', '00065'],
       siteType = 'ST',
     } = req.body;
+
     const request = `${url}&period=P${period}&site=${siteCodes}&variable=${variable}&siteType=${siteType}`;
     const { data } = await axios.get(request);
+
     res.status(200).json(data);
   } catch (err) {
     console.log(err);

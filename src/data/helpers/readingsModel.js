@@ -6,38 +6,29 @@ function find() {
   });
 }
 async function add(reading) {
-  // const check = db('readings').where({
-  //   siteCode: reading.siteCode,
-  //   gaugeReading: reading.gaugeReading,
-  //   timeStamp: reading.timeStamp,
-  //   variableName: reading.variableName,
-  //   units: reading.units,
-  // });
-  // console.log(check);
-  // if (check > 0) {
-  // console.log('check failed');
-  // return 'error';
-  // }
-  // try {
-  // console.log('here', reading);
-
   return db('readings')
     .insert(reading)
     .then(id => id);
-  // } catch (err) {
-  // console.debug(err);
-  // return err;
-  // }
 }
 async function findBySiteCode(siteCodeId) {
-  return db('readings')
-    .where({ 'readings.siteCode': siteCodeId })
-    .join('gauges', {
-      'readings.siteCode': 'gauges.siteCode',
-    });
+  return db('readings').where({ 'readings.siteCode': siteCodeId });
+  // .join('gauges', {
+  // 'readings.siteCode': 'gauges.siteCode',
+  // });
+}
+async function findBySiteCodeTimestamp(siteCodeId, timeStamp, units) {
+  return db('readings').where({
+    'readings.siteCode': siteCodeId,
+    timeStamp,
+    units,
+  });
+  // .join('gauges', {
+  // 'readings.siteCode': 'gauges.siteCode',
+  // });
 }
 module.exports = {
   find,
   add,
   findBySiteCode,
+  findBySiteCodeTimestamp,
 };

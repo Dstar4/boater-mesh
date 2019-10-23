@@ -91,7 +91,7 @@ async function getSiteById(req, res, next) {
   const siteCodeId = req.params.id;
   try {
     const data = await GaugeReading.findBySiteCode(siteCodeId);
-    console.log(data);
+    // console.log(data);
     if (data.length > 0) {
       res.status(200).json(data);
     } else {
