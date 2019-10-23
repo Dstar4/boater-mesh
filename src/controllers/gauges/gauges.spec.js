@@ -13,7 +13,7 @@ describe('GAUGE CONTROLLER', () => {
       // console.log('HERELOG', data, 'RESPONSEST', response);
       // expect(data.text).toBeTruthy();
       const parsedText = JSON.parse(data)[0].id;
-      console.log('parsedText', parsedText);
+      // console.log('parsedText', parsedText);
       expect(parsedText).toBe(1);
     });
     it('returns an array with a length', async () => {
