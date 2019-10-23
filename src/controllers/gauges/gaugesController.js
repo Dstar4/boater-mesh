@@ -90,20 +90,13 @@ async function gaugeInformation(req, res, next) {
 async function getSiteById(req, res, next) {
   const siteCodeId = req.params.id;
   try {
-    const GaugeData = await Gauge.findBySiteCode(siteCodeId);
-    const GaugeReadingData = await GaugeReading.findBySiteCode(siteCodeId);
-    console.log(GaugeData, GaugeReadingData);
-    await Promise.all([GaugeData, GaugeReadingData]).then(values => {
-      const returnData = {
-        gaugeData: values[0],
-        gaugeReading: values[1],
-      };
-      if (values[0].length > 0 || values[1].length > 0) {
-        res.status(200).json(returnData);
-      } else {
-        res.status(500).json({ error: 'invalid siteCode' });
-      }
-    });
+    const data = await GaugeReading.findBySiteCode(siteCodeId);
+    console.log(data);
+    if (data.length > 0) {
+      res.status(200).json(data);
+    } else {
+      res.status(500).json({ error: 'invalid siteCode' });
+    }
   } catch (err) {
     console.log(err);
     res.status(500).json({

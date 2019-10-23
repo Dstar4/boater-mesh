@@ -64,13 +64,18 @@ async function getAllSites(req, res, next) {
           siteCode: item.sourceInfo.siteCode[0].value,
           latitude: item.sourceInfo.geoLocation.geogLocation.latitude,
           longitude: item.sourceInfo.geoLocation.geogLocation.longitude,
-          // units: item.variable.unit.unitCode,
-          // flowType: item.variable.variableName,
         };
-        Gauge.add(siteData);
+        Gauge.add(siteData).catch(
+          console.log(
+            `Error inserting siteData into database\n${JSON.stringify(
+              siteData
+            )}`
+          )
+        );
         allSitesData.push(siteData);
       });
     } catch (err) {
+      res.status(500).json('error getting sites');
       next(err);
     }
     res.status(201).json(allSitesData);
@@ -79,7 +84,7 @@ async function getAllSites(req, res, next) {
 // ****************************** Reading Data ******************************+
 
 const populateURL =
-  'http://waterservices.usgs.gov/nwis/iv/?format=json&stateCd=NC&period=PT1H';
+  'http://waterservices.usgs.gov/nwis/iv/?format=json&stateCd=NC&period=P1D';
 /**
  * @swagger
  * /gaugesData/readings:
@@ -113,7 +118,7 @@ async function populateGaugeData(req, res, next) {
     const responseData = response.data.value.timeSeries;
     const allSitesData = [];
 
-    responseData.map(item => {
+    responseData.map(async item => {
       if (item.values[0].value) {
         try {
           for (let i = 0; i < item.values.length; i += 1) {
@@ -125,7 +130,9 @@ async function populateGaugeData(req, res, next) {
               units: item.variable.unit.unitCode,
             };
             allSitesData.push(siteData);
-            GaugeReading.add(siteData);
+            GaugeReading.add(siteData).catch(
+              console.log(`Error adding reading\n${JSON.stringify(siteData)}`)
+            );
           }
         } catch (err) {
           return err;
