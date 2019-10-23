@@ -84,7 +84,7 @@ async function getAllSites(req, res, next) {
 // ****************************** Reading Data ******************************+
 
 const populateURL =
-  'http://waterservices.usgs.gov/nwis/iv/?format=json&stateCd=NC&period=PT6H';
+  'http://waterservices.usgs.gov/nwis/iv/?format=json&stateCd=NC&period=PT12H&siteType=ST';
 /**
  * @swagger
  * /gaugesData/readings:
@@ -132,13 +132,13 @@ async function populateGaugeData(req, res, next) {
             allSitesData.push(siteData);
             const compare = await GaugeReading.findBySiteCodeTimestamp(
               siteData.siteCode,
-              siteData.timeStamp
+              siteData.timeStamp,
+              siteData.units
             );
-            console.log('COMPARE', compare.length);
+            // console.log('COMPARE', compare, compare.length);
+            // console.log('SiteData', siteData);
             if (compare.length < 1) {
-              GaugeReading.add(siteData).catch(
-                console.log(`Error adding reading\n${JSON.stringify(siteData)}`)
-              );
+              GaugeReading.add(siteData);
             }
           }
         } catch (err) {

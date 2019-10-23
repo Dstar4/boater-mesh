@@ -16,10 +16,11 @@ async function findBySiteCode(siteCodeId) {
   // 'readings.siteCode': 'gauges.siteCode',
   // });
 }
-async function findBySiteCodeTimestamp(siteCodeId, timeStamp) {
+async function findBySiteCodeTimestamp(siteCodeId, timeStamp, units) {
   return db('readings').where({
     'readings.siteCode': siteCodeId,
     timeStamp,
+    units,
   });
   // .join('gauges', {
   // 'readings.siteCode': 'gauges.siteCode',
