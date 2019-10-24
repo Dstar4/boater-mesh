@@ -1,4 +1,3 @@
-// const Sequelize = require('sequelize');
 const Gauge = require('../../data/helpers/gaugesModel');
 const GaugeReading = require('../../data/helpers/readingsModel');
 
@@ -52,11 +51,50 @@ async function gaugeInformation(req, res, next) {
   }
 }
 
+// +++++++++++++++++++++++++++++++++++++++++ Reading Data +++++++++++++++++++++++++++++++++++++++++
+
+/**
+ * @swagger
+ * /gauges/info:
+ *   get:
+ *     description: Gets all Gauge Readings from DB.
+ *     responses:
+ *        '200':
+ *          description: A JSON array of gauge readings
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: array
+ *                items:
+ *                    type: object
+ *                    properties:
+ *                      siteCode:
+ *                        type: string
+ *                        example: 02043410
+ *                      gaugeReading:
+ *                        type: float
+ *                        example: 1.63
+ *                      timestamp:
+ *                         type: string
+ *                         example: 2019-10-14T20:30:00.000-04:00
+ *                      variableName:
+ *                         type: string
+ *                         example: Streamflow, ft&#179;/s"
+ */
+async function getGaugeHistory(req, res, next) {
+  try {
+    const data = await GaugeReading.find();
+    res.status(200).json(data);
+  } catch (err) {
+    console.log(err);
+  }
+}
+
 /**
  * @swagger
  * /gauges/sites/:id:
  *   get:
- *     description: Gets Gauge Readings and Gauge info by siteCode
+ *     description: Gets Gauge Readings joined with Gauge info by siteCode
  *     parameters:
  *       - name: id
  *         in: path
@@ -91,100 +129,8 @@ async function getSiteById(req, res, next) {
   const siteCodeId = req.params.id;
   try {
     const data = await GaugeReading.findBySiteCode(siteCodeId);
-    // console.log(data);
     if (data.length > 0) {
       res.status(200).json(data);
-    } else {
-      res.status(500).json({ error: 'invalid siteCode' });
-    }
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({
-      message: 'There was an error retrieving that site.',
-      error: err,
-    });
-  }
-}
-// +++++++++++++++++++++++++++++++++++++++++ Reading Data +++++++++++++++++++++++++++++++++++++++++
-
-/**
- * @swagger
- * /gauges/info:
- *   get:
- *     description: Gets all Gauge Readings from DB.
- *     responses:
- *        '200':
- *          description: A JSON array of gauge readings
- *          content:
- *            application/json:
- *              schema:
- *                type: array
- *                items:
- *                    type: object
- *                    properties:
- *                      siteCode:
- *                        type: string
- *                        example: 02043410
- *                      gaugeReading:
- *                        type: float
- *                        example: 1.63
- *                      timestamp:
- *                         type: string
- *                         example: 2019-10-14T20:30:00.000-04:00
- *                      variableName:
- *                         type: string
- *                         example: Streamflow, ft&#179;/s"
- */
-async function getGaugeHistory(req, res, next) {
-  try {
-    const data = await GaugeReading.find();
-    // console.log(data);
-    res.status(200).json(data);
-  } catch (err) {
-    console.log(err);
-  }
-}
-
-/**
- * @swagger
- * /gauges/readings/:id:
- *   get:
- *     description: Gets Gauge Readings from DB by siteCode.
- *     summary: Gets Gauge Readings from DB by siteCode.
- *     responses:
- *        '200':
- *          description: A JSON array of gauge readings
- *          content:
- *            application/json:
- *              schema:
- *                type: array
- *                items:
- *                    type: object
- *                    properties:
- *                      siteCode:
- *                        type: string
- *                        example: 02043410
- *                      gaugeReading:
- *                        type: float
- *                        example: 1.63
- *                      timestamp:
- *                         type: string
- *                         example: 2019-10-14T20:30:00.000-04:00
- *                      variableName:
- *                         type: string
- *                         example: Streamflow, ft&#179;/s"
- */
-async function getReadingsById(req, res, next) {
-  // TODO add a check what works for a sitecode that exists but is invalid.
-  const siteCodeId = req.params.id;
-  try {
-    const gaugeData = await GaugeReading.findBySiteCode(siteCodeId);
-    if (gaugeData) {
-      const returnObject = {
-        message: 'data here',
-        data: gaugeData,
-      };
-      res.status(200).json(returnObject);
     } else {
       res.status(500).json({ error: 'invalid siteCode' });
     }
@@ -199,9 +145,23 @@ async function getReadingsById(req, res, next) {
 
 // +++++++++++++++++++++++++++++++++++++++++ Site Data ++++++++++++++++++++++++++++++++++++++++++++
 
+async function updateGauge(req, res, next) {
+  try {
+    const { id } = req.params;
+    const params = req.body;
+    const data = await Gauge.updateGauge(id, params);
+    console.log('data', data);
+    if (data === 1) {
+      res.status(200).status(data);
+    }
+  } catch (error) {
+    res.status(500).json(error);
+  }
+}
+
 module.exports = {
   gaugeInformation,
   getGaugeHistory,
   getSiteById,
-  getReadingsById,
+  updateGauge,
 };

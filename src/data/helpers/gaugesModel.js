@@ -16,9 +16,18 @@ async function add(gauge) {
     .catch(err => err);
 }
 
+async function updateGauge(ids, params) {
+  // console.log(ids, params);
+  return db('gauges')
+    .where({ siteCode: ids })
+    .update(params);
+  // .then(name => name)
+  // .catch(err => err);
+}
 module.exports = {
   find,
   findById,
   add,
   findBySiteCode,
+  updateGauge,
 };
