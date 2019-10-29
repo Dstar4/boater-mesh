@@ -1,7 +1,6 @@
 const express = require('express');
 const graphqlHTTP = require('express-graphql');
-const { buildSchema } = require('graphql');
-const schema = require('../graphql/schema/schema');
+const schema = require('./data/graphql/schema/schema');
 
 const serverMiddleware = require('./middleware/serverMiddleware');
 const router = require('./routes/index');

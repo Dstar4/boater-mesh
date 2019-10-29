@@ -135,8 +135,6 @@ async function populateGaugeData(req, res, next) {
               siteData.timeStamp,
               siteData.units
             );
-            // console.log('COMPARE', compare, compare.length);
-            // console.log('SiteData', siteData);
             if (compare.length < 1) {
               GaugeReading.add(siteData);
             }
