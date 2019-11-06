@@ -2,8 +2,36 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "./dist/index",
+  "types": "./dist/index",
+  "scripts": {
+    "dev": "tsc --watch & nodemon dist"
+  },
+  "jest": {
+    "verbose": true,
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ]
+  },
   "dependencies": {
+    "@types/axios": "^0.14.0",
+    "@types/cors": "^2.8.6",
+    "@types/dotenv": "^8.2.0",
+    "@types/express": "^4.17.2",
+    "@types/jest": "^24.0.21",
+    "@types/knex": "^0.16.1",
+    "@types/node": "^12.12.5",
+    "@types/supertest": "^2.0.8",
+    "@types/swagger-ui-express": "^3.0.1",
     "axios": "^0.19.0",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
@@ -13,9 +41,16 @@
     "knex": "^0.19.5",
     "morgan": "^1.9.1",
     "pg": "^7.12.1",
+    "pm2": "^4.1.2",
+    "react-router": "^5.1.2",
+    "react-router-dom": "^5.1.2",
     "sqlite3": "^4.1.0",
     "swagger-jsdoc": "^3.4.0",
     "swagger-ui-express": "^4.1.2",
+    "ts-jest": "^24.1.0",
+    "ts-node-dev": "^1.0.0-pre.44",
+    "tsc-watch": "^4.0.0",
+    "typescript": "^3.7.2",
     "xml2js": "^0.4.22"
   },
   "devDependencies": {
@@ -36,15 +71,13 @@
     "prettier": "^1.18.2",
     "supertest": "^4.0.2"
   },
-  "scripts": {
-    "testAll": "jest --watchAll --verbose",
-    "test": "jest /src/controllers/gauge.spec.js --verbose",
-    "server": "nodemon index.js",
-    "start": "node index.js",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
-  },
-  "keywords": [],
+  "keywords": [
+    "node",
+    "express",
+    "server",
+    "ts",
+    "typescript"
+  ],
   "author": "",
   "license": "ISC"
 }
