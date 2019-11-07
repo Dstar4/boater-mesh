@@ -5,6 +5,7 @@
   "main": "./dist/index",
   "types": "./dist/index",
   "scripts": {
+    "test": "jest --watchAll --verbose",
     "dev": "tsc --watch & nodemon dist"
   },
   "jest": {
@@ -37,7 +38,10 @@
     "cors": "^2.8.5",
     "dotenv": "^8.1.0",
     "express": "^4.17.1",
+    "express-graphql": "^0.9.0",
+    "graphql": "^14.5.8",
     "helmet": "^3.21.1",
+    "joi": "^14.3.1",
     "knex": "^0.19.5",
     "morgan": "^1.9.1",
     "pg": "^7.12.1",

@@ -38,9 +38,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var axios = require("axios");
 var asyncWrapper = require("../../../util/asyncWrapper").AsyncWrapper;
+var validator = require("../../../middleware/validator");
 var GaugesService = require("../../../services/GaugesService");
-// import Gauge = require("../../../data/helpers/gaugesModel");
-// import GaugeReading = require("../../../data/helpers/readingsModel");
 var router = require("express").Router();
 var gaugesService = new GaugesService();
 // ****************************** Helpers ******************************++++
@@ -74,7 +73,6 @@ router.get("/sites", asyncWrapper(function (req, res) { return __awaiter(void 0,
             case 0: return [4 /*yield*/, gaugesService.populateSites()];
             case 1:
                 data = _a.sent();
-                // if (data) {
                 res.send(data);
                 return [2 /*return*/];
         }
@@ -82,52 +80,21 @@ router.get("/sites", asyncWrapper(function (req, res) { return __awaiter(void 0,
 }); }));
 // ****************************** Reading Data ******************************+
 router.get("/readings", asyncWrapper(function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var populateURL;
+    var allSitesData;
     return __generator(this, function (_a) {
-        populateURL = "http://waterservices.usgs.gov/nwis/iv/?format=json&stateCd=NC&period=PT12H&siteType=ST";
-        getGaugeData(populateURL).then(function (response) {
-            var responseData = response.data.value.timeSeries;
-            var allSitesData = [];
-            responseData.map(function (item) { return __awaiter(void 0, void 0, void 0, function () {
-                var i, siteData, compare;
-                return __generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0:
-                            if (!item.values[0].value) return [3 /*break*/, 5];
-                            i = 0;
-                            _a.label = 1;
-                        case 1:
-                            if (!(i < item.values.length)) return [3 /*break*/, 4];
-                            siteData = {
-                                siteCode: item.sourceInfo.siteCode[0].value,
-                                gaugeReading: item.values[0].value[i].value,
-                                timeStamp: item.values[0].value[i].dateTime,
-                                variableName: item.variable.variableName,
-                                units: item.variable.unit.unitCode,
-                            };
-                            allSitesData.push(siteData);
-                            return [4 /*yield*/, gaugesService.findBySiteCodeTimestamp(siteData.siteCode, siteData.timeStamp, siteData.units)];
-                        case 2:
-                            compare = _a.sent();
-                            if (compare.length < 1) {
-                                gaugesService.addReading(siteData);
-                            }
-                            _a.label = 3;
-                        case 3:
-                            i += 1;
-                            return [3 /*break*/, 1];
-                        case 4:
-                            res.status(201).json(allSitesData);
-                            _a.label = 5;
-                        case 5: return [2 /*return*/];
-                    }
-                });
-            }); });
-        });
-        return [2 /*return*/];
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, gaugesService.populateReadings()];
+            case 1:
+                allSitesData = _a.sent();
+                // console.log("readings allsitesdata", allSitesData);
+                res.send(allSitesData);
+                return [2 /*return*/];
+        }
     });
 }); }));
-router.post("/sites", asyncWrapper(function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+router.post("/sites", 
+// [validator("Gauge")],
+asyncWrapper(function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var url, _a, _b, period, siteCodes, _c, variable, _d, siteType, request, data;
     return __generator(this, function (_e) {
         switch (_e.label) {
@@ -135,6 +102,7 @@ router.post("/sites", asyncWrapper(function (req, res) { return __awaiter(void 0
                 url = "http://waterservices.usgs.gov/nwis/iv/?format=json";
                 _a = req.body, _b = _a.period, period = _b === void 0 ? "PT6H" : _b, siteCodes = _a.siteCodes, _c = _a.variable, variable = _c === void 0 ? ["00060", "00065"] : _c, _d = _a.siteType, siteType = _d === void 0 ? "ST" : _d;
                 request = url + "&period=P" + period + "&site=" + siteCodes + "&variable=" + variable + "&siteType=" + siteType;
+                console.log(request);
                 return [4 /*yield*/, axios.get(request)];
             case 1:
                 data = (_e.sent()).data;

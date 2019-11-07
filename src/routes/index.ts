@@ -4,6 +4,8 @@ const weatherDataRouter = require("../controllers/weather/weatherDataController"
 const gaugesDataController = require("../controllers/rivers/gaugesData/gaugesDataController");
 const gaugesController = require("../controllers/rivers/gauges/gaugesController");
 const swaggerDocument = require("../../swagger.json");
+const graphqlHTTP = require("express-graphql");
+const schema = require("../models/schema");
 
 router.use("/api-docs", swaggerUi.serve);
 router.get("/api-docs", swaggerUi.setup(swaggerDocument));
@@ -16,7 +18,13 @@ router.use("/gaugesData", gaugesDataController);
 
 // Routes to get gauge data from db
 router.use("/gauges", gaugesController);
-
+router.use(
+  "/graphql",
+  graphqlHTTP({
+    schema,
+    graphiql: true,
+  })
+);
 module.exports = router;
 
 export {};

@@ -1,5 +1,5 @@
-import * as Knex from "knex";
-exports.up = function(knex: Knex) {
+// import * as Knex from "knex";
+exports.up = function(knex) {
   return knex.schema
     .createTable("gauges", gauges => {
       gauges.increments();
@@ -31,7 +31,6 @@ exports.up = function(knex: Knex) {
     });
 };
 
-exports.down = function(knex: Knex) {
+exports.down = function(knex) {
   return knex.schema.dropTableIfExists("gauges").dropTableIfExists("readings");
 };
-export {};

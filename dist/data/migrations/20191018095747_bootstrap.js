@@ -1,5 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+// import * as Knex from "knex";
 exports.up = function (knex) {
     return knex.schema
         .createTable("gauges", function (gauges) {

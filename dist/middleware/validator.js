@@ -1,8 +1,13 @@
 var Joi = require("joi");
-var ValidationError = require("../../errors/validation-error");
+var Gauge = require("../models/gauge");
+var ValidationError = require("../errors/validation-error");
 "use strict";
 var validators = {
-    Gauge: Gauge.PlanValidationSchema,
+    Gauge: {
+        scopes: {
+            Gauge: Gauge.GaugeValidationSchema,
+        },
+    },
 };
 function scopeExists(validator, scope) {
     return Object.keys(validator.scopes).find(function (key) { return key == scope; }) != undefined;

@@ -9,14 +9,24 @@ import {
 } from "../controllers/rivers/riverTypes";
 module.exports = class GaugesService {
   // Sites
-  async findAllSites(siteCode) {
-    return await db("gauges");
+  async findAllSites() {
+    return await db("gauges").catch(err => {
+      return err;
+    });
   }
   async findSiteById(id: number) {
-    return db("gauges").where("id", id);
+    return db("gauges")
+      .where("id", id)
+      .catch(err => {
+        return err;
+      });
   }
   async findBySiteCode(siteCode: string) {
-    return db("gauges").where("siteCode", siteCode);
+    return db("gauges")
+      .where("siteCode", siteCode)
+      .catch(err => {
+        return err;
+      });
   }
   async addSite(gauge: {
     id?: number;
@@ -35,51 +45,57 @@ module.exports = class GaugesService {
   }
 
   // Readings
-
   findAllReadings() {
-    return db("readings").join("gauges", {
-      "readings.siteCode": "gauges.siteCode",
-    });
+    return db("readings")
+      .join("gauges", {
+        "readings.siteCode": "gauges.siteCode",
+      })
+      .catch(err => {
+        return err;
+      });
   }
   async addReading(reading) {
     return db("readings")
       .insert(reading)
-      .then(id => id);
+      .then(id => id)
+      .catch(err => {
+        return err;
+      });
   }
   async findReadingsBySiteCode(siteCodeId) {
-    return db("readings").where({ "readings.siteCode": siteCodeId });
-    // .join('gauges', {
-    // 'readings.siteCode': 'gauges.siteCode',
-    // });
+    return db("readings")
+      .where({ "readings.siteCode": siteCodeId })
+      .then(id => id)
+      .catch(err => {
+        return err;
+      });
   }
   async findReadingsBySiteCodeTimestamp(siteCodeId, timeStamp, units) {
-    return db("readings").where({
-      "readings.siteCode": siteCodeId,
-      timeStamp,
-      units,
-    });
-    // .join('gauges', {
-    // 'readings.siteCode': 'gauges.siteCode',
-    // });
+    return db("readings")
+      .where({
+        "readings.siteCode": siteCodeId,
+        timeStamp,
+        units,
+      })
+      .catch(err => {
+        return err;
+      });
   }
 
-  // Populate Data
+  // ***************************************** Populate Data *****************************************
+
+  // GetData Sites
   async populateSites() {
     const siteURL: string =
       "http://waterservices.usgs.gov/nwis/iv/?format=json&stateCd=NC&siteStatus=active";
-
     let response = await axios.get(siteURL);
-    // let response = null;
-
     if (!response) {
       throw new CommonError(
         "There was no data returned from that source. Check your URL and try again."
       );
     }
-
     let allSitesData = [];
     const geoData = response.data.value.timeSeries;
-
     geoData.map(item => {
       const siteData = {
         name: item.sourceInfo.siteName,
@@ -91,5 +107,67 @@ module.exports = class GaugesService {
       this.addSite(siteData);
     });
     return allSitesData;
+  }
+
+  //GetData Readings
+  async populateReadings() {
+    const url: String =
+      "http://waterservices.usgs.gov/nwis/iv/?format=json&stateCd=NC";
+    const params = {
+      period: "PT6H",
+      variable: ["00060", "00065"],
+      siteType: "ST",
+    };
+    const request = `${url}&period=${params.period}&variable=${params.variable}&siteType=${params.siteType}`;
+    const { data } = await axios.get(request);
+    if (!data) {
+      throw new CommonError("Could not retrieve those readings.");
+    }
+    const responseData: any[] = data.value.timeSeries;
+    let allSitesData: ReadingType[] = [];
+    responseData.forEach(item => {
+      if (item.values[0].value.length > 0) {
+        allSitesData.push(item);
+      }
+    });
+    let returnData = await this.buildArr(allSitesData);
+
+    return returnData;
+  }
+
+  //  Helper Function to check for duplicates before inserting
+  async dataExists(siteData) {
+    const compare = await this.findReadingsBySiteCodeTimestamp(
+      siteData.siteCode,
+      siteData.timeStamp,
+      siteData.units
+    );
+    if (compare.length < 1) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  // Helper function to build an object to insert into readings db from an array
+  async buildArr(arr) {
+    let selectedData: ReadingType[] = [];
+
+    arr.forEach(async item => {
+      for (let i = 0; i < item.values[0].value.length; i++) {
+        let reading = {
+          siteCode: item.sourceInfo.siteCode[0].value,
+          gaugeReading: item.values[0].value[i].value,
+          timeStamp: item.values[0].value[i].dateTime,
+          variableName: item.variable.variableName,
+          units: item.variable.unit.unitCode,
+        };
+        selectedData.push(reading);
+        if ((await this.dataExists(reading)) === false) {
+          await this.addReading(reading);
+        }
+      }
+    });
+    return selectedData;
   }
 };
