@@ -36,280 +36,63 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-// const Sequelize = require('sequelize');
-var Gauge = require("../../data/helpers/gaugesModel");
-var GaugeReading = require("../../data/helpers/readingsModel");
-/**
- * @swagger
- * /gauges/all:
- *   get:
- *     description: Gets Gauge Info on all Gauges from database.
- *     responses:
- *        '200':    # status code
- *          description: A JSON array of all available gauges
- *          content:
- *            application/json:
- *              schema:
- *                type: array
- *                items:
- *                    type: object
- *                    properties:
- *                      id:
- *                      name:
- *                        type: string
- *                        example: NORTHWEST RIVER ABOVE MOUTH NEAR MOYOCK, NC
- *                      siteCode:
- *                        type: string
- *                        example: 02043410
- *                      latitude:
- *                        type: float
- *                        example: 36.5122222
- *                      longitude:
- *                         type: float
- *                         example: -76.0866667
- *                      units:
- *                         type: string
- *                         example: ft3/s
- *                      flowType:
- *                         type: string
- *                      example: Streamflow, ft&#179;/s
- *                      createdAt:
- *                        type: string
- *                      updatedAt:
- *                        type: string
- */
-// interface SiteDataType {
-//   id: Number;
-//   name: String;
-//   siteCode: String;
-//   latitude: Number;
-//   longitude: Number;
-//   runName: string | null;
-//   runDescription: string | null;
-// }
-// interface ReadingDataType {
-//   id: Number;
-//   gaugeReading: String;
-//   timeStamp: String;
-//   variableName: String;
-//   units: String;
-//   name: String;
-//   siteCode: String;
-//   latitude: Number;
-//   longitude: Number;
-//   runName: string | null;
-//   runDescription: string | null;
-// }
-function gaugeInformation(req, res, next) {
-    return __awaiter(this, void 0, void 0, function () {
-        var data;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, Gauge.find()];
-                case 1:
-                    data = _a.sent();
-                    console.log(data);
-                    if (data) {
-                        res.status(200).json(data);
-                    }
-                    else {
-                        res.status(500).json("error finding gauge information");
-                    }
-                    return [2 /*return*/];
-            }
-        });
+var router = require("express").Router();
+var Gauge = require("../../../data/helpers/gaugesModel");
+var GaugeReading = require("../../../data/helpers/readingsModel");
+var asyncWrapper = require("../../../util/asyncWrapper").AsyncWrapper;
+// +++++++++++++++++++++++++++++++++++++++++ All Data +++++++++++++++++++++++++++++++++++++++++++++
+router.route("/all").get(asyncWrapper(function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var data;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, Gauge.find()];
+            case 1:
+                data = _a.sent();
+                res.status(200).json(data);
+                return [2 /*return*/];
+        }
     });
-}
-/**
- * @swagger
- * /gauges/sites/:id:
- *   get:
- *     description: Gets Gauge Readings and Gauge info by siteCode
- *     parameters:
- *       - name: id
- *         in: path
- *         required: true
- *         schema:
- *           type: integer
- *           description: Numeric ID of the site, titled "siteCode"
- *     responses:
- *        '200':
- *          description: A JSON array of gauge readings and site data
- *          content:
- *            application/json:
- *              schema:
- *                type: array
- *                items:
- *                    type: object
- *                    properties:
- *                      siteCode:
- *                        type: string
- *                        example: 02043410
- *                      gaugeReading:
- *                        type: float
- *                        example: 1.63
- *                      timestamp:
- *                         type: string
- *                         example: 2019-10-14T20:30:00.000-04:00
- *                      variableName:
- *                         type: string
- *                         example: Streamflow, ft&#179;/s"
- */
-function getSiteById(req, res, next) {
-    return __awaiter(this, void 0, void 0, function () {
-        var siteCodeId, data, err_1;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    siteCodeId = req.params.id;
-                    _a.label = 1;
-                case 1:
-                    _a.trys.push([1, 3, , 4]);
-                    return [4 /*yield*/, GaugeReading.findBySiteCode(siteCodeId)];
-                case 2:
-                    data = _a.sent();
-                    // console.log(data);
-                    if (data.length > 0) {
-                        res.status(200).json(data);
-                    }
-                    else {
-                        res.status(500).json({ error: "invalid siteCode" });
-                    }
-                    return [3 /*break*/, 4];
-                case 3:
-                    err_1 = _a.sent();
-                    console.log(err_1);
-                    res.status(500).json({
-                        message: "There was an error retrieving that site.",
-                        error: err_1,
-                    });
-                    return [3 /*break*/, 4];
-                case 4: return [2 /*return*/];
-            }
-        });
+}); }));
+router.get("sites/:id", asyncWrapper(function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var siteCodeId, data;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                siteCodeId = req.params.id;
+                return [4 /*yield*/, GaugeReading.findBySiteCode(siteCodeId)];
+            case 1:
+                data = _a.sent();
+                res.status(200).json(data);
+                return [2 /*return*/];
+        }
     });
-}
+}); }));
 // +++++++++++++++++++++++++++++++++++++++++ Reading Data +++++++++++++++++++++++++++++++++++++++++
-/**
- * @swagger
- * /gauges/info:
- *   get:
- *     description: Gets all Gauge Readings from DB.
- *     responses:
- *        '200':
- *          description: A JSON array of gauge readings
- *          content:
- *            application/json:
- *              schema:
- *                type: array
- *                items:
- *                    type: object
- *                    properties:
- *                      siteCode:
- *                        type: string
- *                        example: 02043410
- *                      gaugeReading:
- *                        type: float
- *                        example: 1.63
- *                      timestamp:
- *                         type: string
- *                         example: 2019-10-14T20:30:00.000-04:00
- *                      variableName:
- *                         type: string
- *                         example: Streamflow, ft&#179;/s"
- */
-function getGaugeHistory(req, res, next) {
-    return __awaiter(this, void 0, void 0, function () {
-        var data, err_2;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    _a.trys.push([0, 2, , 3]);
-                    return [4 /*yield*/, GaugeReading.find()];
-                case 1:
-                    data = _a.sent();
-                    // console.log(data);
-                    res.status(200).json(data);
-                    return [3 /*break*/, 3];
-                case 2:
-                    err_2 = _a.sent();
-                    console.log(err_2);
-                    return [3 /*break*/, 3];
-                case 3: return [2 /*return*/];
-            }
-        });
+router.get("/info", asyncWrapper(function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var data;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, GaugeReading.find()];
+            case 1:
+                data = _a.sent();
+                res.status(200).json(data);
+                return [2 /*return*/];
+        }
     });
-}
-/**
- * @swagger
- * /gauges/readings/:id:
- *   get:
- *     description: Gets Gauge Readings from DB by siteCode.
- *     summary: Gets Gauge Readings from DB by siteCode.
- *     responses:
- *        '200':
- *          description: A JSON array of gauge readings
- *          content:
- *            application/json:
- *              schema:
- *                type: array
- *                items:
- *                    type: object
- *                    properties:
- *                      siteCode:
- *                        type: string
- *                        example: 02043410
- *                      gaugeReading:
- *                        type: float
- *                        example: 1.63
- *                      timestamp:
- *                         type: string
- *                         example: 2019-10-14T20:30:00.000-04:00
- *                      variableName:
- *                         type: string
- *                         example: Streamflow, ft&#179;/s"
- */
-function getReadingsById(req, res, next) {
-    return __awaiter(this, void 0, void 0, function () {
-        var siteCodeId, gaugeData, returnObject, err_3;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    siteCodeId = req.params.id;
-                    _a.label = 1;
-                case 1:
-                    _a.trys.push([1, 3, , 4]);
-                    return [4 /*yield*/, GaugeReading.findBySiteCode(siteCodeId)];
-                case 2:
-                    gaugeData = _a.sent();
-                    if (gaugeData) {
-                        returnObject = {
-                            message: "data here",
-                            data: gaugeData,
-                        };
-                        res.status(200).json(returnObject);
-                    }
-                    else {
-                        res.status(500).json({ error: "invalid siteCode" });
-                    }
-                    return [3 /*break*/, 4];
-                case 3:
-                    err_3 = _a.sent();
-                    console.log(err_3);
-                    res.status(500).json({
-                        message: "There was an error retrieving that site.",
-                        error: err_3,
-                    });
-                    return [3 /*break*/, 4];
-                case 4: return [2 /*return*/];
-            }
-        });
+}); }));
+router.get("/readings/:id", asyncWrapper(function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var siteCodeId, gaugeData;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                siteCodeId = req.params.id;
+                return [4 /*yield*/, GaugeReading.findBySiteCode(siteCodeId)];
+            case 1:
+                gaugeData = _a.sent();
+                res.status(200).json(gaugeData);
+                return [2 /*return*/];
+        }
     });
-}
+}); }));
 // +++++++++++++++++++++++++++++++++++++++++ Site Data ++++++++++++++++++++++++++++++++++++++++++++
-module.exports = {
-    gaugeInformation: gaugeInformation,
-    getGaugeHistory: getGaugeHistory,
-    getSiteById: getSiteById,
-    getReadingsById: getReadingsById,
-};
+module.exports = router;

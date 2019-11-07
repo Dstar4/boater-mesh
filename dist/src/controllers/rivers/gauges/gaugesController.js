@@ -36,58 +36,65 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var axios = require("axios");
+var Gauge = require("../../../data/helpers/gaugesModel");
+var GaugeReading = require("../../../data/helpers/readingsModel");
+var asyncWrapper = require("../../../../util/asyncWrapper");
 var router = require("express").Router();
-// const URL = "https://api.openweathermap.org/data/2.5/weather?zip=85741,us&appid=f95f8b937ea0757b479511295634ebf6&units=imperial"
-var asyncWrapper = require("../../util/asyncWrapper").AsyncWrapper;
-var baseURL = "https://api.openweathermap.org/data/2.5";
-var appId = "f95f8b937ea0757b479511295634ebf6";
-function getWeatherData(url) {
-    return __awaiter(this, void 0, void 0, function () {
-        var err_1;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    _a.trys.push([0, 2, , 3]);
-                    return [4 /*yield*/, axios.get(url)];
-                case 1: return [2 /*return*/, _a.sent()];
-                case 2:
-                    err_1 = _a.sent();
-                    // console.log(err)
-                    return [2 /*return*/, err_1];
-                case 3: return [2 /*return*/];
-            }
-        });
-    });
-}
-router.get("/now", asyncWrapper(function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var zip, zipURL, response;
+// +++++++++++++++++++++++++++++++++++++++++ All Data +++++++++++++++++++++++++++++++++++++++++++++
+router.get("/all", asyncWrapper(function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var data;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0:
-                zip = req.query.zip;
-                zipURL = baseURL + "/weather?zip=" + zip + ",us&units=Imperial&appid=" + appId;
-                return [4 /*yield*/, getWeatherData(zipURL)];
+            case 0: return [4 /*yield*/, Gauge.find()];
             case 1:
-                response = _a.sent();
-                res.status(200).json(response.data);
+                data = _a.sent();
+                res.status(200).json(data);
                 return [2 /*return*/];
         }
     });
 }); }));
-router.get("/city", asyncWrapper(function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var city, cityURL, response;
+router.get("sites/:id", asyncWrapper(function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var siteCodeId, data;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                city = req.query.city;
-                cityURL = baseURL + "/forecast?q=" + city + "&units=Imperial&appid=" + appId;
-                return [4 /*yield*/, getWeatherData(cityURL)];
+                siteCodeId = req.params.id;
+                return [4 /*yield*/, GaugeReading.findBySiteCode(siteCodeId)];
             case 1:
-                response = _a.sent();
-                res.status(200).json(response.data);
+                data = _a.sent();
+                res.status(200).json(data);
                 return [2 /*return*/];
         }
     });
 }); }));
-module.exports = router;
+// +++++++++++++++++++++++++++++++++++++++++ Reading Data +++++++++++++++++++++++++++++++++++++++++
+router.get("/info", asyncWrapper(function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var data;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, GaugeReading.find()];
+            case 1:
+                data = _a.sent();
+                res.status(200).json(data);
+                return [2 /*return*/];
+        }
+    });
+}); }));
+router.get("/readings/:id", asyncWrapper(function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var siteCodeId, gaugeData;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                siteCodeId = req.params.id;
+                return [4 /*yield*/, GaugeReading.findBySiteCode(siteCodeId)];
+            case 1:
+                gaugeData = _a.sent();
+                res.status(200).json(gaugeData);
+                return [2 /*return*/];
+        }
+    });
+}); }));
+// +++++++++++++++++++++++++++++++++++++++++ Site Data ++++++++++++++++++++++++++++++++++++++++++++
+module.exports = {
+    router: router,
+};

@@ -1,4 +1,6 @@
 const axios = require("axios");
+const asyncWrapper = require("../../../util/asyncWrapper").AsyncWrapper;
+
 import { Request, Response, NextFunction } from "express";
 import {
   SiteDataType,
@@ -8,6 +10,8 @@ import {
 } from "../riverTypes";
 import Gauge = require("../../../data/helpers/gaugesModel");
 import GaugeReading = require("../../../data/helpers/readingsModel");
+const router = require("express").Router();
+
 // ****************************** Helpers ******************************++++
 async function getGaugeData(url: string) {
   try {
@@ -21,49 +25,15 @@ async function getGaugeData(url: string) {
 }
 
 // ****************************** Site Data *********************************
-/**
- * @swagger
- * /gaugesData/sites:
- *   get:
- *     description: Gets Gauge Info from all Gauges.
- *     responses:
- *        '200':    # status code
- *          description: A JSON array of user names
- *          content:
- *            application/json:
- *              schema:
- *                type: array
- *                items:
- *                    type: object
- *                    properties:
- *                      name:
- *                        type: string
- *                        example: NORTHWEST RIVER ABOVE MOUTH NEAR MOYOCK, NC
- *                      siteCode:
- *                        type: string
- *                        example: 02043410
- *                      latitude:
- *                        type: float
- *                        example: 36.5122222
- *                      longitude:
- *                         type: float
- *                         example: -76.0866667
- *                      units:
- *                         type: string
- *                         example: ft3/s
- *                      flowType:
- *                         type: string
- *                      example: Streamflow, ft&#179;/s
- */
-async function getAllSites(req: Request, res: Response, next: NextFunction) {
-  // TODO ADD 500 response
 
-  const siteURL: string =
-    "http://waterservices.usgs.gov/nwis/iv/?format=json&stateCd=NC&siteStatus=active";
-  getGaugeData(siteURL).then(response => {
-    let allSitesData: SiteDataRequestType[] = [];
-    const geoData = response.data.value.timeSeries;
-    try {
+router.get(
+  "/sites",
+  asyncWrapper(async (req: Request, res: Response) => {
+    const siteURL: string =
+      "http://waterservices.usgs.gov/nwis/iv/?format=json&stateCd=NC&siteStatus=active";
+    getGaugeData(siteURL).then(response => {
+      let allSitesData: SiteDataRequestType[] = [];
+      const geoData = response.data.value.timeSeries;
       geoData.map(item => {
         const siteData: SiteDataRequestType = {
           name: item.sourceInfo.siteName,
@@ -80,57 +50,23 @@ async function getAllSites(req: Request, res: Response, next: NextFunction) {
         );
         allSitesData.push(siteData);
       });
-    } catch (err) {
-      res.status(500).json("error getting sites");
-      next(err);
-    }
-    res.status(201).json(allSitesData);
-  });
-}
+      res.status(201).json(allSitesData);
+    });
+  })
+);
+
 // ****************************** Reading Data ******************************+
+router.get(
+  "/readings",
+  asyncWrapper(async (req: Request, res: Response) => {
+    const populateURL =
+      "http://waterservices.usgs.gov/nwis/iv/?format=json&stateCd=NC&period=PT12H&siteType=ST";
+    getGaugeData(populateURL).then(response => {
+      const responseData: any[] = response.data.value.timeSeries;
+      let allSitesData: ReadingType[] = [];
 
-const populateURL =
-  "http://waterservices.usgs.gov/nwis/iv/?format=json&stateCd=NC&period=PT12H&siteType=ST";
-/**
- * @swagger
- * /gaugesData/readings:
- *   get:
- *     description: Gets Gauge Readings from all Gauges.
- *     responses:
- *        '200':
- *          description: A JSON array of gauge readings
- *          content:
- *            application/json:
- *              schema:
- *                type: array
- *                items:
- *                    type: object
- *                    properties:
- *                      siteCode:
- *                        type: string
- *                        example: 02043410
- *                      gaugeReading:
- *                        type: float
- *                        example: 1.63
- *                      timestamp:
- *                         type: string
- *                         example: 2019-10-14T20:30:00.000-04:00
- *                      variableName:
- *                         type: string
- *                         example: Streamflow, ft&#179;/s"
- */
-async function populateGaugeData(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
-  getGaugeData(populateURL).then(response => {
-    const responseData: any[] = response.data.value.timeSeries;
-    let allSitesData: ReadingType[] = [];
-
-    responseData.map(async item => {
-      if (item.values[0].value) {
-        try {
+      responseData.map(async item => {
+        if (item.values[0].value) {
           for (let i = 0; i < item.values.length; i += 1) {
             const siteData: ReadingType = {
               siteCode: item.sourceInfo.siteCode[0].value,
@@ -149,35 +85,16 @@ async function populateGaugeData(
               GaugeReading.add(siteData);
             }
           }
-        } catch (err) {
-          return err;
+          res.status(201).json(allSitesData);
         }
-      }
+      });
     });
-    res.status(201).json(allSitesData);
-  });
-}
-/*
-{
-	"period":"T1H",
-	"siteCodes": ["0204382800","02069000"],
-	"variable":["00060","00065"],
-	"siteType": "ST"
-}
-*/
-interface reqBodyType {
-  period: string;
-  siteCodes: number[];
-  variable: string[];
-  siteType: string;
-}
-async function getDataBySiteId(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
-  // TODO: save data to readings table, but do not duplicate timestamps.
-  try {
+  })
+);
+
+router.post(
+  "/sites",
+  asyncWrapper(async (req: Request, res: Response) => {
     const url: String = "http://waterservices.usgs.gov/nwis/iv/?format=json";
     const {
       period = "PT6H",
@@ -195,15 +112,8 @@ async function getDataBySiteId(
     const { data } = await axios.get(request);
 
     res.status(200).json(data);
-  } catch (err) {
-    console.log(err);
-    res.status(500).json(err);
-  }
-}
-module.exports = {
-  getGaugeData,
-  getAllSites,
-  populateGaugeData,
-  getDataBySiteId,
-};
+  })
+);
+
+module.exports = router;
 export {};

@@ -37,8 +37,10 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var axios = require("axios");
+var asyncWrapper = require("../../../util/asyncWrapper").AsyncWrapper;
 var Gauge = require("../../../data/helpers/gaugesModel");
 var GaugeReading = require("../../../data/helpers/readingsModel");
+var router = require("express").Router();
 // ****************************** Helpers ******************************++++
 function getGaugeData(url) {
     return __awaiter(this, void 0, void 0, function () {
@@ -63,180 +65,89 @@ function getGaugeData(url) {
     });
 }
 // ****************************** Site Data *********************************
-/**
- * @swagger
- * /gaugesData/sites:
- *   get:
- *     description: Gets Gauge Info from all Gauges.
- *     responses:
- *        '200':    # status code
- *          description: A JSON array of user names
- *          content:
- *            application/json:
- *              schema:
- *                type: array
- *                items:
- *                    type: object
- *                    properties:
- *                      name:
- *                        type: string
- *                        example: NORTHWEST RIVER ABOVE MOUTH NEAR MOYOCK, NC
- *                      siteCode:
- *                        type: string
- *                        example: 02043410
- *                      latitude:
- *                        type: float
- *                        example: 36.5122222
- *                      longitude:
- *                         type: float
- *                         example: -76.0866667
- *                      units:
- *                         type: string
- *                         example: ft3/s
- *                      flowType:
- *                         type: string
- *                      example: Streamflow, ft&#179;/s
- */
-function getAllSites(req, res, next) {
-    return __awaiter(this, void 0, void 0, function () {
-        var siteURL;
-        return __generator(this, function (_a) {
-            siteURL = "http://waterservices.usgs.gov/nwis/iv/?format=json&stateCd=NC&siteStatus=active";
-            getGaugeData(siteURL).then(function (response) {
-                var allSitesData = [];
-                var geoData = response.data.value.timeSeries;
-                try {
-                    geoData.map(function (item) {
-                        var siteData = {
-                            name: item.sourceInfo.siteName,
-                            siteCode: item.sourceInfo.siteCode[0].value,
-                            latitude: item.sourceInfo.geoLocation.geogLocation.latitude,
-                            longitude: item.sourceInfo.geoLocation.geogLocation.longitude,
-                        };
-                        Gauge.add(siteData).catch(console.log("Error inserting siteData into database\n" + JSON.stringify(siteData)));
-                        allSitesData.push(siteData);
-                    });
-                }
-                catch (err) {
-                    res.status(500).json("error getting sites");
-                    next(err);
-                }
-                res.status(201).json(allSitesData);
+router.get("/sites", asyncWrapper(function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var siteURL;
+    return __generator(this, function (_a) {
+        siteURL = "http://waterservices.usgs.gov/nwis/iv/?format=json&stateCd=NC&siteStatus=active";
+        getGaugeData(siteURL).then(function (response) {
+            var allSitesData = [];
+            var geoData = response.data.value.timeSeries;
+            geoData.map(function (item) {
+                var siteData = {
+                    name: item.sourceInfo.siteName,
+                    siteCode: item.sourceInfo.siteCode[0].value,
+                    latitude: item.sourceInfo.geoLocation.geogLocation.latitude,
+                    longitude: item.sourceInfo.geoLocation.geogLocation.longitude,
+                };
+                Gauge.add(siteData).catch(console.log("Error inserting siteData into database\n" + JSON.stringify(siteData)));
+                allSitesData.push(siteData);
             });
-            return [2 /*return*/];
+            res.status(201).json(allSitesData);
         });
+        return [2 /*return*/];
     });
-}
+}); }));
 // ****************************** Reading Data ******************************+
-var populateURL = "http://waterservices.usgs.gov/nwis/iv/?format=json&stateCd=NC&period=PT12H&siteType=ST";
-/**
- * @swagger
- * /gaugesData/readings:
- *   get:
- *     description: Gets Gauge Readings from all Gauges.
- *     responses:
- *        '200':
- *          description: A JSON array of gauge readings
- *          content:
- *            application/json:
- *              schema:
- *                type: array
- *                items:
- *                    type: object
- *                    properties:
- *                      siteCode:
- *                        type: string
- *                        example: 02043410
- *                      gaugeReading:
- *                        type: float
- *                        example: 1.63
- *                      timestamp:
- *                         type: string
- *                         example: 2019-10-14T20:30:00.000-04:00
- *                      variableName:
- *                         type: string
- *                         example: Streamflow, ft&#179;/s"
- */
-function populateGaugeData(req, res, next) {
-    return __awaiter(this, void 0, void 0, function () {
-        var _this = this;
-        return __generator(this, function (_a) {
-            getGaugeData(populateURL).then(function (response) {
-                var responseData = response.data.value.timeSeries;
-                var allSitesData = [];
-                responseData.map(function (item) { return __awaiter(_this, void 0, void 0, function () {
-                    var i, siteData, compare, err_1;
-                    return __generator(this, function (_a) {
-                        switch (_a.label) {
-                            case 0:
-                                if (!item.values[0].value) return [3 /*break*/, 7];
-                                _a.label = 1;
-                            case 1:
-                                _a.trys.push([1, 6, , 7]);
-                                i = 0;
-                                _a.label = 2;
-                            case 2:
-                                if (!(i < item.values.length)) return [3 /*break*/, 5];
-                                siteData = {
-                                    siteCode: item.sourceInfo.siteCode[0].value,
-                                    gaugeReading: item.values[0].value[i].value,
-                                    timeStamp: item.values[0].value[i].dateTime,
-                                    variableName: item.variable.variableName,
-                                    units: item.variable.unit.unitCode,
-                                };
-                                allSitesData.push(siteData);
-                                return [4 /*yield*/, GaugeReading.findBySiteCodeTimestamp(siteData.siteCode, siteData.timeStamp, siteData.units)];
-                            case 3:
-                                compare = _a.sent();
-                                if (compare.length < 1) {
-                                    GaugeReading.add(siteData);
-                                }
-                                _a.label = 4;
-                            case 4:
-                                i += 1;
-                                return [3 /*break*/, 2];
-                            case 5: return [3 /*break*/, 7];
-                            case 6:
-                                err_1 = _a.sent();
-                                return [2 /*return*/, err_1];
-                            case 7: return [2 /*return*/];
-                        }
-                    });
-                }); });
-                res.status(201).json(allSitesData);
-            });
-            return [2 /*return*/];
+router.get("/readings", asyncWrapper(function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var populateURL;
+    return __generator(this, function (_a) {
+        populateURL = "http://waterservices.usgs.gov/nwis/iv/?format=json&stateCd=NC&period=PT12H&siteType=ST";
+        getGaugeData(populateURL).then(function (response) {
+            var responseData = response.data.value.timeSeries;
+            var allSitesData = [];
+            responseData.map(function (item) { return __awaiter(void 0, void 0, void 0, function () {
+                var i, siteData, compare;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            if (!item.values[0].value) return [3 /*break*/, 5];
+                            i = 0;
+                            _a.label = 1;
+                        case 1:
+                            if (!(i < item.values.length)) return [3 /*break*/, 4];
+                            siteData = {
+                                siteCode: item.sourceInfo.siteCode[0].value,
+                                gaugeReading: item.values[0].value[i].value,
+                                timeStamp: item.values[0].value[i].dateTime,
+                                variableName: item.variable.variableName,
+                                units: item.variable.unit.unitCode,
+                            };
+                            allSitesData.push(siteData);
+                            return [4 /*yield*/, GaugeReading.findBySiteCodeTimestamp(siteData.siteCode, siteData.timeStamp, siteData.units)];
+                        case 2:
+                            compare = _a.sent();
+                            if (compare.length < 1) {
+                                GaugeReading.add(siteData);
+                            }
+                            _a.label = 3;
+                        case 3:
+                            i += 1;
+                            return [3 /*break*/, 1];
+                        case 4:
+                            res.status(201).json(allSitesData);
+                            _a.label = 5;
+                        case 5: return [2 /*return*/];
+                    }
+                });
+            }); });
         });
+        return [2 /*return*/];
     });
-}
-function getDataBySiteId(req, res, next) {
-    return __awaiter(this, void 0, void 0, function () {
-        var url, _a, _b, period, siteCodes, _c, variable, _d, siteType, request, data, err_2;
-        return __generator(this, function (_e) {
-            switch (_e.label) {
-                case 0:
-                    _e.trys.push([0, 2, , 3]);
-                    url = "http://waterservices.usgs.gov/nwis/iv/?format=json";
-                    _a = req.body, _b = _a.period, period = _b === void 0 ? "PT6H" : _b, siteCodes = _a.siteCodes, _c = _a.variable, variable = _c === void 0 ? ["00060", "00065"] : _c, _d = _a.siteType, siteType = _d === void 0 ? "ST" : _d;
-                    request = url + "&period=P" + period + "&site=" + siteCodes + "&variable=" + variable + "&siteType=" + siteType;
-                    return [4 /*yield*/, axios.get(request)];
-                case 1:
-                    data = (_e.sent()).data;
-                    res.status(200).json(data);
-                    return [3 /*break*/, 3];
-                case 2:
-                    err_2 = _e.sent();
-                    console.log(err_2);
-                    res.status(500).json(err_2);
-                    return [3 /*break*/, 3];
-                case 3: return [2 /*return*/];
-            }
-        });
+}); }));
+router.post("/sites", asyncWrapper(function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var url, _a, _b, period, siteCodes, _c, variable, _d, siteType, request, data;
+    return __generator(this, function (_e) {
+        switch (_e.label) {
+            case 0:
+                url = "http://waterservices.usgs.gov/nwis/iv/?format=json";
+                _a = req.body, _b = _a.period, period = _b === void 0 ? "PT6H" : _b, siteCodes = _a.siteCodes, _c = _a.variable, variable = _c === void 0 ? ["00060", "00065"] : _c, _d = _a.siteType, siteType = _d === void 0 ? "ST" : _d;
+                request = url + "&period=P" + period + "&site=" + siteCodes + "&variable=" + variable + "&siteType=" + siteType;
+                return [4 /*yield*/, axios.get(request)];
+            case 1:
+                data = (_e.sent()).data;
+                res.status(200).json(data);
+                return [2 /*return*/];
+        }
     });
-}
-module.exports = {
-    getGaugeData: getGaugeData,
-    getAllSites: getAllSites,
-    populateGaugeData: populateGaugeData,
-    getDataBySiteId: getDataBySiteId,
-};
+}); }));
+module.exports = router;
