@@ -47,9 +47,7 @@ module.exports = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, db("gauges").catch(function (err) {
-                            return err;
-                        })];
+                    case 0: return [4 /*yield*/, db("gauges")];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
             });
@@ -58,22 +56,14 @@ module.exports = /** @class */ (function () {
     GaugesService.prototype.findSiteById = function (id) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                return [2 /*return*/, db("gauges")
-                        .where("id", id)
-                        .catch(function (err) {
-                        return err;
-                    })];
+                return [2 /*return*/, db("gauges").where("id", id)];
             });
         });
     };
     GaugesService.prototype.findBySiteCode = function (siteCode) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                return [2 /*return*/, db("gauges")
-                        .where("siteCode", siteCode)
-                        .catch(function (err) {
-                        return err;
-                    })];
+                return [2 /*return*/, db("gauges").where("siteCode", siteCode)];
             });
         });
     };
@@ -91,14 +81,19 @@ module.exports = /** @class */ (function () {
             });
         });
     };
+    GaugesService.prototype.updateGauge = function (ids, params) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2 /*return*/, db("gauges")
+                        .where({ siteCode: ids })
+                        .update(params)];
+            });
+        });
+    };
     // Readings
     GaugesService.prototype.findAllReadings = function () {
-        return db("readings")
-            .join("gauges", {
+        return db("readings").join("gauges", {
             "readings.siteCode": "gauges.siteCode",
-        })
-            .catch(function (err) {
-            return err;
         });
     };
     GaugesService.prototype.addReading = function (reading) {
@@ -106,10 +101,7 @@ module.exports = /** @class */ (function () {
             return __generator(this, function (_a) {
                 return [2 /*return*/, db("readings")
                         .insert(reading)
-                        .then(function (id) { return id; })
-                        .catch(function (err) {
-                        return err;
-                    })];
+                        .then(function (id) { return id; })];
             });
         });
     };
@@ -118,24 +110,17 @@ module.exports = /** @class */ (function () {
             return __generator(this, function (_a) {
                 return [2 /*return*/, db("readings")
                         .where({ "readings.siteCode": siteCodeId })
-                        .then(function (id) { return id; })
-                        .catch(function (err) {
-                        return err;
-                    })];
+                        .then(function (id) { return id; })];
             });
         });
     };
     GaugesService.prototype.findReadingsBySiteCodeTimestamp = function (siteCodeId, timeStamp, units) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                return [2 /*return*/, db("readings")
-                        .where({
+                return [2 /*return*/, db("readings").where({
                         "readings.siteCode": siteCodeId,
                         timeStamp: timeStamp,
                         units: units,
-                    })
-                        .catch(function (err) {
-                        return err;
                     })];
             });
         });

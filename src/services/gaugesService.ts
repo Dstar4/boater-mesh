@@ -10,23 +10,13 @@ import {
 module.exports = class GaugesService {
   // Sites
   async findAllSites() {
-    return await db("gauges").catch(err => {
-      return err;
-    });
+    return await db("gauges");
   }
   async findSiteById(id: number) {
-    return db("gauges")
-      .where("id", id)
-      .catch(err => {
-        return err;
-      });
+    return db("gauges").where("id", id);
   }
   async findBySiteCode(siteCode: string) {
-    return db("gauges")
-      .where("siteCode", siteCode)
-      .catch(err => {
-        return err;
-      });
+    return db("gauges").where("siteCode", siteCode);
   }
   async addSite(gauge: {
     id?: number;
@@ -44,42 +34,34 @@ module.exports = class GaugesService {
       });
   }
 
+  async updateGauge(ids, params) {
+    return db("gauges")
+      .where({ siteCode: ids })
+      .update(params);
+  }
+
   // Readings
   findAllReadings() {
-    return db("readings")
-      .join("gauges", {
-        "readings.siteCode": "gauges.siteCode",
-      })
-      .catch(err => {
-        return err;
-      });
+    return db("readings").join("gauges", {
+      "readings.siteCode": "gauges.siteCode",
+    });
   }
   async addReading(reading) {
     return db("readings")
       .insert(reading)
-      .then(id => id)
-      .catch(err => {
-        return err;
-      });
+      .then(id => id);
   }
   async findReadingsBySiteCode(siteCodeId) {
     return db("readings")
       .where({ "readings.siteCode": siteCodeId })
-      .then(id => id)
-      .catch(err => {
-        return err;
-      });
+      .then(id => id);
   }
   async findReadingsBySiteCodeTimestamp(siteCodeId, timeStamp, units) {
-    return db("readings")
-      .where({
-        "readings.siteCode": siteCodeId,
-        timeStamp,
-        units,
-      })
-      .catch(err => {
-        return err;
-      });
+    return db("readings").where({
+      "readings.siteCode": siteCodeId,
+      timeStamp,
+      units,
+    });
   }
 
   // ***************************************** Populate Data *****************************************
