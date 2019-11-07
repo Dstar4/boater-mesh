@@ -1,5 +1,6 @@
 const axios = require("axios");
 const asyncWrapper = require("../../../util/asyncWrapper").AsyncWrapper;
+import GaugesService = require("../../../services/GaugesService");
 
 import { Request, Response, NextFunction } from "express";
 import {
@@ -8,9 +9,10 @@ import {
   SiteDataRequestType,
   ReadingType,
 } from "../riverTypes";
-import Gauge = require("../../../data/helpers/gaugesModel");
-import GaugeReading = require("../../../data/helpers/readingsModel");
+// import Gauge = require("../../../data/helpers/gaugesModel");
+// import GaugeReading = require("../../../data/helpers/readingsModel");
 const router = require("express").Router();
+const gaugesService = new GaugesService();
 
 // ****************************** Helpers ******************************++++
 async function getGaugeData(url: string) {
@@ -29,29 +31,12 @@ async function getGaugeData(url: string) {
 router.get(
   "/sites",
   asyncWrapper(async (req: Request, res: Response) => {
-    const siteURL: string =
-      "http://waterservices.usgs.gov/nwis/iv/?format=json&stateCd=NC&siteStatus=active";
-    getGaugeData(siteURL).then(response => {
-      let allSitesData: SiteDataRequestType[] = [];
-      const geoData = response.data.value.timeSeries;
-      geoData.map(item => {
-        const siteData: SiteDataRequestType = {
-          name: item.sourceInfo.siteName,
-          siteCode: item.sourceInfo.siteCode[0].value,
-          latitude: item.sourceInfo.geoLocation.geogLocation.latitude,
-          longitude: item.sourceInfo.geoLocation.geogLocation.longitude,
-        };
-        Gauge.add(siteData).catch(
-          console.log(
-            `Error inserting siteData into database\n${JSON.stringify(
-              siteData
-            )}`
-          )
-        );
-        allSitesData.push(siteData);
-      });
-      res.status(201).json(allSitesData);
-    });
+    let data = await gaugesService.populateSites();
+    // if (data) {
+    res.send(data);
+    // } else {
+    // throw new ValidationError("given plan is invalid");
+    // }
   })
 );
 
@@ -76,13 +61,13 @@ router.get(
               units: item.variable.unit.unitCode,
             };
             allSitesData.push(siteData);
-            const compare: ReadingDataType[] = await GaugeReading.findBySiteCodeTimestamp(
+            const compare: ReadingDataType[] = await gaugesService.findBySiteCodeTimestamp(
               siteData.siteCode,
               siteData.timeStamp,
               siteData.units
             );
             if (compare.length < 1) {
-              GaugeReading.add(siteData);
+              gaugesService.addReading(siteData);
             }
           }
           res.status(201).json(allSitesData);

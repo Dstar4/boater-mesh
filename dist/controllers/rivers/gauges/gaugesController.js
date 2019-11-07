@@ -37,15 +37,15 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var router = require("express").Router();
-var Gauge = require("../../../data/helpers/gaugesModel");
-var GaugeReading = require("../../../data/helpers/readingsModel");
+var GaugesService = require("../../../services/GaugesService");
 var asyncWrapper = require("../../../util/asyncWrapper").AsyncWrapper;
+var gaugesService = new GaugesService();
 // +++++++++++++++++++++++++++++++++++++++++ All Data +++++++++++++++++++++++++++++++++++++++++++++
 router.route("/all").get(asyncWrapper(function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var data;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, Gauge.find()];
+            case 0: return [4 /*yield*/, gaugesService.findAllSites()];
             case 1:
                 data = _a.sent();
                 res.status(200).json(data);
@@ -53,13 +53,13 @@ router.route("/all").get(asyncWrapper(function (req, res) { return __awaiter(voi
         }
     });
 }); }));
-router.get("sites/:id", asyncWrapper(function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+router.get("/sites/:id", asyncWrapper(function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var siteCodeId, data;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 siteCodeId = req.params.id;
-                return [4 /*yield*/, GaugeReading.findBySiteCode(siteCodeId)];
+                return [4 /*yield*/, gaugesService.findBySiteCode(siteCodeId)];
             case 1:
                 data = _a.sent();
                 res.status(200).json(data);
@@ -72,7 +72,7 @@ router.get("/info", asyncWrapper(function (req, res) { return __awaiter(void 0, 
     var data;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, GaugeReading.find()];
+            case 0: return [4 /*yield*/, gaugesService.findAllReadings()];
             case 1:
                 data = _a.sent();
                 res.status(200).json(data);
@@ -86,7 +86,7 @@ router.get("/readings/:id", asyncWrapper(function (req, res) { return __awaiter(
         switch (_a.label) {
             case 0:
                 siteCodeId = req.params.id;
-                return [4 /*yield*/, GaugeReading.findBySiteCode(siteCodeId)];
+                return [4 /*yield*/, gaugesService.findReadingsBySiteCode(siteCodeId)];
             case 1:
                 gaugeData = _a.sent();
                 res.status(200).json(gaugeData);

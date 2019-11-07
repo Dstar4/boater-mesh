@@ -1,11 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var express = require("express");
-var serverMiddleware = require("./middleware/serverMiddleware");
-var router = require("./routes/index");
-var app = express();
 require("dotenv").config();
-serverMiddleware(app);
-app.use("/api", router);
+var Middleware = require("./middleware/middleware");
+var ErrorHandlingMiddleware = require("./middleware/error-handling");
 var PORT = process.env.PORT || 5500;
+var app = express();
+var router = require("./routes/index");
+Middleware(app);
+app.use("/api", router);
+ErrorHandlingMiddleware(app);
 app.listen(PORT, function () { return console.log("\n** Running on port " + PORT + " ** \n"); });

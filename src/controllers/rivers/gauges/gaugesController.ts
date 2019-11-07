@@ -1,25 +1,24 @@
 const router = require("express").Router();
-import Gauge = require("../../../data/helpers/gaugesModel");
-import GaugeReading = require("../../../data/helpers/readingsModel");
+import GaugesService = require("../../../services/GaugesService");
 import { Request, Response } from "express";
 import { SiteDataType, ReadingDataType } from "../riverTypes";
 
 const asyncWrapper = require("../../../util/asyncWrapper").AsyncWrapper;
-
+const gaugesService = new GaugesService();
 // +++++++++++++++++++++++++++++++++++++++++ All Data +++++++++++++++++++++++++++++++++++++++++++++
 
 router.route("/all").get(
   asyncWrapper(async (req: Request, res: Response) => {
-    const data: SiteDataType[] = await Gauge.find();
+    const data: SiteDataType[] = await gaugesService.findAllSites();
     res.status(200).json(data);
   })
 );
 
 router.get(
-  "sites/:id",
+  "/sites/:id",
   asyncWrapper(async (req: Request, res: Response) => {
     const siteCodeId = req.params.id;
-    const data: ReadingDataType[] = await GaugeReading.findBySiteCode(
+    const data: ReadingDataType[] = await gaugesService.findBySiteCode(
       siteCodeId
     );
     res.status(200).json(data);
@@ -30,7 +29,7 @@ router.get(
 router.get(
   "/info",
   asyncWrapper(async (req: Request, res: Response) => {
-    const data: ReadingDataType[] = await GaugeReading.find();
+    const data: ReadingDataType[] = await gaugesService.findAllReadings();
     res.status(200).json(data);
   })
 );
@@ -39,7 +38,7 @@ router.get(
   "/readings/:id",
   asyncWrapper(async (req: Request, res: Response) => {
     const siteCodeId: String = req.params.id;
-    const gaugeData: SiteDataType[] = await GaugeReading.findBySiteCode(
+    const gaugeData: SiteDataType[] = await gaugesService.findReadingsBySiteCode(
       siteCodeId
     );
     res.status(200).json(gaugeData);

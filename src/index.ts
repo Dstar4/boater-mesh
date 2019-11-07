@@ -1,14 +1,20 @@
 const express = require("express");
-const serverMiddleware = require("./middleware/serverMiddleware");
-const router = require("./routes/index");
-const app = express();
 require("dotenv").config();
+const Middleware = require("./middleware/middleware");
+const ErrorHandlingMiddleware = require("./middleware/error-handling");
 
-serverMiddleware(app);
+const PORT = process.env.PORT || 5500;
+
+const app = express();
+
+const router = require("./routes/index");
+
+Middleware(app);
 
 app.use("/api", router);
 
-const PORT = process.env.PORT || 5500;
+ErrorHandlingMiddleware(app);
+
 app.listen(PORT, () => console.log(`\n** Running on port ${PORT} ** \n`));
 
 export {};

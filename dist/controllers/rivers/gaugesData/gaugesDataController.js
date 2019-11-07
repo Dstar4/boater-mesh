@@ -38,9 +38,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var axios = require("axios");
 var asyncWrapper = require("../../../util/asyncWrapper").AsyncWrapper;
-var Gauge = require("../../../data/helpers/gaugesModel");
-var GaugeReading = require("../../../data/helpers/readingsModel");
+var GaugesService = require("../../../services/GaugesService");
+// import Gauge = require("../../../data/helpers/gaugesModel");
+// import GaugeReading = require("../../../data/helpers/readingsModel");
 var router = require("express").Router();
+var gaugesService = new GaugesService();
 // ****************************** Helpers ******************************++++
 function getGaugeData(url) {
     return __awaiter(this, void 0, void 0, function () {
@@ -66,25 +68,16 @@ function getGaugeData(url) {
 }
 // ****************************** Site Data *********************************
 router.get("/sites", asyncWrapper(function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var siteURL;
+    var data;
     return __generator(this, function (_a) {
-        siteURL = "http://waterservices.usgs.gov/nwis/iv/?format=json&stateCd=NC&siteStatus=active";
-        getGaugeData(siteURL).then(function (response) {
-            var allSitesData = [];
-            var geoData = response.data.value.timeSeries;
-            geoData.map(function (item) {
-                var siteData = {
-                    name: item.sourceInfo.siteName,
-                    siteCode: item.sourceInfo.siteCode[0].value,
-                    latitude: item.sourceInfo.geoLocation.geogLocation.latitude,
-                    longitude: item.sourceInfo.geoLocation.geogLocation.longitude,
-                };
-                Gauge.add(siteData).catch(console.log("Error inserting siteData into database\n" + JSON.stringify(siteData)));
-                allSitesData.push(siteData);
-            });
-            res.status(201).json(allSitesData);
-        });
-        return [2 /*return*/];
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, gaugesService.populateSites()];
+            case 1:
+                data = _a.sent();
+                // if (data) {
+                res.send(data);
+                return [2 /*return*/];
+        }
     });
 }); }));
 // ****************************** Reading Data ******************************+
@@ -113,11 +106,11 @@ router.get("/readings", asyncWrapper(function (req, res) { return __awaiter(void
                                 units: item.variable.unit.unitCode,
                             };
                             allSitesData.push(siteData);
-                            return [4 /*yield*/, GaugeReading.findBySiteCodeTimestamp(siteData.siteCode, siteData.timeStamp, siteData.units)];
+                            return [4 /*yield*/, gaugesService.findBySiteCodeTimestamp(siteData.siteCode, siteData.timeStamp, siteData.units)];
                         case 2:
                             compare = _a.sent();
                             if (compare.length < 1) {
-                                GaugeReading.add(siteData);
+                                gaugesService.addReading(siteData);
                             }
                             _a.label = 3;
                         case 3:
