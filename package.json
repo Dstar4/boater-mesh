@@ -6,8 +6,8 @@
   "types": "./dist/index",
   "scripts": {
     "test": "jest",
-    "dev": "tsc --watch & nodemon dist",
-    "start": "node ./dist/index.js"
+    "start": "node ./dist/index.js",
+    "dev": "tsc --watch & nodemon dist"
   },
   "jest": {
     "transform": {
