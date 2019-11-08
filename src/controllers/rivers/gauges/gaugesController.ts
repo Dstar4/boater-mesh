@@ -35,7 +35,7 @@ router.get(
 );
 
 router.get(
-  "/readings/:id",
+  "/info/:id",
   asyncWrapper(async (req: Request, res: Response) => {
     const siteCodeId: String = req.params.id;
     const gaugeData: SiteDataType[] = await gaugesService.findReadingsBySiteCode(

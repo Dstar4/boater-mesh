@@ -42,10 +42,9 @@ module.exports = class GaugesService {
 
   // Readings
   findAllReadings() {
-    return db("readings");
-    // .join("gauges", {
-    //   "readings.siteCode": "gauges.siteCode",
-    // });
+    return db("readings").join("gauges", {
+      "readings.siteCode": "gauges.siteCode",
+    });
   }
   async addReading(reading) {
     return db("readings")

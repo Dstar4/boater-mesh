@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -33,48 +34,36 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var db = require("../data/db-config");
-var axios = require("axios");
-var CommonError = require("../errors/common-error");
-var baseURL = "https://api.openweathermap.org/data/2.5";
-var appId = "f95f8b937ea0757b479511295634ebf6";
-module.exports = /** @class */ (function () {
-    function WeatherService() {
-    }
-    WeatherService.prototype.getData = function () {
-        return __awaiter(this, void 0, void 0, function () { return __generator(this, function (_a) {
-            return [2 /*return*/];
+var _this = this;
+Object.defineProperty(exports, "__esModule", { value: true });
+var request = require("supertest");
+var api = require("../../server");
+jest.setTimeout(20000);
+describe("Gauges Data Routes", function () {
+    describe("getAllSites controller", function () {
+        it("should return 200 on success", function () { return __awaiter(_this, void 0, void 0, function () {
+            var res;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, request(api).get("/api/gaugesData/sites")];
+                    case 1:
+                        res = _a.sent();
+                        expect(res.status).toEqual(201);
+                        return [2 /*return*/];
+                }
+            });
         }); });
-    };
-    WeatherService.prototype.getWeatherDataByZip = function (zip) {
-        return __awaiter(this, void 0, void 0, function () {
-            var zipUrl, data;
+        it("should return an array of JSON objects", function () { return __awaiter(_this, void 0, void 0, function () {
+            var res;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        zipUrl = baseURL + "/weather?zip=" + zip + ",us&units=Imperial&appid=" + appId;
-                        return [4 /*yield*/, axios.get(zipUrl)];
+                    case 0: return [4 /*yield*/, request(api).get("/api/gaugesData/sites")];
                     case 1:
-                        data = (_a.sent()).data;
-                        return [2 /*return*/, data];
+                        res = _a.sent();
+                        expect(res.text).toBeTruthy();
+                        return [2 /*return*/];
                 }
             });
-        });
-    };
-    WeatherService.prototype.getWeatherDataByCity = function (city) {
-        return __awaiter(this, void 0, void 0, function () {
-            var cityURL, data;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        cityURL = baseURL + "/forecast?q=" + city + "&units=Imperial&appid=" + appId;
-                        return [4 /*yield*/, axios.get(cityURL)];
-                    case 1:
-                        data = (_a.sent()).data;
-                        return [2 /*return*/, data];
-                }
-            });
-        });
-    };
-    return WeatherService;
-}());
+        }); });
+    });
+});
