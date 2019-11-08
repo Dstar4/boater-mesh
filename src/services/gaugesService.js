@@ -1,5 +1,4 @@
 /* eslint-disable class-methods-use-this */
-
 const axios = require('axios');
 const db = require('../data/db-config');
 const CommonError = require('../errors/common-error');
@@ -21,7 +20,7 @@ module.exports = class GaugesService {
   async addSite(gauge) {
     return db('gauges')
       .insert(gauge)
-      .catch(err => err);
+      .catch((err) => err);
   }
 
   async updateGauge(ids, params) {
@@ -31,46 +30,53 @@ module.exports = class GaugesService {
   }
 
   // Readings
-  findAllReadings() {
+  async findAllReadings() {
     return db('readings').join('gauges', {
       'readings.siteCode': 'gauges.siteCode',
     });
   }
 
   async addReading(reading) {
-    return db('readings')
-      .insert(reading)
-      .then(id => id);
+    return db('readings').where({
+      'readings.siteCode': reading.siteCode,
+    }).andWhere({ 'readings.timeStamp': reading.timeStamp }).then((readingList) => {
+      if (readingList.length === 0) {
+        db('readings')
+          .insert(reading)
+          .then(() => reading)
+          .catch((err) => err);
+      }
+    })
+      .catch((err) => err);
   }
 
   async findReadingsBySiteCode(siteCodeId) {
     return db('readings')
       .where({ 'readings.siteCode': siteCodeId })
-      .then(id => id);
+      .then((id) => id);
   }
 
   async findReadingsBySiteCodeTimestamp(siteCodeId, timeStamp, units) {
-    db('readings').where({
+    return db('readings').where({
       'readings.siteCode': siteCodeId,
-      timeStamp,
-      units,
+      'readings.timeStamp': timeStamp,
+      'readings.units': units,
     });
   }
   // ***************************************** Populate Data *****************************************
 
   // GetData Sites
   async populateSites() {
-    const siteURL =
-      'http://waterservices.usgs.gov/nwis/iv/?format=json&stateCd=NC&siteStatus=active';
+    const siteURL = 'http://waterservices.usgs.gov/nwis/iv/?format=json&stateCd=NC&siteStatus=active';
     const response = await axios.get(siteURL);
     if (!response) {
       throw new CommonError(
-        'There was no data returned from that source. Check your URL and try again.'
+        'There was no data returned from that source. Check your URL and try again.',
       );
     }
     const allSitesData = [];
     const geoData = response.data.value.timeSeries;
-    geoData.map(item => {
+    geoData.map((item) => {
       const siteData = {
         name: item.sourceInfo.siteName,
         siteCode: item.sourceInfo.siteCode[0].value,
@@ -85,9 +91,9 @@ module.exports = class GaugesService {
 
   // GetData Readings
   async populateReadings() {
-    const url = 'http://waterservices.usgs.gov/nwis/iv/?format=json&stateCd=NC';
+    const url = 'http://waterservices.usgs.gov/nwis/iv/?format=json&stateCd=NC&siteStatus=active';
     const params = {
-      period: 'PT6H',
+      period: 'PT1H',
       variable: ['00060', '00065'],
       siteType: 'ST',
     };
@@ -98,34 +104,21 @@ module.exports = class GaugesService {
     }
     const responseData = data.value.timeSeries;
     const allSitesData = [];
-    responseData.forEach(item => {
-      if (item.values[0].value.length > 0) {
+
+
+    responseData.forEach((item) => {
+      if (item.values[0].value && item.values[0].value.length > 0) {
         allSitesData.push(item);
       }
     });
+
     const returnData = await this.buildArr(allSitesData);
-
     return returnData;
-  }
-
-  //  Helper Function to check for duplicates before inserting
-  async dataExists(siteData) {
-    const compare = await this.findReadingsBySiteCodeTimestamp(
-      siteData.siteCode,
-      siteData.timeStamp,
-      siteData.units
-    );
-    if (compare.length < 1) {
-      return false;
-    }
-    return true;
   }
 
   // Helper function to build an object to insert into readings db from an array
   async buildArr(arr) {
-    const selectedData = [];
-
-    arr.forEach(async item => {
+    arr.forEach(async (item) => {
       for (let i = 0; i < item.values[0].value.length; i += 1) {
         const reading = {
           siteCode: item.sourceInfo.siteCode[0].value,
@@ -134,12 +127,8 @@ module.exports = class GaugesService {
           variableName: item.variable.variableName,
           units: item.variable.unit.unitCode,
         };
-        selectedData.push(reading);
-        if ((await this.dataExists(reading)) === false) {
-          await this.addReading(reading);
-        }
+        (this.addReading(reading));
       }
     });
-    return selectedData;
   }
 };

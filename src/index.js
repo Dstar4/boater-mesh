@@ -3,7 +3,7 @@ require('dotenv').config();
 const Middleware = require('./middleware/middleware');
 const ErrorHandlingMiddleware = require('./middleware/error-handling');
 
-const PORT = process.env.PORT || 5500;
+const PORT = process.env.PORT || 5000;
 
 const app = express();
 

@@ -12,7 +12,7 @@ router.get(
   asyncWrapper(async (req, res) => {
     const data = await gaugesService.populateSites();
     res.send(data);
-  })
+  }),
 );
 
 // ****************************** Reading Data ******************************+
@@ -21,7 +21,7 @@ router.get(
   asyncWrapper(async (req, res) => {
     const allSitesData = await gaugesService.populateReadings();
     res.send(allSitesData);
-  })
+  }),
 );
 
 router.post(
@@ -40,7 +40,7 @@ router.post(
     const { data } = await axios.get(request);
 
     res.status(200).json(data);
-  })
+  }),
 );
 
 module.exports = router;
