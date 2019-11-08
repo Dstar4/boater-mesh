@@ -36,4 +36,3 @@ describe("Weather Router", () => {
     });
   });
 });
-export {};
