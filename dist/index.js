@@ -1,5 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 var express = require("express");
 require("dotenv").config();
 var Middleware = require("./middleware/middleware");

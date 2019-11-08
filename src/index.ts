@@ -16,5 +16,3 @@ app.use("/api", router);
 ErrorHandlingMiddleware(app);
 
 app.listen(PORT, () => console.log(`\n** Running on port ${PORT} ** \n`));
-
-export {};

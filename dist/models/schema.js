@@ -92,7 +92,6 @@ var RootQuery = new GraphQLObjectType({
         },
         allGauges: {
             type: new GraphQLList(GaugeType),
-            // args: { siteCode: { type: GraphQLString } },
             resolve: function (parent, args) {
                 return __awaiter(this, void 0, void 0, function () {
                     var data;

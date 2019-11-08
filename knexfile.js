@@ -1,5 +1,3 @@
-// Update with your config settings.
-
 require('dotenv').config();
 
 module.exports = {
@@ -16,18 +14,24 @@ module.exports = {
       directory: './src/data/seeds',
     },
     useNullAsDefault: true,
-    // debug: true,
+    debug: true,
   },
 
-  // production: {
-  //   client: 'postgresql',
-  //   connection: {
-  //     database: 'my_db',
-  //     user: 'username',
-  //     password: 'password',
-  //   },
-  //   migrations: {
-  //     tableName: 'knex_migrations',
-  //   },
-  // },
+  production: {
+    client: 'pg',
+    connection: {
+      database: 'mesh',
+      user: process.env.USER,
+      password: process.env.PASSWORD,
+    },
+    migrations: {
+      directory: './src/data/migrations',
+      table_name: 'knex_migrations',
+    },
+    seeds: {
+      directory: './src/data/seeds',
+    },
+    useNullAsDefault: true,
+    debug: true,
+  },
 };

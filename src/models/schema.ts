@@ -58,7 +58,6 @@ const RootQuery = new GraphQLObjectType({
     },
     allGauges: {
       type: new GraphQLList(GaugeType),
-      // args: { siteCode: { type: GraphQLString } },
       async resolve(parent, args) {
         const data = await gaugesService.findAllSites();
         return data;

@@ -92,9 +92,10 @@ module.exports = /** @class */ (function () {
     };
     // Readings
     GaugesService.prototype.findAllReadings = function () {
-        return db("readings").join("gauges", {
-            "readings.siteCode": "gauges.siteCode",
-        });
+        return db("readings");
+        // .join("gauges", {
+        //   "readings.siteCode": "gauges.siteCode",
+        // });
     };
     GaugesService.prototype.addReading = function (reading) {
         return __awaiter(this, void 0, void 0, function () {
