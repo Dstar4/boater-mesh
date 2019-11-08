@@ -15,4 +15,3 @@ describe("Gauges Data Routes", () => {
     });
   });
 });
-export {};
