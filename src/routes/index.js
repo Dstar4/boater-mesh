@@ -23,6 +23,6 @@ router.use(
   graphqlHTTP({
     schema,
     graphiql: true,
-  })
+  }),
 );
 module.exports = router;

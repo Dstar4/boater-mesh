@@ -11,7 +11,7 @@ router.route('/all').get(
   asyncWrapper(async (req, res) => {
     const data = await gaugesService.findAllSites();
     res.status(200).json(data);
-  })
+  }),
 );
 
 router.get(
@@ -20,7 +20,7 @@ router.get(
     const siteCodeId = req.params.id;
     const data = await gaugesService.findBySiteCode(siteCodeId);
     res.status(200).json(data);
-  })
+  }),
 );
 
 // +++++++++++++++++++++++++++++++++++++++++ Reading Data +++++++++++++++++++++++++++++++++++++++++
@@ -29,7 +29,7 @@ router.get(
   asyncWrapper(async (req, res) => {
     const data = await gaugesService.findAllReadings();
     res.status(200).json(data);
-  })
+  }),
 );
 
 router.get(
@@ -38,10 +38,9 @@ router.get(
     const siteCodeId = req.params.id;
     const gaugeData = await gaugesService.findReadingsBySiteCode(siteCodeId);
     res.status(200).json(gaugeData);
-  })
+  }),
 );
 
 // +++++++++++++++++++++++++++++++++++++++++ Site Data ++++++++++++++++++++++++++++++++++++++++++++
 
 module.exports = router;
-

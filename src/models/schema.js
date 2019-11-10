@@ -1,7 +1,6 @@
-const graphql = require("graphql");
-// const Gauges = require("../../helpers/gaugesModel");
-// const Readings = require("../../helpers/readingsModel");
-const GaugesService = require("../services/GaugesService");
+const graphql = require('graphql');
+const GaugesService = require('../services/gaugesService');
+
 const {
   GraphQLObjectType,
   GraphQLString,
@@ -15,8 +14,8 @@ const {
 const gaugesService = new GaugesService();
 
 const GaugeType = new GraphQLObjectType({
-  name: "Gauge",
-  description: "Gauges site information.",
+  name: 'Gauge',
+  description: 'Gauges site information.',
   fields: () => ({
     id: { type: GraphQLID },
     name: { type: GraphQLString },
@@ -29,8 +28,8 @@ const GaugeType = new GraphQLObjectType({
 });
 
 const ReadingType = new GraphQLObjectType({
-  name: "Reading",
-  description: "Gauges Readings.",
+  name: 'Reading',
+  description: 'Gauges Readings.',
   fields: () => ({
     id: { type: GraphQLID },
     name: { type: GraphQLString },
@@ -46,7 +45,7 @@ const ReadingType = new GraphQLObjectType({
   }),
 });
 const RootQuery = new GraphQLObjectType({
-  name: "RootQueryType",
+  name: 'RootQueryType',
   fields: {
     gauge: {
       type: GaugeType,
@@ -72,7 +71,7 @@ const RootQuery = new GraphQLObjectType({
       async resolve(parent, args) {
         const data = await gaugesService.findReadingsBySiteCode(
           args.siteCode,
-          args.units
+          args.units,
         );
         return data;
       },

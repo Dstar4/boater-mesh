@@ -1,10 +1,10 @@
-const Joi = require("joi");
-const Gauge = require("../models/gauge");
-const ValidationError = require("../errors/validation-error");
+const Joi = require('joi');
+const Gauge = require('../models/gauge');
+const ValidationError = require('../errors/validation-error');
 
-"use strict";
+'use strict';
 
-let validators = {
+const validators = {
   Gauge: {
     scopes: {
       Gauge: Gauge.GaugeValidationSchema,
@@ -13,13 +13,13 @@ let validators = {
 };
 
 function scopeExists(validator, scope) {
-  return Object.keys(validator.scopes).find(key => key == scope) != undefined;
+  return Object.keys(validator.scopes).find((key) => key == scope) != undefined;
 }
 
 function getSchema(model, scope) {
-  let validator = validators[model];
+  const validator = validators[model];
   if (!validator) {
-    throw new Error("Validator does not exist");
+    throw new Error('Validator does not exist');
   }
 
   // First check if the given validator has multiple scopes

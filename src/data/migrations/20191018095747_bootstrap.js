@@ -1,7 +1,8 @@
+/* eslint-disable func-names */
 // import * as Knex from "knex";
-exports.up = function(knex) {
+exports.up = function (knex) {
   return knex.schema
-    .createTable('gauges', gauges => {
+    .createTable('gauges', (gauges) => {
       gauges.increments();
       gauges
         .string('name', 255)
@@ -17,7 +18,7 @@ exports.up = function(knex) {
       gauges.text('description', 'longtext');
     })
 
-    .createTable('readings', readings => {
+    .createTable('readings', (readings) => {
       readings.increments();
       readings
         .string('siteCode')
@@ -31,6 +32,6 @@ exports.up = function(knex) {
     });
 };
 
-exports.down = function(knex) {
+exports.down = function (knex) {
   return knex.schema.dropTableIfExists('gauges').dropTableIfExists('readings');
 };
