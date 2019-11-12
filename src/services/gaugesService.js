@@ -7,6 +7,9 @@ module.exports = class GaugesService {
   // Sites
   async findAllSites() {
     return db('gauges');
+    // .join('readings', {
+    // 'readings.siteCode': 'gauges.siteCode',
+    // });
   }
 
   async findSiteById(id) {
@@ -51,7 +54,9 @@ module.exports = class GaugesService {
   }
 
   async findReadingsBySiteCode(siteCodeId) {
-    return db('readings')
+    return db('readings').join('gauges', {
+      'readings.siteCode': 'gauges.siteCode',
+    })
       .where({ 'readings.siteCode': siteCodeId })
       .then((id) => id);
   }
