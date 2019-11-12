@@ -23,7 +23,9 @@ import { Link, Route,useRouteMatch } from 'react-router-dom'
 import Reading from './Reading'
 import GaugeDetails from './GaugeDetails'
 import axios from 'axios'
+import dotenv from 'dotenv'
 
+const URL = process.env.BACKEND_URL || 'http://localhost:5000'
 function Copyright () {
   return (
     <Typography variant='body2' color='textSecondary' align='center'>
@@ -136,7 +138,7 @@ export default function Gauge (props) {
       // console.log("useEffect")
       // console.log(match.url)
       axios
-      .get(`http://localhost:5000/api/gauges/info${match.url}`)
+      .get(`${URL}/api/gauges/info${match.url}`)
       .then(res => {
         // console.log("match data",res)
         if (res.data.length>1){

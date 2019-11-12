@@ -23,7 +23,9 @@ import axios from 'axios'
 import Gauge from './Gauge'
 import { Link, Route } from 'react-router-dom'
 // import Link from '@material-ui/core/Link'
+import dotenv from 'dotenv'
 
+const URL = process.env.BACKEND_URL || 'http://localhost:5000'
 export default function (props) {
   const classes = useStyles()
   const [order, setOrder] = React.useState('asc')
@@ -37,7 +39,7 @@ export default function (props) {
 
   useEffect(() => {
     if (dataFetched === false) {
-      axios.get('http://localhost:5000/api/gauges/all').then(res => {
+      axios.get(`${URL}/api/gauges/all`).then(res => {
         rowBuilder(res.data)
         setData(res.data)
         setDataFetched(true)
