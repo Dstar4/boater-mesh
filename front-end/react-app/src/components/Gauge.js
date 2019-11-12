@@ -13,15 +13,17 @@ import Badge from '@material-ui/core/Badge'
 import Container from '@material-ui/core/Container'
 import Grid from '@material-ui/core/Grid'
 import Paper from '@material-ui/core/Paper'
-import Link from '@material-ui/core/Link'
+// import Link from '@material-ui/core/Link'
 import MenuIcon from '@material-ui/icons/Menu'
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 import NotificationsIcon from '@material-ui/icons/Notifications'
 import { mainListItems } from './Listitems'
 import Chart from './Chart'
+import { Link, Route,useRouteMatch } from 'react-router-dom'
 import Reading from './Reading'
 import GaugeDetails from './GaugeDetails'
 import axios from 'axios'
+
 function Copyright () {
   return (
     <Typography variant='body2' color='textSecondary' align='center'>
@@ -121,6 +123,8 @@ export default function Gauge (props) {
   const [open, setOpen] = React.useState(true)
   const [data, setData] = React.useState(null)
   const [hasRun, setHasRun] = React.useState(false)
+  let match = useRouteMatch()
+
   const handleDrawerOpen = () => {
     setOpen(true)
   }
@@ -129,21 +133,28 @@ export default function Gauge (props) {
   }
   useEffect(
     () => {
+      // console.log("useEffect")
+      // console.log(match.url)
       axios
-        .get('http://localhost:5000/api/gauges/info/02069000')
-        .then(res => {
+      .get(`http://localhost:5000/api/gauges/info${match.url}`)
+      .then(res => {
+        // console.log("match data",res)
+        if (res.data.length>1){
+
           setData(res.data)
-          // console.log('data', data)
           setHasRun(true)
-        })
+        }
+      })
     },
     [hasRun]
   )
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight)
   if (data) {
+    console.log("data",data)
     return (
       <div className={classes.root}>
-        <CssBaseline />
+
+        {/* <CssBaseline />
         <AppBar
           position='absolute'
           className={clsx(classes.appBar, open && classes.appBarShift)}
@@ -168,7 +179,7 @@ export default function Gauge (props) {
               noWrap
               className={classes.title}
             >
-              Gauge
+              {data[0].name}
             </Typography>
             <IconButton color='inherit'>
               <Badge badgeContent={4} color='secondary'>
@@ -191,9 +202,7 @@ export default function Gauge (props) {
           </div>
           <Divider />
           <List>{mainListItems}</List>
-          {/* <Divider /> */}
-          {/* <List>{secondaryListItems}</List> */}
-        </Drawer>
+        </Drawer> */}
         <main className={classes.content}>
           <div className={classes.appBarSpacer} />
           <Container maxWidth='lg' className={classes.container}>
@@ -204,13 +213,11 @@ export default function Gauge (props) {
                   <Chart data={data} />
                 </Paper>
               </Grid>
-              {/* Recent Deposits */}
               <Grid item xs={12} md={4} lg={3}>
                 <Paper className={fixedHeightPaper}>
                   <Reading data={data} />
                 </Paper>
               </Grid>
-              {/* Recent GaugeDetails */}
               <Grid item xs={12}>
                 <Paper className={classes.paper}>
                   <GaugeDetails data={data} />

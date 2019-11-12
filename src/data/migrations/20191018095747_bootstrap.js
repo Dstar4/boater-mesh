@@ -16,6 +16,7 @@ exports.up = function (knex) {
       gauges.decimal('longitude');
       gauges.string('runName', 255).unique();
       gauges.text('description', 'longtext');
+      gauges.boolean('hasReading');
     })
 
     .createTable('readings', (readings) => {

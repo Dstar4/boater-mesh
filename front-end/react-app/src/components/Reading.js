@@ -1,25 +1,31 @@
-import Title from './Title'
-import React, { useEffect, useContext, useState } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import React from 'react'
 import Typography from '@material-ui/core/Typography'
-import MenuIcon from '@material-ui/icons/Menu'
-
-const useStyles = makeStyles({
-  depositContext: {
-    flex: 1
-  }
-})
 
 export default function Reading (props) {
-  return (
-    <React.Fragment>
-      <Title>Recent Readings</Title>
-      <Typography component='p' variant='h4'>
-        <p>
-          {props.data[0].gaugeReading} {props.data[0].units}
-        </p>
-        <p>{props.data[0].timeStamp}</p>
-      </Typography>
-    </React.Fragment>
-  )
+  if (props.data[0] && props.data[0].name) {
+    return (
+      <React.Fragment>
+        <Typography component='p' variant='h4'>
+          <p>
+            Level: {props.data[0].gaugeReading} {props.data[0].units}
+          </p>
+          <p>
+            Time:{' '}
+            {props.data[0].timeStamp
+              .split('')
+              .slice(11, 16)
+              .join('')}
+          </p>
+          <p>
+            {props.data[0].timeStamp
+              .split('')
+              .slice(0, 10)
+              .join('')}
+          </p>
+        </Typography>
+      </React.Fragment>
+    )
+  } else {
+    return 'Loading'
+  }
 }

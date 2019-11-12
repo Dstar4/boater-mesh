@@ -6,7 +6,7 @@ const CommonError = require('../errors/common-error');
 module.exports = class GaugesService {
   // Sites
   async findAllSites() {
-    return db('gauges');
+    return db('gauges').where({ hasReading: true });
     // .join('readings', {
     // 'readings.siteCode': 'gauges.siteCode',
     // });
@@ -26,10 +26,11 @@ module.exports = class GaugesService {
       .catch((err) => err);
   }
 
-  async updateGauge(ids, params) {
+  async updateGauge(id) {
+    console.log(id);
     return db('gauges')
-      .where({ siteCode: ids })
-      .update(params);
+      .where({ siteCode: id })
+      .update({ hasReading: true });
   }
 
   // Readings
@@ -39,21 +40,33 @@ module.exports = class GaugesService {
     });
   }
 
+  async addHasReading(siteCode) {
+    return db('gauges')
+      .where({ siteCode })
+      .insert({ hasReading: true });
+  }
+
   async addReading(reading) {
-    return db('readings')
-      .where({
-        'readings.siteCode': reading.siteCode,
-      })
-      .andWhere({ 'readings.timeStamp': reading.timeStamp })
-      .then((readingList) => {
-        if (readingList.length === 0) {
-          console.log('inserting', reading.siteCode);
-          db('readings')
-            .insert(reading)
-            .then(() => reading)
-            .catch((err) => err);
-        }
-      })
+    return db('gauges')
+      .where({ siteCode: reading.siteCode })
+      .insert({ hasReading: true })
+      .then(
+        db('readings')
+          .where({
+            'readings.siteCode': reading.siteCode,
+          })
+          .andWhere({ 'readings.timeStamp': reading.timeStamp })
+          .then((readingList) => {
+            if (readingList.length === 0) {
+              // console.log('inserting', reading.siteCode);
+              db('readings')
+                .insert(reading)
+                .then(() => reading)
+                .catch((err) => err);
+            }
+          })
+          .then(this.updateGauge(reading.siteCode)),
+      )
       .catch((err) => err);
   }
 
@@ -77,7 +90,7 @@ module.exports = class GaugesService {
 
   // GetData Sites
   async populateSites() {
-    const siteURL = 'http://waterservices.usgs.gov/nwis/iv/?format=json&stateCd=TN&siteStatus=active';
+    const siteURL = 'http://waterservices.usgs.gov/nwis/iv/?format=json&stateCd=NC&siteStatus=active';
     const response = await axios.get(siteURL);
     if (!response) {
       throw new CommonError(
@@ -101,9 +114,9 @@ module.exports = class GaugesService {
 
   // GetData Readings
   async populateReadings() {
-    const url = 'http://waterservices.usgs.gov/nwis/iv/?format=json&stateCd=TN&siteStatus=active';
+    const url = 'http://waterservices.usgs.gov/nwis/iv/?format=json&stateCd=NC&siteStatus=active';
     const params = {
-      period: 'P6D',
+      period: 'PT6H',
       variable: ['00060', '00065'],
       siteType: 'ST',
     };
@@ -122,7 +135,6 @@ module.exports = class GaugesService {
         allSitesData.push(item);
       }
     });
-
     const returnData = await this.buildArr(allSitesData);
     return returnData;
   }

@@ -5,7 +5,7 @@ import Title from './Title'
 
 export default function (props) {
   const classes = useStyles()
-
+  if (props.data[0]&&props.data[0].name){
   return (
     <Grid item xs={12}>
       <Title>Run Info</Title>
@@ -22,6 +22,10 @@ export default function (props) {
       </div>
     </Grid>
   )
+  }
+  else{
+    return "Loading"
+  }
 }
 
 const useStyles = makeStyles(theme => ({

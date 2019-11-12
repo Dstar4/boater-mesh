@@ -20,7 +20,9 @@ import Switch from '@material-ui/core/Switch'
 import DeleteIcon from '@material-ui/icons/Delete'
 import FilterListIcon from '@material-ui/icons/FilterList'
 import axios from 'axios'
-import SelectedGauge from './Dashboard'
+import Gauge from './Gauge'
+import { Link, Route } from 'react-router-dom'
+// import Link from '@material-ui/core/Link'
 
 export default function (props) {
   const classes = useStyles()
@@ -30,25 +32,30 @@ export default function (props) {
   const [page, setPage] = React.useState(0)
   const [dense, setDense] = React.useState(false)
   const [rowsPerPage, setRowsPerPage] = React.useState(50)
-  const [data, setData] = React.useState([])
-  // const {name,siteCode,reading,timeStamp} = useContext(SelectedGauge)
+  const [data, setData] = React.useState(null)
+  const [dataFetched, setDataFetched] = React.useState(false)
 
   useEffect(() => {
-    rowBuilder(props, data)
+    if (dataFetched === false) {
+      axios.get('http://localhost:5000/api/gauges/all').then(res => {
+        rowBuilder(res.data)
+        setData(res.data)
+        setDataFetched(true)
+      })
+    }
   }, [])
   function handleRequestSort (event, property) {
     const isDesc = orderBy === property && order === 'desc'
     setOrder(isDesc ? 'asc' : 'desc')
     setOrderBy(property)
   }
-  function handleSelectAllClick(event) {
-    setData(props.cardList)
+  function handleSelectAllClick (event) {
     if (event.target.checked) {
-      const newSelecteds = rows.map(n => n.siteCode);
-      setSelected(newSelecteds);
-      return;
+      const newSelecteds = rows.map(n => n.siteCode)
+      setSelected(newSelecteds)
+      return
     }
-    setSelected([]);
+    setSelected([])
   }
 
   function handleClick (event, id) {
@@ -88,102 +95,107 @@ export default function (props) {
 
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage)
-
-  return (
-    <div className={classes.root}>
-      <Paper className={classes.paper}>
-        <EnhancedTableToolbar numSelected={selected.length} />
-        <div className={classes.tableWrapper}>
-          <Table
-            className={classes.table}
-            aria-labelledby='tableTitle'
-            size={dense ? 'small' : 'medium'}
-          >
-            <EnhancedTableHead
-              classes={classes}
-              numSelected={selected.length}
-              order={order}
-              orderBy={orderBy}
-              onSelectAllClick={handleSelectAllClick}
-              onRequestSort={handleRequestSort}
-              rowCount={rows.length}
-            />
-            <TableBody>
-              {stableSort(rows, getSorting(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
-                  const isItemSelected = isSelected(row.siteCode)
-                  const labelId = `enhanced-table-checkbox-${index}`
-                  return (
-                    <TableRow
-                      hover
-                      onClick={event => handleClick(event, row.siteCode)}
-                      role='checkbox'
-                      aria-checked={isItemSelected}
-                      tabIndex={-1}
-                      key={row.siteCode}
-                      selected={isItemSelected}
-                    >
-                      <TableCell padding='checkbox'>
-                        <Checkbox
-                          checked={isItemSelected}
-                          inputProps={{ 'aria-labelledby': labelId }}
-                        />
-                      </TableCell>
-                      <TableCell
-                        component='th'
-                        id={labelId}
-                        scope='row'
-                        padding='none'
-                      >
-                        {row.name}
-                      </TableCell>
-                      <TableCell align='center'>{row.description}</TableCell>
-                      {/* <TableCell align='center'>{row.latitude}</TableCell> */}
-                      {/* <TableCell align='center'>{row.longitude}</TableCell> */}
-                      {/* <TableCell align='center'>{row.units}</TableCell> */}
+  if (selected.length >= 1) {
+    return <Gauge url={selected} />
+  } else if (data && data.length > 0) {
+    return (
+      <div className={classes.root}>
+        <Typography variant='h4' component='p' color='primary'>
+          <Paper className={classes.paper}>
+            <EnhancedTableToolbar numSelected={selected.length} />
+            <div className={classes.tableWrapper}>
+              <Table
+                className={classes.table}
+                aria-labelledby='tableTitle'
+                size={dense ? 'small' : 'medium'}
+              >
+                <EnhancedTableHead
+                  classes={classes}
+                  numSelected={selected.length}
+                  order={order}
+                  orderBy={orderBy}
+                  onSelectAllClick={handleSelectAllClick}
+                  onRequestSort={handleRequestSort}
+                  rowCount={rows.length}
+                />
+                <TableBody>
+                  {stableSort(rows, getSorting(order, orderBy))
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((row, index) => {
+                      const isItemSelected = isSelected(row.siteCode)
+                      const labelId = `enhanced-table-checkbox-${index}`
+                      return (
+                        <TableRow
+                          hover
+                          onClick={event => handleClick(event, row.siteCode)}
+                          role='checkbox'
+                          aria-checked={isItemSelected}
+                          tabIndex={-1}
+                          key={row.siteCode}
+                          selected={isItemSelected}
+                        >
+                          <TableCell padding='checkbox'>
+                            <Checkbox
+                              checked={isItemSelected}
+                              inputProps={{ 'aria-labelledby': labelId }}
+                            />
+                          </TableCell>
+                          <Link to={`/${row.siteCode}`} style={{color:'black', textDecoration:'none'}}>
+                          <TableCell
+                            component='th'
+                            id={labelId}
+                            scope='row'
+                            padding='none'
+                          >
+                             {row.name}
+                          </TableCell>
+                            </Link>
+                          <TableCell align='center'>
+                            {row.description}
+                          </TableCell>
+                        </TableRow>
+                      )
+                    })}
+                  {emptyRows > 0 && (
+                    <TableRow style={{ height: 49 * emptyRows }}>
+                      <TableCell colSpan={6} />
                     </TableRow>
-                  )
-                })}
-              {emptyRows > 0 && (
-                <TableRow style={{ height: 49 * emptyRows }}>
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </div>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25, 50, 100]}
-          component='div'
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          backIconButtonProps={{
-            'aria-label': 'previous page'
-          }}
-          nextIconButtonProps={{
-            'aria-label': 'next page'
-          }}
-          onChangePage={handleChangePage}
-          onChangeRowsPerPage={handleChangeRowsPerPage}
-        />
-      </Paper>
-      <FormControlLabel
-        control={<Switch checked={dense} onChange={handleChangeDense} />}
-        label='Dense padding'
-      />
-    </div>
-  )
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 25, 50, 100]}
+              component='div'
+              count={rows.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              backIconButtonProps={{
+                'aria-label': 'previous page'
+              }}
+              nextIconButtonProps={{
+                'aria-label': 'next page'
+              }}
+              onChangePage={handleChangePage}
+              onChangeRowsPerPage={handleChangeRowsPerPage}
+            />
+          </Paper>
+          <FormControlLabel
+            control={<Switch checked={dense} onChange={handleChangeDense} />}
+            label='Dense padding'
+          />
+        </Typography>
+      </div>
+    )
+  } else {
+    return 'loading'
+  }
 }
-function rowBuilder (props) {
-  axios.get('http://localhost:5000/api/gauges/all').then(res => {
-    // console.log('rowBuilder RES', res)
-    for (let i in res.data) {
-      // console.log(res.data[i])
-      rows.push(res.data[i])
-    }
-  })
+function rowBuilder (data) {
+  // console.log(data)
+  for (let i in data) {
+    rows.push(data[i])
+  }
 }
 const rows = []
 
@@ -214,12 +226,13 @@ function getSorting (order, orderBy) {
 }
 
 const headRows = [
-
   { id: 'name', numeric: false, disablePadding: false, label: 'Name' },
-  { id: 'description', numeric: false, disablePadding: false, label: 'Description' }
-  // { id: 'siteCode', numeric: false, disablePadding: false, label: 'Site Code' },
-  // { id: 'latitude', numeric: true, disablePadding: false, label: 'Latitude' },
-  // { id: 'longitude', numeric: true, disablePadding: false, label: 'Longitude' }
+  {
+    id: 'description',
+    numeric: false,
+    disablePadding: false,
+    label: 'Description'
+  }
 ]
 
 function EnhancedTableHead (props) {
