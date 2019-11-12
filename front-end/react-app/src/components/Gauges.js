@@ -41,15 +41,15 @@ export default function (props) {
     setOrder(isDesc ? 'asc' : 'desc')
     setOrderBy(property)
   }
-  // function handleSelectAllClick(event) {
-  //   setData(props.cardList)
-  //   if (event.target.checked) {
-  //     const newSelecteds = rows.map(n => n.id);
-  //     setSelected(newSelecteds);
-  //     return;
-  //   }
-  //   setSelected([]);
-  // }
+  function handleSelectAllClick(event) {
+    setData(props.cardList)
+    if (event.target.checked) {
+      const newSelecteds = rows.map(n => n.siteCode);
+      setSelected(newSelecteds);
+      return;
+    }
+    setSelected([]);
+  }
 
   function handleClick (event, id) {
     const selectedIndex = selected.indexOf(id)
@@ -104,7 +104,7 @@ export default function (props) {
               numSelected={selected.length}
               order={order}
               orderBy={orderBy}
-              // onSelectAllClick={handleSelectAllClick}
+              onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
               rowCount={rows.length}
             />
@@ -178,7 +178,7 @@ export default function (props) {
 }
 function rowBuilder (props) {
   axios.get('http://localhost:5000/api/gauges/all').then(res => {
-    console.log('rowBuilder RES', res)
+    // console.log('rowBuilder RES', res)
     for (let i in res.data) {
       // console.log(res.data[i])
       rows.push(res.data[i])

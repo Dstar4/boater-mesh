@@ -40,24 +40,29 @@ module.exports = class GaugesService {
   }
 
   async addReading(reading) {
-    return db('readings').where({
-      'readings.siteCode': reading.siteCode,
-    }).andWhere({ 'readings.timeStamp': reading.timeStamp }).then((readingList) => {
-      if (readingList.length === 0) {
-        db('readings')
-          .insert(reading)
-          .then(() => reading)
-          .catch((err) => err);
-      }
-    })
+    return db('readings')
+      .where({
+        'readings.siteCode': reading.siteCode,
+      })
+      .andWhere({ 'readings.timeStamp': reading.timeStamp })
+      .then((readingList) => {
+        if (readingList.length === 0) {
+          console.log('inserting', reading.siteCode);
+          db('readings')
+            .insert(reading)
+            .then(() => reading)
+            .catch((err) => err);
+        }
+      })
       .catch((err) => err);
   }
 
   async findReadingsBySiteCode(siteCodeId) {
-    return db('readings').join('gauges', {
-      'readings.siteCode': 'gauges.siteCode',
-    })
-      .where({ 'readings.siteCode': siteCodeId })
+    return db('readings')
+      .join('gauges', {
+        'readings.siteCode': 'gauges.siteCode',
+      })
+      .where({ 'readings.siteCode': siteCodeId, 'readings.units': 'ft3/s' })
       .then((id) => id);
   }
 
@@ -72,7 +77,7 @@ module.exports = class GaugesService {
 
   // GetData Sites
   async populateSites() {
-    const siteURL = 'http://waterservices.usgs.gov/nwis/iv/?format=json&stateCd=NC&siteStatus=active';
+    const siteURL = 'http://waterservices.usgs.gov/nwis/iv/?format=json&stateCd=TN&siteStatus=active';
     const response = await axios.get(siteURL);
     if (!response) {
       throw new CommonError(
@@ -96,20 +101,21 @@ module.exports = class GaugesService {
 
   // GetData Readings
   async populateReadings() {
-    const url = 'http://waterservices.usgs.gov/nwis/iv/?format=json&stateCd=NC&siteStatus=active';
+    const url = 'http://waterservices.usgs.gov/nwis/iv/?format=json&stateCd=TN&siteStatus=active';
     const params = {
-      period: 'PT1H',
+      period: 'P6D',
       variable: ['00060', '00065'],
       siteType: 'ST',
     };
-    const request = `${url}&period=${params.period}&variable=${params.variable}&siteType=${params.siteType}`;
+    const request = `${url}&period=${params.period}&variable=${
+      params.variable
+    }&siteType=${params.siteType}`;
     const { data } = await axios.get(request);
     if (!data) {
       throw new CommonError('Could not retrieve those readings.');
     }
     const responseData = data.value.timeSeries;
     const allSitesData = [];
-
 
     responseData.forEach((item) => {
       if (item.values[0].value && item.values[0].value.length > 0) {
@@ -132,7 +138,7 @@ module.exports = class GaugesService {
           variableName: item.variable.variableName,
           units: item.variable.unit.unitCode,
         };
-        (this.addReading(reading));
+        this.addReading(reading);
       }
     });
   }
