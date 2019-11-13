@@ -25,7 +25,7 @@ import { Link, Route } from 'react-router-dom'
 // import Link from '@material-ui/core/Link'
 import dotenv from 'dotenv'
 
-const URL = process.env.BACKEND_URL || 'http://localhost:5000'
+const URL = process.env.BACKEND_URL
 export default function (props) {
   const classes = useStyles()
   const [order, setOrder] = React.useState('asc')
