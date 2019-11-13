@@ -23,7 +23,7 @@ import { Link, Route,useRouteMatch } from 'react-router-dom'
 import Reading from './Reading'
 import GaugeDetails from './GaugeDetails'
 import axios from 'axios'
-import dotenv from 'dotenv'
+require('dotenv').config()
 
 const URL = process.env.BACKEND_URL || 'http://localhost:5000'
 function Copyright () {
