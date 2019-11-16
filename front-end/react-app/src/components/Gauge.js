@@ -25,13 +25,13 @@ import GaugeDetails from './GaugeDetails'
 import axios from 'axios'
 require('dotenv').config()
 
-const URL = process.env.BACKEND_URL
+const URL = process.env.BACKEND_URL || 'http://localhost:5000'
 function Copyright () {
   return (
     <Typography variant='body2' color='textSecondary' align='center'>
       {'Copyright © '}
       <Link color='inherit' href='https://material-ui.com/'>
-        Your Website
+        Boater-Mesh
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}

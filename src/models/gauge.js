@@ -1,10 +1,10 @@
-// const Joi = require("joi");
+const Joi = require('joi');
 
-// "use strict";
+'use strict';
 
-// module.exports.GaugeValidationSchema = Joi.object().keys({
-//   period: Joi.string().required(),
-//   siteCodes: Joi.array().required(),
-//   variable: Joi.array().required(),
-//   siteType: Joi.string().required(),
-// });
+module.exports.GaugeValidationSchema = Joi.object().keys({
+  period: Joi.string().required(),
+  siteCodes: Joi.array().required(),
+  variable: Joi.array().required(),
+  siteType: Joi.string().required(),
+});
