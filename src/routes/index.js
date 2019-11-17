@@ -2,8 +2,8 @@ const router = require('express').Router();
 const swaggerUi = require('swagger-ui-express');
 const graphqlHTTP = require('express-graphql');
 const weatherDataRouter = require('../controllers/weather/weatherDataController');
-const gaugesDataController = require('../controllers/rivers/gauges/gaugesDataController');
-const gaugesController = require('../controllers/rivers/gauges/gaugesController');
+const gaugesDataController = require('../controllers/gauges/gaugesDataController');
+const gaugesController = require('../controllers/gauges/gaugesController');
 const swaggerDocument = require('../../swagger.json');
 const schema = require('../models/schema');
 

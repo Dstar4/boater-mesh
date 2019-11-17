@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const axios = require('axios');
-const asyncWrapper = require('../../../util/asyncWrapper').AsyncWrapper;
-const GaugesService = require('../../../services/gaugesService');
+const asyncWrapper = require('../../util/asyncWrapper').AsyncWrapper;
+const GaugesService = require('../../services/gaugesService');
 
 const gaugesService = new GaugesService();
 

@@ -1,8 +1,8 @@
 const router = require('express').Router();
 
-const GaugesService = require('../../../services/gaugesService');
-const CommonError = require('../../../errors/common-error');
-const asyncWrapper = require('../../../util/asyncWrapper').AsyncWrapper;
+const GaugesService = require('../../services/gaugesService');
+const CommonError = require('../../errors/common-error');
+const asyncWrapper = require('../../util/asyncWrapper').AsyncWrapper;
 
 const gaugesService = new GaugesService();
 // +++++++++++++++++++++++++++++++++++++++++ All Data +++++++++++++++++++++++++++++++++++++++++++++
@@ -32,7 +32,7 @@ router.get(
   '/info/all',
   asyncWrapper(async (req, res) => {
     const data = await gaugesService.findAllReadings();
-    console.log('data', data);
+    res.status(200).json(data);
   }),
 );
 

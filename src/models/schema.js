@@ -44,6 +44,7 @@ const ReadingType = new GraphQLObjectType({
     description: { type: GraphQLString },
   }),
 });
+
 const RootQuery = new GraphQLObjectType({
   name: 'RootQueryType',
   fields: {
@@ -62,6 +63,13 @@ const RootQuery = new GraphQLObjectType({
         return data;
       },
     },
+    allReadings: {
+      type: new GraphQLList(ReadingType),
+      async resolve(parent, args) {
+        const data = await gaugesService.findAllReadings();
+        return data;
+      },
+    },
     reading: {
       type: new GraphQLList(ReadingType),
       args: {
@@ -75,6 +83,7 @@ const RootQuery = new GraphQLObjectType({
         );
         return data;
       },
+
     },
   },
 });

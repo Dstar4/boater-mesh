@@ -112,7 +112,7 @@ module.exports = class GaugesService {
   async populateReadings() {
     const url = 'http://waterservices.usgs.gov/nwis/iv/?format=json&stateCd=NC&siteStatus=active';
     const params = {
-      period: 'PT6H',
+      period: 'P6D',
       variable: ['00060', '00065'],
       siteType: 'ST',
     };
