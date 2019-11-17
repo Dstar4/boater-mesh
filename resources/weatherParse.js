@@ -6,7 +6,7 @@ const parser = new xml2js.Parser();
 
 const xmlfile = './weatherRSS.xml';
 
-fs.readFile(xmlfile, 'utf-8', function(error, text) {
+fs.readFile(xmlfile, 'utf-8', (error, text) => {
   if (error) {
     throw error;
   } else {
@@ -16,7 +16,7 @@ fs.readFile(xmlfile, 'utf-8', function(error, text) {
         if (err) {
           return console.log(err);
         }
-        console.log('Success');
+        // console.log('Success');
       });
     });
   }

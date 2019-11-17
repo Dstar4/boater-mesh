@@ -7,9 +7,6 @@ module.exports = class GaugesService {
   // Sites
   async findAllSites() {
     return db('gauges').where({ hasReading: true });
-    // .join('readings', {
-    // 'readings.siteCode': 'gauges.siteCode',
-    // });
   }
 
   async findSiteById(id) {
@@ -27,7 +24,6 @@ module.exports = class GaugesService {
   }
 
   async updateGauge(id) {
-    console.log(id);
     return db('gauges')
       .where({ siteCode: id })
       .update({ hasReading: true });
