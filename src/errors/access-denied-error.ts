@@ -1,6 +1,5 @@
 module.exports = class AccessDeniedError {
-  message: string;
-  constructor(message: string) {
+  constructor(public message: string) {
     this.message = message;
   }
 };

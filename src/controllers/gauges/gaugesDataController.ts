@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const axios = require("axios");
+import { Request, Response } from "express";
 const asyncWrapper = require("../../util/asyncWrapper").AsyncWrapper;
 const GaugesService = require("../../services/gaugesService");
 
@@ -7,41 +7,26 @@ const gaugesService = new GaugesService();
 
 // ****************************** Site Data *********************************
 
-router.get(
-  "/sites",
-  asyncWrapper(async (req, res) => {
+// URL: api/gaugesData/sites
+router.route("/sites").get(
+  asyncWrapper(async (req: Request, res: Response) => {
     const data = await gaugesService.populateSites();
     res.send(data);
   })
 );
 
 // ****************************** Reading Data ******************************+
-router.get(
-  "/readings",
-  asyncWrapper(async (req, res) => {
-    const allSitesData = await gaugesService.populateReadings();
+
+//TODO: FIX THIS ENDPOINT TO ACTUALLY RETURN THE CORRECT READINGS THAT WERE ADDED UPON FINISHING
+// api/gaugesData/readings
+router.route("/readings").get(
+  asyncWrapper(async (req: Request, res: Response) => {
+    const allSitesData: Promise<any> = await gaugesService.populateReadings();
     res.send(allSitesData);
   })
 );
 
-router.post(
-  "/sites",
-  asyncWrapper(async (req, res) => {
-    const url = "http://waterservices.usgs.gov/nwis/iv/?format=json";
-    const {
-      period = "PT6H",
-      siteCodes,
-      variable = ["00060", "00065"],
-      siteType = "ST",
-    } = req.body;
-
-    const request = `${url}&period=P${period}&site=${siteCodes}&variable=${variable}&siteType=${siteType}`;
-    console.log(request);
-    const { data } = await axios.get(request);
-
-    res.status(200).json(data);
-  })
-);
+router;
 
 module.exports = router;
 export {};

@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-const GaugesService = require('../src/services/gaugesService');
+const GaugesService = require('../dist/services/gaugesService');
 
 const gaugesService = new GaugesService();
 

@@ -1,7 +1,5 @@
 module.exports = class ValidationError {
-  message: string;
-  model: any;
-  constructor(message, model) {
+  constructor(public message: string, public model) {
     this.message = message;
     this.model = model;
   }

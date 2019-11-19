@@ -37,37 +37,39 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
 var router = require("express").Router();
-var asyncWrapper = require("../../util/asyncWrapper").AsyncWrapper;
+var db = require("../../data/db-config");
 var GaugesService = require("../../services/gaugesService");
+var CommonError = require("../../errors/common-error");
+var asyncWrapper = require("../../util/asyncWrapper").AsyncWrapper;
+var _a = require("../../Types"), GaugeType = _a.GaugeType, ReadingType = _a.ReadingType, GaugeReadingType = _a.GaugeReadingType;
 var gaugesService = new GaugesService();
-// ****************************** Site Data *********************************
-// URL: api/gaugesData/sites
-router.route("/sites").get(asyncWrapper(function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+var Locations = db("Locations");
+router
+    .route("/")
+    .get(asyncWrapper(function (req, res) { return __awaiter(_this, void 0, void 0, function () {
     var data;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, gaugesService.populateSites()];
+            case 0: return [4 /*yield*/, gaugesService.findAllLocations()];
             case 1:
                 data = _a.sent();
-                res.send(data);
+                res.status(200).json(data);
                 return [2 /*return*/];
         }
     });
-}); }));
-// ****************************** Reading Data ******************************+
-//TODO: FIX THIS ENDPOINT TO ACTUALLY RETURN THE CORRECT READINGS THAT WERE ADDED UPON FINISHING
-// api/gaugesData/readings
-router.route("/readings").get(asyncWrapper(function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-    var allSitesData;
+}); }))
+    .post(asyncWrapper(function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+    var location, data;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, gaugesService.populateReadings()];
+            case 0:
+                location = req.body;
+                return [4 /*yield*/, gaugesService.addLocation(location)];
             case 1:
-                allSitesData = _a.sent();
-                res.send(allSitesData);
+                data = _a.sent();
+                res.status(200).json(data);
                 return [2 /*return*/];
         }
     });
 }); }));
-router;
 module.exports = router;

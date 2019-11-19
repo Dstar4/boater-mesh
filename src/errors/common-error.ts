@@ -1,6 +1,5 @@
 module.exports = class CommonError {
-  message: string;
-  constructor(message: string) {
+  constructor(public message: string) {
     this.message = message;
   }
 };

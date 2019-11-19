@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 const request = require('supertest');
 
-const api = require('../src/server');
+const api = require('../dist/server');
 
 jest.setTimeout(20000);
 

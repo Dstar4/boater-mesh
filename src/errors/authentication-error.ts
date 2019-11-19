@@ -1,6 +1,5 @@
 module.exports = class AuthenticationError {
-  message: string;
-  constructor(message: string) {
+  constructor(public message: string) {
     this.message = message;
   }
 };

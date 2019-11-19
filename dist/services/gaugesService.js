@@ -36,49 +36,110 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 /* eslint-disable class-methods-use-this */
-var axios = require("axios");
+var axios_1 = require("axios");
 var db = require("../data/db-config");
 var CommonError = require("../errors/common-error");
+var _a = require("../Types"), ReadingType = _a.ReadingType, GaugeType = _a.GaugeType, ReadingGaugeType = _a.ReadingGaugeType;
 module.exports = /** @class */ (function () {
     function GaugesService() {
     }
+    // Locations
+    GaugesService.prototype.findAllLocations = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, db("locations")];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
+            });
+        });
+    };
+    GaugesService.prototype.addLocation = function (location) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, db("locations")
+                            .insert(location)
+                            .catch(function (err) {
+                            throw new CommonError(err);
+                        })];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
+            });
+        });
+    };
     // Sites
     GaugesService.prototype.findAllSites = function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                return [2 /*return*/, db("gauges").where({ hasReading: true })];
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, db("gauges").where({ hasReading: true })];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
             });
         });
     };
     GaugesService.prototype.findSiteById = function (id) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                return [2 /*return*/, db("gauges").where("id", id)];
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, db("gauges").where("id", id)];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
             });
         });
     };
     GaugesService.prototype.findBySiteCode = function (siteCode) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                return [2 /*return*/, db("gauges").where("siteCode", siteCode)];
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, db("gauges").where("siteCode", siteCode)];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
             });
         });
     };
     GaugesService.prototype.addSite = function (gauge) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                return [2 /*return*/, db("gauges")
-                        .insert(gauge)
-                        .catch(function (err) { return err; })];
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, db("gauges")
+                            .insert(gauge)
+                            .catch(function (err) {
+                            throw new CommonError(err);
+                        })];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
             });
         });
     };
-    GaugesService.prototype.updateGauge = function (id) {
+    GaugesService.prototype.updateGauge = function (siteCode) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                return [2 /*return*/, db("gauges")
-                        .where({ siteCode: id })
-                        .update({ hasReading: true })];
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, db("gauges")
+                            .where({ siteCode: siteCode })
+                            .update({ hasReading: true })
+                            .catch(function (err) {
+                            throw new CommonError(err);
+                        })];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
+            });
+        });
+    };
+    GaugesService.prototype.updateGaugeLocation = function (siteCode, locationId) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, db("gauges")
+                            .where({ siteCode: siteCode })
+                            .update({ locationId: locationId })
+                            .catch(function (err) {
+                            throw new CommonError(err);
+                        })];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
             });
         });
     };
@@ -86,66 +147,95 @@ module.exports = /** @class */ (function () {
     GaugesService.prototype.findAllReadings = function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                return [2 /*return*/, db("readings").join("gauges", {
-                        "readings.siteCode": "gauges.siteCode",
-                    })];
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, db("readings")
+                            .join("gauges", {
+                            "readings.siteCode": "gauges.siteCode",
+                        })
+                            .catch(function (err) {
+                            throw new CommonError(err);
+                        })];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
             });
         });
     };
     GaugesService.prototype.addHasReading = function (siteCode) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                return [2 /*return*/, db("gauges")
-                        .where({ siteCode: siteCode })
-                        .insert({ hasReading: true })];
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, db("gauges")
+                            .where({ siteCode: siteCode })
+                            .insert({ hasReading: true })
+                            .catch(function (err) {
+                            throw new CommonError(err);
+                        })];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
             });
         });
     };
     GaugesService.prototype.addReading = function (reading) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                return [2 /*return*/, db("gauges")
-                        .where({ siteCode: reading.siteCode })
-                        .insert({ hasReading: true })
-                        .then(db("readings")
-                        .where({
-                        "readings.siteCode": reading.siteCode,
-                    })
-                        .andWhere({ "readings.timeStamp": reading.timeStamp })
-                        .then(function (readingList) {
-                        if (readingList.length === 0) {
-                            // console.log('inserting', reading.siteCode);
-                            db("readings")
-                                .insert(reading)
-                                .then(function () { return reading; })
-                                .catch(function (err) { return err; });
-                        }
-                    })
-                        .then(this.updateGauge(reading.siteCode)))
-                        .catch(function (err) { return err; })];
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, db("gauges")
+                            .where({ siteCode: reading.siteCode })
+                            .insert({ hasReading: true })
+                            .then(db("readings")
+                            .where({
+                            "readings.siteCode": reading.siteCode,
+                        })
+                            .andWhere({ "readings.timeStamp": reading.timeStamp })
+                            .then(function (readingList) {
+                            if (readingList.length === 0) {
+                                // console.log('inserting', reading.siteCode);
+                                db("readings")
+                                    .insert(reading)
+                                    .then(function () { return reading; })
+                                    .catch(function (err) {
+                                    throw new CommonError("err adding reading " + err);
+                                });
+                            }
+                        })
+                            .then(this.updateGauge(reading.siteCode))
+                            .catch(function (err) {
+                            throw new CommonError("err updating gauge " + err);
+                        }))
+                            .catch(function (err) {
+                            throw new CommonError(err);
+                        })];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
             });
         });
     };
-    GaugesService.prototype.findReadingsBySiteCode = function (siteCodeId) {
+    GaugesService.prototype.findReadingsBySiteCode = function (siteCode) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                return [2 /*return*/, db("readings")
-                        .join("gauges", {
-                        "readings.siteCode": "gauges.siteCode",
-                    })
-                        .where({ "readings.siteCode": siteCodeId, "readings.units": "ft3/s" })
-                        .then(function (id) { return id; })];
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, db("readings")
+                            .join("gauges", {
+                            "readings.siteCode": "gauges.siteCode",
+                        })
+                            .where({ "readings.siteCode": siteCode, "readings.units": "ft3/s" })
+                            .then(function (id) { return id; })];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
             });
         });
     };
-    GaugesService.prototype.findReadingsBySiteCodeTimestamp = function (siteCodeId, timeStamp, units) {
+    GaugesService.prototype.findReadingsBySiteCodeTimestamp = function (siteCode, timeStamp, units) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                return [2 /*return*/, db("readings").where({
-                        "readings.siteCode": siteCodeId,
-                        "readings.timeStamp": timeStamp,
-                        "readings.units": units,
-                    })];
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, db("readings").where({
+                            "readings.siteCode": siteCode,
+                            "readings.timeStamp": timeStamp,
+                            "readings.units": units,
+                        })];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
             });
         });
     };
@@ -159,7 +249,7 @@ module.exports = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         siteURL = "http://waterservices.usgs.gov/nwis/iv/?format=json&stateCd=NC&siteStatus=active";
-                        return [4 /*yield*/, axios.get(siteURL)];
+                        return [4 /*yield*/, axios_1.default.get(siteURL)];
                     case 1:
                         response = _a.sent();
                         if (!response) {
@@ -185,18 +275,12 @@ module.exports = /** @class */ (function () {
     // GetData Readings
     GaugesService.prototype.populateReadings = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var url, params, request, data, responseData, allSitesData, returnData;
+            var url, data, responseData, allSitesData, returnData;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        url = "http://waterservices.usgs.gov/nwis/iv/?format=json&stateCd=NC&siteStatus=active";
-                        params = {
-                            period: "P6D",
-                            variable: ["00060", "00065"],
-                            siteType: "ST",
-                        };
-                        request = url + "&period=" + params.period + "&variable=" + params.variable + "&siteType=" + params.siteType;
-                        return [4 /*yield*/, axios.get(request)];
+                        url = "http://waterservices.usgs.gov/nwis/iv/?format=json&sites=" + NC_SITES + "&period=P3D&siteType=ST&variable=00060,00065";
+                        return [4 /*yield*/, axios_1.default.get(encodeURI(url))];
                     case 1:
                         data = (_a.sent()).data;
                         if (!data) {
@@ -244,3 +328,86 @@ module.exports = /** @class */ (function () {
     };
     return GaugesService;
 }());
+var NC_SITES = [
+    "03524000",
+    "03512000",
+    "03512000",
+    "03460000",
+    "03410210",
+    "03453000",
+    "03460000",
+    "02176930",
+    "02176930",
+    "02177000",
+    "02177000",
+    "02177000",
+    "0351706800",
+    "03518500",
+    "03539778",
+    "03539778",
+    "03540500",
+    "03540500",
+    "03539600",
+    "03539600",
+    "03441000",
+    "03451500",
+    "03453500",
+    "03451500",
+    "03451500",
+    "03451500",
+    "03439000",
+    "03443000",
+    "03453500",
+    "03439000",
+    "03451500",
+    "03189600",
+    "03192000",
+    "03540500",
+    "03539778",
+    "03453000",
+    "02138500",
+    "02399200",
+    "02398950",
+    "02399200",
+    "02398950",
+    "02399200",
+    "02398950",
+    "03539778",
+    "03539778",
+    "03503000",
+    "03503000",
+    "03446000",
+    "03505550",
+    "03505550",
+    "03185400",
+    "03465500",
+    "03465500",
+    "03465500",
+    "03540500",
+    "03540500",
+    "03512000",
+    "02176930",
+    "02177000",
+    "03460795",
+    "03455500",
+    "03531500",
+    "03531500",
+    "03512000",
+    "03512000",
+    "03208500",
+    "03209000",
+    "03208500",
+    "03209000",
+    "02169000",
+    "02168504",
+    "02162350",
+    "03518500",
+    "03451000",
+    "02181580",
+    "03473000",
+    "03465500",
+    "03463300",
+    "03463300",
+    "03510577",
+    "03076500",
+];

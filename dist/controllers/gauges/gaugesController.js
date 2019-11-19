@@ -40,22 +40,26 @@ var router = require("express").Router();
 var GaugesService = require("../../services/gaugesService");
 var CommonError = require("../../errors/common-error");
 var asyncWrapper = require("../../util/asyncWrapper").AsyncWrapper;
+var _a = require("../../Types"), GaugeType = _a.GaugeType, ReadingType = _a.ReadingType, GaugeReadingType = _a.GaugeReadingType;
 var gaugesService = new GaugesService();
 // +++++++++++++++++++++++++++++++++++++++++ All Data +++++++++++++++++++++++++++++++++++++++++++++
-router.route("/all").get(asyncWrapper(function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+// api/gauges/
+router.route("/").get(asyncWrapper(function (req, res) { return __awaiter(_this, void 0, void 0, function () {
     var data;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, gaugesService.findAllSites()];
             case 1:
                 data = _a.sent();
-                // if (data.length > 0) {
                 res.status(200).json(data);
                 return [2 /*return*/];
         }
     });
 }); }));
-router.get("/sites/:id", asyncWrapper(function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+// TODO: FIX ERROR Cannot set headers after they are sent to client
+router
+    .route("/:id")
+    .get(asyncWrapper(function (req, res) { return __awaiter(_this, void 0, void 0, function () {
     var siteCodeId, data;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -70,34 +74,19 @@ router.get("/sites/:id", asyncWrapper(function (req, res) { return __awaiter(_th
                 throw new CommonError();
         }
     });
-}); }));
-// +++++++++++++++++++++++++++++++++++++++++ Reading Data +++++++++++++++++++++++++++++++++++++++++
-router.get("/info/all", asyncWrapper(function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-    var data;
+}); }))
+    .post(asyncWrapper(function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+    var siteCode, locationId, data;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, gaugesService.findAllReadings()];
+            case 0:
+                siteCode = req.params.id;
+                locationId = req.body.locationId;
+                return [4 /*yield*/, gaugesService.updateGaugeLocation(siteCode, locationId)];
             case 1:
                 data = _a.sent();
                 res.status(200).json(data);
                 return [2 /*return*/];
-        }
-    });
-}); }));
-router.get("/info/:id", asyncWrapper(function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-    var siteCodeId, data;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                siteCodeId = req.params.id;
-                return [4 /*yield*/, gaugesService.findReadingsBySiteCode(siteCodeId)];
-            case 1:
-                data = _a.sent();
-                // console.log(data);
-                if (data.length > 0) {
-                    res.status(200).json(data);
-                }
-                throw new CommonError();
         }
     });
 }); }));

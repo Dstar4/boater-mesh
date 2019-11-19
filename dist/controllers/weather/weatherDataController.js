@@ -39,9 +39,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var router = require("express").Router();
 var WeatherService = require("../../services/WeatherService");
 var weatherService = new WeatherService();
-// const URL = "https://api.openweathermap.org/data/2.5/weather?zip=85741,us&appid=f95f8b937ea0757b479511295634ebf6&units=imperial"
 var asyncWrapper = require("../../util/asyncWrapper").AsyncWrapper;
-router.get("/now", asyncWrapper(function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+// URL: api/weatherData/zip/:zip
+router.route("/zip").get(asyncWrapper(function (req, res) { return __awaiter(_this, void 0, void 0, function () {
     var response;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -53,7 +53,8 @@ router.get("/now", asyncWrapper(function (req, res) { return __awaiter(_this, vo
         }
     });
 }); }));
-router.get("/city", asyncWrapper(function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+// URL: api/weatherData/city/:city
+router.route("/city").get(asyncWrapper(function (req, res) { return __awaiter(_this, void 0, void 0, function () {
     var city, response;
     return __generator(this, function (_a) {
         switch (_a.label) {

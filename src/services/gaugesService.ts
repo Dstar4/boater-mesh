@@ -1,49 +1,81 @@
 /* eslint-disable class-methods-use-this */
-const axios = require("axios");
+import axios, { AxiosResponse } from "axios";
 const db = require("../data/db-config");
 const CommonError = require("../errors/common-error");
+const { ReadingType, GaugeType, ReadingGaugeType } = require("../Types");
 
 module.exports = class GaugesService {
+  // Locations
+  public async findAllLocations(): Promise<any> {
+    return await db("locations");
+  }
+
+  public async addLocation(location) {
+    return await db("locations")
+      .insert(location)
+      .catch((err: Error) => {
+        throw new CommonError(err);
+      });
+  }
   // Sites
-  async findAllSites() {
-    return db("gauges").where({ hasReading: true });
+  public async findAllSites(): Promise<GaugeType[]> {
+    return await db("gauges").where({ hasReading: true });
   }
 
-  async findSiteById(id) {
-    return db("gauges").where("id", id);
+  public async findSiteById(id: number): Promise<GaugeType> {
+    return await db("gauges").where("id", id);
   }
 
-  async findBySiteCode(siteCode) {
-    return db("gauges").where("siteCode", siteCode);
+  public async findBySiteCode(siteCode: string): Promise<GaugeType> {
+    return await db("gauges").where("siteCode", siteCode);
   }
 
-  async addSite(gauge) {
-    return db("gauges")
+  public async addSite(gauge: GaugeType) {
+    return await db("gauges")
       .insert(gauge)
-      .catch(err => err);
+      .catch((err: Error) => {
+        throw new CommonError(err);
+      });
   }
 
-  async updateGauge(id) {
-    return db("gauges")
-      .where({ siteCode: id })
-      .update({ hasReading: true });
-  }
-
-  // Readings
-  async findAllReadings() {
-    return db("readings").join("gauges", {
-      "readings.siteCode": "gauges.siteCode",
-    });
-  }
-
-  async addHasReading(siteCode) {
-    return db("gauges")
+  public async updateGauge(siteCode: string) {
+    return await db("gauges")
       .where({ siteCode })
-      .insert({ hasReading: true });
+      .update({ hasReading: true })
+      .catch((err: Error) => {
+        throw new CommonError(err);
+      });
+  }
+  public async updateGaugeLocation(siteCode: string, locationId: number) {
+    return await db("gauges")
+      .where({ siteCode })
+      .update({ locationId: locationId })
+      .catch((err: Error) => {
+        throw new CommonError(err);
+      });
+  }
+  // Readings
+  public async findAllReadings() {
+    return await db("readings")
+      .join("gauges", {
+        "readings.siteCode": "gauges.siteCode",
+      })
+      .catch((err: Error) => {
+        throw new CommonError(err);
+      });
   }
 
-  async addReading(reading) {
-    return db("gauges")
+  public async addHasReading(siteCode: string) {
+    return await db("gauges")
+      .where({ siteCode })
+      .insert({ hasReading: true })
+      .catch((err: Error) => {
+        throw new CommonError(err);
+      });
+  }
+
+  public async addReading(reading: ReadingType) {
+    return await db("gauges")
       .where({ siteCode: reading.siteCode })
       .insert({ hasReading: true })
       .then(
@@ -52,32 +84,43 @@ module.exports = class GaugesService {
             "readings.siteCode": reading.siteCode,
           })
           .andWhere({ "readings.timeStamp": reading.timeStamp })
-          .then(readingList => {
+          .then((readingList: ReadingType[]) => {
             if (readingList.length === 0) {
               // console.log('inserting', reading.siteCode);
               db("readings")
                 .insert(reading)
                 .then(() => reading)
-                .catch(err => err);
+                .catch((err: Error) => {
+                  throw new CommonError(`err adding reading ${err}`);
+                });
             }
           })
           .then(this.updateGauge(reading.siteCode))
+          .catch((err: Error) => {
+            throw new CommonError(`err updating gauge ${err}`);
+          })
       )
-      .catch(err => err);
+      .catch((err: Error) => {
+        throw new CommonError(err);
+      });
   }
 
-  async findReadingsBySiteCode(siteCodeId) {
-    return db("readings")
+  public async findReadingsBySiteCode(siteCode: number) {
+    return await db("readings")
       .join("gauges", {
         "readings.siteCode": "gauges.siteCode",
       })
-      .where({ "readings.siteCode": siteCodeId, "readings.units": "ft3/s" })
-      .then(id => id);
+      .where({ "readings.siteCode": siteCode, "readings.units": "ft3/s" })
+      .then((id: number) => id);
   }
 
-  async findReadingsBySiteCodeTimestamp(siteCodeId, timeStamp, units) {
-    return db("readings").where({
-      "readings.siteCode": siteCodeId,
+  public async findReadingsBySiteCodeTimestamp(
+    siteCode: number,
+    timeStamp: string,
+    units: string
+  ) {
+    return await db("readings").where({
+      "readings.siteCode": siteCode,
       "readings.timeStamp": timeStamp,
       "readings.units": units,
     });
@@ -85,10 +128,10 @@ module.exports = class GaugesService {
   // ***************************************** Populate Data *****************************************
 
   // GetData Sites
-  async populateSites() {
+  public async populateSites() {
     const siteURL =
       "http://waterservices.usgs.gov/nwis/iv/?format=json&stateCd=NC&siteStatus=active";
-    const response = await axios.get(siteURL);
+    const response: AxiosResponse = await axios.get(siteURL);
     if (!response) {
       throw new CommonError(
         "There was no data returned from that source. Check your URL and try again."
@@ -97,7 +140,12 @@ module.exports = class GaugesService {
     const allSitesData = [];
     const geoData = response.data.value.timeSeries;
     geoData.map(item => {
-      const siteData = {
+      const siteData: {
+        name: string;
+        siteCode: string;
+        latitude: number;
+        longitude: number;
+      } = {
         name: item.sourceInfo.siteName,
         siteCode: item.sourceInfo.siteCode[0].value,
         latitude: item.sourceInfo.geoLocation.geogLocation.latitude,
@@ -110,16 +158,9 @@ module.exports = class GaugesService {
   }
 
   // GetData Readings
-  async populateReadings() {
-    const url =
-      "http://waterservices.usgs.gov/nwis/iv/?format=json&stateCd=NC&siteStatus=active";
-    const params = {
-      period: "P6D",
-      variable: ["00060", "00065"],
-      siteType: "ST",
-    };
-    const request = `${url}&period=${params.period}&variable=${params.variable}&siteType=${params.siteType}`;
-    const { data } = await axios.get(request);
+  public async populateReadings() {
+    const url = `http://waterservices.usgs.gov/nwis/iv/?format=json&sites=${NC_SITES}&period=P3D&siteType=ST&variable=00060,00065`;
+    const { data }: AxiosResponse = await axios.get(encodeURI(url));
     if (!data) {
       throw new CommonError("Could not retrieve those readings.");
     }
@@ -136,10 +177,10 @@ module.exports = class GaugesService {
   }
 
   // Helper function to build an object to insert into readings db from an array
-  async buildArr(arr) {
+  private async buildArr(arr) {
     arr.forEach(async item => {
       for (let i = 0; i < item.values[0].value.length; i += 1) {
-        const reading = {
+        const reading: ReadingType = {
           siteCode: item.sourceInfo.siteCode[0].value,
           gaugeReading: item.values[0].value[i].value,
           timeStamp: item.values[0].value[i].dateTime,
@@ -152,3 +193,87 @@ module.exports = class GaugesService {
   }
 };
 export {};
+
+const NC_SITES: string[] = [
+  "03524000",
+  "03512000",
+  "03512000",
+  "03460000",
+  "03410210",
+  "03453000",
+  "03460000",
+  "02176930",
+  "02176930",
+  "02177000",
+  "02177000",
+  "02177000",
+  "0351706800",
+  "03518500",
+  "03539778",
+  "03539778",
+  "03540500",
+  "03540500",
+  "03539600",
+  "03539600",
+  "03441000",
+  "03451500",
+  "03453500",
+  "03451500",
+  "03451500",
+  "03451500",
+  "03439000",
+  "03443000",
+  "03453500",
+  "03439000",
+  "03451500",
+  "03189600",
+  "03192000",
+  "03540500",
+  "03539778",
+  "03453000",
+  "02138500",
+  "02399200",
+  "02398950",
+  "02399200",
+  "02398950",
+  "02399200",
+  "02398950",
+  "03539778",
+  "03539778",
+  "03503000",
+  "03503000",
+  "03446000",
+  "03505550",
+  "03505550",
+  "03185400",
+  "03465500",
+  "03465500",
+  "03465500",
+  "03540500",
+  "03540500",
+  "03512000",
+  "02176930",
+  "02177000",
+  "03460795",
+  "03455500",
+  "03531500",
+  "03531500",
+  "03512000",
+  "03512000",
+  "03208500",
+  "03209000",
+  "03208500",
+  "03209000",
+  "02169000",
+  "02168504",
+  "02162350",
+  "03518500",
+  "03451000",
+  "02181580",
+  "03473000",
+  "03465500",
+  "03463300",
+  "03463300",
+  "03510577",
+  "03076500",
+];

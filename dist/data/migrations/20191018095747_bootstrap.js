@@ -2,35 +2,47 @@
 // import * as Knex from "knex";
 exports.up = function (knex) {
     return knex.schema
-        .createTable('gauges', function (gauges) {
+        .createTable("locations", function (location) {
+        location.increments();
+        location
+            .string("name", 255)
+            .notNullable()
+            .unique();
+        location.string("runName", 255).unique();
+        location.text("description", "longtext");
+    })
+        .createTable("gauges", function (gauges) {
         gauges.increments();
         gauges
-            .string('name', 255)
+            .string("name", 255)
             .notNullable()
             .unique();
         gauges
-            .string('siteCode')
+            .string("siteCode")
             .notNullable()
             .unique();
-        gauges.decimal('latitude');
-        gauges.decimal('longitude');
-        gauges.string('runName', 255).unique();
-        gauges.text('description', 'longtext');
-        gauges.boolean('hasReading');
+        gauges.decimal("latitude");
+        gauges.decimal("longitude");
+        gauges.text("description", "longtext");
+        gauges.boolean("hasReading");
+        gauges
+            .int("locationId", BigInt)
+            .references("id")
+            .inTable("locations");
     })
-        .createTable('readings', function (readings) {
+        .createTable("readings", function (readings) {
         readings.increments();
         readings
-            .string('siteCode')
-            .references('siteCode')
-            .inTable('gauges')
+            .string("siteCode")
+            .references("siteCode")
+            .inTable("gauges")
             .notNullable();
-        readings.string('gaugeReading').notNullable();
-        readings.string('timeStamp').notNullable();
-        readings.string('variableName').notNullable();
-        readings.string('units');
+        readings.string("gaugeReading").notNullable();
+        readings.string("timeStamp").notNullable();
+        readings.string("variableName").notNullable();
+        readings.string("units");
     });
 };
 exports.down = function (knex) {
-    return knex.schema.dropTableIfExists('gauges').dropTableIfExists('readings');
+    return knex.schema.dropTableIfExists("gauges").dropTableIfExists("readings");
 };
