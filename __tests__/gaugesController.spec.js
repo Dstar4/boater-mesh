@@ -4,7 +4,7 @@ const request = require('supertest');
 const api = require('../dist/server');
 
 jest.setTimeout(20000);
-
+// TODO: UPDATE ROUTE PATHS TO NEW ONES
 describe('GAUGES CONTROLLER', () => {
   describe('/all', () => {
     it('should return a 200 on success', async () => {

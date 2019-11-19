@@ -9,7 +9,10 @@ const asyncWrapper = require("../../util/asyncWrapper").AsyncWrapper;
 // URL: api/weatherData/zip/:zip
 router.route("/zip").get(
   asyncWrapper(async (req: Request, res: Response) => {
-    const response = await weatherService.getWeatherDataByZip(req.query.zip);
+    //TODO: Add weather interface
+    const response: any[] = await weatherService.getWeatherDataByZip(
+      req.query.zip
+    );
     res.status(200).json(response);
   })
 );
@@ -17,8 +20,9 @@ router.route("/zip").get(
 // URL: api/weatherData/city/:city
 router.route("/city").get(
   asyncWrapper(async (req: Request, res: Response) => {
-    const { city } = req.query;
-    const response = await weatherService.getWeatherDataByCity(city);
+    const city: string = req.query.city;
+    //TODO: Add weather interface
+    const response: any[] = await weatherService.getWeatherDataByCity(city);
     res.status(200).json(response);
   })
 );

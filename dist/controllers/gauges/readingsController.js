@@ -40,7 +40,6 @@ var router = require("express").Router();
 var GaugesService = require("../../services/gaugesService");
 var CommonError = require("../../errors/common-error");
 var asyncWrapper = require("../../util/asyncWrapper").AsyncWrapper;
-var _a = require("../../Types"), GaugeType = _a.GaugeType, ReadingType = _a.ReadingType, GaugeReadingType = _a.GaugeReadingType;
 var gaugesService = new GaugesService();
 // +++++++++++++++++++++++++++++++++++++++++ Reading Data +++++++++++++++++++++++++++++++++++++++++
 router.get("/info/all", asyncWrapper(function (req, res) { return __awaiter(_this, void 0, void 0, function () {
@@ -64,7 +63,6 @@ router.get("/info/:id", asyncWrapper(function (req, res) { return __awaiter(_thi
                 return [4 /*yield*/, gaugesService.findReadingsBySiteCode(siteCodeId)];
             case 1:
                 data = _a.sent();
-                // console.log(data);
                 if (data.length > 0) {
                     res.status(200).json(data);
                 }

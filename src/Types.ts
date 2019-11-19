@@ -1,4 +1,4 @@
-interface GaugeType {
+export interface GaugeType {
   id?: number;
   name: string;
   siteCode: string;
@@ -8,7 +8,7 @@ interface GaugeType {
   description?: string | null;
   hasReading?: string | null;
 }
-interface ReadingType {
+export interface ReadingType {
   id?: number;
   siteCode: string;
   gaugeReading: string;
@@ -16,7 +16,7 @@ interface ReadingType {
   variableName: string;
   units: string;
 }
-interface ReadingGaugeType {
+export interface ReadingGaugeType {
   id: number;
   name: string;
   siteCode: string;
@@ -30,8 +30,30 @@ interface ReadingGaugeType {
   variableName: string;
   units: string;
 }
-interface LocationType {}
+export interface LocationType {
+  name: string;
+  description: string;
+}
 
-interface GaugesServiceType {
-  findAllLocations(): void;
+export interface GaugesServiceType {
+  findAllLocations(): Promise<LocationType[]>;
+  findAllReadings(): Promise<ReadingGaugeType[]>;
+  addLocation(location: LocationType): Promise<any>;
+  findAllSites(): Promise<GaugeType[]>;
+  findSiteById(id: string): Promise<GaugeType>;
+  findBySiteCode(siteCode: string): Promise<GaugeType>;
+  populateSites(): Promise<GaugeType[]>;
+  addSite(gauge: GaugeType);
+  updateGauge(siteCode: string);
+  updateGaugeLocation(siteCode: string, locationId: number);
+  findAllReadings(): Promise<ReadingGaugeType[]>;
+  addHasReading(siteCode: string);
+  addReading(reading: ReadingType);
+  findReadingsBySiteCode(siteCode: string): Promise<ReadingGaugeType[]>;
+  findReadingsBySiteCodeTimestamp(
+    siteCode: number,
+    timeStamp: string,
+    units: string
+  ): Promise<ReadingGaugeType[]>;
+  populateReadings();
 }

@@ -39,7 +39,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var axios_1 = require("axios");
 var db = require("../data/db-config");
 var CommonError = require("../errors/common-error");
-var _a = require("../Types"), ReadingType = _a.ReadingType, GaugeType = _a.GaugeType, ReadingGaugeType = _a.ReadingGaugeType;
 module.exports = /** @class */ (function () {
     function GaugesService() {
     }
@@ -106,7 +105,7 @@ module.exports = /** @class */ (function () {
                     case 0: return [4 /*yield*/, db("gauges")
                             .insert(gauge)
                             .catch(function (err) {
-                            throw new CommonError(err);
+                            // throw new CommonError(err);
                         })];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
@@ -194,13 +193,13 @@ module.exports = /** @class */ (function () {
                                     .insert(reading)
                                     .then(function () { return reading; })
                                     .catch(function (err) {
-                                    throw new CommonError("err adding reading " + err);
+                                    // throw new CommonError(`err adding reading ${err}`);
                                 });
                             }
                         })
                             .then(this.updateGauge(reading.siteCode))
                             .catch(function (err) {
-                            throw new CommonError("err updating gauge " + err);
+                            // throw new CommonError(`err updating gauge ${err}`);
                         }))
                             .catch(function (err) {
                             throw new CommonError(err);

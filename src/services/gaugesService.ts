@@ -1,16 +1,22 @@
 /* eslint-disable class-methods-use-this */
 import axios, { AxiosResponse } from "axios";
+import {
+  GaugesServiceType,
+  GaugeType,
+  LocationType,
+  ReadingGaugeType,
+  ReadingType,
+} from "../Types";
 const db = require("../data/db-config");
 const CommonError = require("../errors/common-error");
-const { ReadingType, GaugeType, ReadingGaugeType } = require("../Types");
 
-module.exports = class GaugesService {
+module.exports = class GaugesService implements GaugesServiceType {
   // Locations
-  public async findAllLocations(): Promise<any> {
+  async findAllLocations(): Promise<LocationType[]> {
     return await db("locations");
   }
 
-  public async addLocation(location) {
+  async addLocation(location: LocationType): Promise<number> {
     return await db("locations")
       .insert(location)
       .catch((err: Error) => {
@@ -18,27 +24,27 @@ module.exports = class GaugesService {
       });
   }
   // Sites
-  public async findAllSites(): Promise<GaugeType[]> {
+  async findAllSites(): Promise<GaugeType[]> {
     return await db("gauges").where({ hasReading: true });
   }
 
-  public async findSiteById(id: number): Promise<GaugeType> {
+  async findSiteById(id: string): Promise<GaugeType> {
     return await db("gauges").where("id", id);
   }
 
-  public async findBySiteCode(siteCode: string): Promise<GaugeType> {
+  async findBySiteCode(siteCode: string): Promise<GaugeType> {
     return await db("gauges").where("siteCode", siteCode);
   }
 
-  public async addSite(gauge: GaugeType) {
+  async addSite(gauge: GaugeType) {
     return await db("gauges")
       .insert(gauge)
       .catch((err: Error) => {
-        throw new CommonError(err);
+        // throw new CommonError(err);
       });
   }
 
-  public async updateGauge(siteCode: string) {
+  async updateGauge(siteCode: string) {
     return await db("gauges")
       .where({ siteCode })
       .update({ hasReading: true })
@@ -46,7 +52,7 @@ module.exports = class GaugesService {
         throw new CommonError(err);
       });
   }
-  public async updateGaugeLocation(siteCode: string, locationId: number) {
+  async updateGaugeLocation(siteCode: string, locationId: number) {
     return await db("gauges")
       .where({ siteCode })
       .update({ locationId: locationId })
@@ -55,7 +61,7 @@ module.exports = class GaugesService {
       });
   }
   // Readings
-  public async findAllReadings() {
+  async findAllReadings(): Promise<ReadingGaugeType[]> {
     return await db("readings")
       .join("gauges", {
         "readings.siteCode": "gauges.siteCode",
@@ -65,7 +71,7 @@ module.exports = class GaugesService {
       });
   }
 
-  public async addHasReading(siteCode: string) {
+  async addHasReading(siteCode: string) {
     return await db("gauges")
       .where({ siteCode })
       .insert({ hasReading: true })
@@ -74,7 +80,7 @@ module.exports = class GaugesService {
       });
   }
 
-  public async addReading(reading: ReadingType) {
+  async addReading(reading: ReadingType) {
     return await db("gauges")
       .where({ siteCode: reading.siteCode })
       .insert({ hasReading: true })
@@ -91,13 +97,13 @@ module.exports = class GaugesService {
                 .insert(reading)
                 .then(() => reading)
                 .catch((err: Error) => {
-                  throw new CommonError(`err adding reading ${err}`);
+                  // throw new CommonError(`err adding reading ${err}`);
                 });
             }
           })
           .then(this.updateGauge(reading.siteCode))
           .catch((err: Error) => {
-            throw new CommonError(`err updating gauge ${err}`);
+            // throw new CommonError(`err updating gauge ${err}`);
           })
       )
       .catch((err: Error) => {
@@ -105,7 +111,7 @@ module.exports = class GaugesService {
       });
   }
 
-  public async findReadingsBySiteCode(siteCode: number) {
+  async findReadingsBySiteCode(siteCode: string): Promise<ReadingGaugeType[]> {
     return await db("readings")
       .join("gauges", {
         "readings.siteCode": "gauges.siteCode",
@@ -114,11 +120,11 @@ module.exports = class GaugesService {
       .then((id: number) => id);
   }
 
-  public async findReadingsBySiteCodeTimestamp(
+  async findReadingsBySiteCodeTimestamp(
     siteCode: number,
     timeStamp: string,
     units: string
-  ) {
+  ): Promise<ReadingGaugeType[]> {
     return await db("readings").where({
       "readings.siteCode": siteCode,
       "readings.timeStamp": timeStamp,
@@ -128,7 +134,7 @@ module.exports = class GaugesService {
   // ***************************************** Populate Data *****************************************
 
   // GetData Sites
-  public async populateSites() {
+  async populateSites() {
     const siteURL =
       "http://waterservices.usgs.gov/nwis/iv/?format=json&stateCd=NC&siteStatus=active";
     const response: AxiosResponse = await axios.get(siteURL);
@@ -137,28 +143,36 @@ module.exports = class GaugesService {
         "There was no data returned from that source. Check your URL and try again."
       );
     }
-    const allSitesData = [];
+    const allSitesData: GaugeType[] = [];
     const geoData = response.data.value.timeSeries;
-    geoData.map(item => {
-      const siteData: {
-        name: string;
-        siteCode: string;
-        latitude: number;
-        longitude: number;
-      } = {
-        name: item.sourceInfo.siteName,
-        siteCode: item.sourceInfo.siteCode[0].value,
-        latitude: item.sourceInfo.geoLocation.geogLocation.latitude,
-        longitude: item.sourceInfo.geoLocation.geogLocation.longitude,
-      };
-      allSitesData.push(siteData);
-      this.addSite(siteData);
-    });
+    geoData.map(
+      (item: {
+        sourceInfo: {
+          siteName: any;
+          siteCode: { value: any }[];
+          geoLocation: { geogLocation: { latitude: any; longitude: any } };
+        };
+      }) => {
+        const siteData: {
+          name: string;
+          siteCode: string;
+          latitude: number;
+          longitude: number;
+        } = {
+          name: item.sourceInfo.siteName,
+          siteCode: item.sourceInfo.siteCode[0].value,
+          latitude: item.sourceInfo.geoLocation.geogLocation.latitude,
+          longitude: item.sourceInfo.geoLocation.geogLocation.longitude,
+        };
+        allSitesData.push(siteData);
+        this.addSite(siteData);
+      }
+    );
     return allSitesData;
   }
 
   // GetData Readings
-  public async populateReadings() {
+  async populateReadings() {
     const url = `http://waterservices.usgs.gov/nwis/iv/?format=json&sites=${NC_SITES}&period=P3D&siteType=ST&variable=00060,00065`;
     const { data }: AxiosResponse = await axios.get(encodeURI(url));
     if (!data) {
@@ -177,7 +191,7 @@ module.exports = class GaugesService {
   }
 
   // Helper function to build an object to insert into readings db from an array
-  private async buildArr(arr) {
+  private async buildArr(arr): Promise<void> {
     arr.forEach(async item => {
       for (let i = 0; i < item.values[0].value.length; i += 1) {
         const reading: ReadingType = {

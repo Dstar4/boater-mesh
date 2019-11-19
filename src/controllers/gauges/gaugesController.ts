@@ -4,7 +4,7 @@ import { Request, Response } from "express";
 const GaugesService = require("../../services/gaugesService");
 const CommonError = require("../../errors/common-error");
 const asyncWrapper = require("../../util/asyncWrapper").AsyncWrapper;
-const { GaugeType, ReadingType, GaugeReadingType } = require("../../Types");
+import { GaugeType, ReadingType, ReadingGaugeType } from "../../Types";
 const gaugesService = new GaugesService();
 // +++++++++++++++++++++++++++++++++++++++++ All Data +++++++++++++++++++++++++++++++++++++++++++++
 
@@ -17,12 +17,13 @@ router.route("/").get(
 );
 
 // TODO: FIX ERROR Cannot set headers after they are sent to client
+/// URL: api/gauges/:siteCode
 router
   .route("/:id")
   .get(
     asyncWrapper(async (req: Request, res: Response) => {
       const siteCodeId: string = req.params.id;
-      const data = await gaugesService.findBySiteCode(siteCodeId);
+      const data: GaugeType[] = await gaugesService.findBySiteCode(siteCodeId);
       if (data.length > 0) {
         res.status(200).json(data);
       }
@@ -32,8 +33,8 @@ router
   .post(
     asyncWrapper(async (req: Request, res: Response) => {
       const siteCode = req.params.id;
-      const { locationId } = req.body;
-      const data = await gaugesService.updateGaugeLocation(
+      const locationId: number = req.body.locationId;
+      const data: number = await gaugesService.updateGaugeLocation(
         siteCode,
         locationId
       );

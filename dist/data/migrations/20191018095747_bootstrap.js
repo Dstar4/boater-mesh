@@ -8,7 +8,6 @@ exports.up = function (knex) {
             .string("name", 255)
             .notNullable()
             .unique();
-        location.string("runName", 255).unique();
         location.text("description", "longtext");
     })
         .createTable("gauges", function (gauges) {

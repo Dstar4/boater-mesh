@@ -69,5 +69,4 @@ router.route("/readings").get(asyncWrapper(function (req, res) { return __awaite
         }
     });
 }); }));
-router;
 module.exports = router;

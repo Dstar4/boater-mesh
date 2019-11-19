@@ -1,5 +1,5 @@
 {
-  // "compileOnSave": true,
+  "compileOnSave": true,
   "compilerOptions": {
     "target": "es5",
     "module": "commonjs",
@@ -11,10 +11,10 @@
   "noImplicitAny": true,
   "strict": true,
   "strictNullChecks": true,
-  // "strictFunctionTypes": true,
-  // "strictBindCallApply": true,
-  // "strictPropertyInitialization": true,
-  // "noImplicitThis": true,
+  "strictFunctionTypes": true,
+  "strictBindCallApply": true,
+  "strictPropertyInitialization": true,
+  "noImplicitThis": true,
   "alwaysStrict": true,
   "esModuleInterop": true
 

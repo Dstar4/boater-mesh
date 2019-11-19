@@ -1,6 +1,7 @@
 /* eslint-disable no-undef */
 const request = require('supertest');
 const api = require('../dist/server');
+// TODO: UPDATE ROUTE PATHS TO NEW ONES
 
 jest.setTimeout(20000);
 describe('Gauges Data Routes', () => {

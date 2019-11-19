@@ -2,7 +2,7 @@ const router = require("express").Router();
 import { Request, Response } from "express";
 const asyncWrapper = require("../../util/asyncWrapper").AsyncWrapper;
 const GaugesService = require("../../services/gaugesService");
-
+import { ReadingType, GaugeType } from "../../Types";
 const gaugesService = new GaugesService();
 
 // ****************************** Site Data *********************************
@@ -10,7 +10,7 @@ const gaugesService = new GaugesService();
 // URL: api/gaugesData/sites
 router.route("/sites").get(
   asyncWrapper(async (req: Request, res: Response) => {
-    const data = await gaugesService.populateSites();
+    const data: Promise<GaugeType[]> = await gaugesService.populateSites();
     res.send(data);
   })
 );
@@ -25,8 +25,6 @@ router.route("/readings").get(
     res.send(allSitesData);
   })
 );
-
-router;
 
 module.exports = router;
 export {};

@@ -31,6 +31,7 @@ const testSite = {
 
 const keys = Object.keys(testSite).sort();
 
+// TODO: UPDATE ROUTE PATHS TO NEW ONES
 describe('GAUGES SERVICE', () => {
   describe('GET GAUGE INFORMATION', () => {
     it('returns defined data', async () => {
