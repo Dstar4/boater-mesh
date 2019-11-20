@@ -9,16 +9,14 @@ const gaugesService: GaugesServiceType = new GaugesService();
 
 // +++++++++++++++++++++++++++++++++++++++++ Reading Data +++++++++++++++++++++++++++++++++++++++++
 
-router.get(
-  "/info/all",
+router.route("/").get(
   asyncWrapper(async (req: Request, res: Response) => {
     const data: ReadingGaugeType[] = await gaugesService.findAllReadings();
     res.status(200).json(data);
   })
 );
 
-router.get(
-  "/info/:id",
+router.route("/:id").get(
   asyncWrapper(async (req: Request, res: Response) => {
     const siteCodeId: string = req.params.id;
     const data: ReadingGaugeType[] = await gaugesService.findReadingsBySiteCode(

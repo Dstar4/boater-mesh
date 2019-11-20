@@ -92,19 +92,14 @@ module.exports = class GaugesService implements GaugesServiceType {
           .andWhere({ "readings.timeStamp": reading.timeStamp })
           .then((readingList: ReadingType[]) => {
             if (readingList.length === 0) {
-              // console.log('inserting', reading.siteCode);
               db("readings")
                 .insert(reading)
                 .then(() => reading)
-                .catch((err: Error) => {
-                  // throw new CommonError(`err adding reading ${err}`);
-                });
+                .catch((err: Error) => {});
             }
           })
           .then(this.updateGauge(reading.siteCode))
-          .catch((err: Error) => {
-            // throw new CommonError(`err updating gauge ${err}`);
-          })
+          .catch((err: Error) => {})
       )
       .catch((err: Error) => {
         throw new CommonError(err);
@@ -135,8 +130,7 @@ module.exports = class GaugesService implements GaugesServiceType {
 
   // GetData Sites
   async populateSites() {
-    const siteURL =
-      "http://waterservices.usgs.gov/nwis/iv/?format=json&stateCd=NC&siteStatus=active";
+    const siteURL = `http://waterservices.usgs.gov/nwis/iv/?format=json&sites=${NC_SITES}`;
     const response: AxiosResponse = await axios.get(siteURL);
     if (!response) {
       throw new CommonError(

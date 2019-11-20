@@ -42,7 +42,7 @@ var CommonError = require("../../errors/common-error");
 var asyncWrapper = require("../../util/asyncWrapper").AsyncWrapper;
 var gaugesService = new GaugesService();
 // +++++++++++++++++++++++++++++++++++++++++ Reading Data +++++++++++++++++++++++++++++++++++++++++
-router.get("/info/all", asyncWrapper(function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+router.route("/").get(asyncWrapper(function (req, res) { return __awaiter(_this, void 0, void 0, function () {
     var data;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -54,7 +54,7 @@ router.get("/info/all", asyncWrapper(function (req, res) { return __awaiter(_thi
         }
     });
 }); }));
-router.get("/info/:id", asyncWrapper(function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+router.route("/:id").get(asyncWrapper(function (req, res) { return __awaiter(_this, void 0, void 0, function () {
     var siteCodeId, data;
     return __generator(this, function (_a) {
         switch (_a.label) {

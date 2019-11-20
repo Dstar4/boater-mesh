@@ -188,19 +188,14 @@ module.exports = /** @class */ (function () {
                             .andWhere({ "readings.timeStamp": reading.timeStamp })
                             .then(function (readingList) {
                             if (readingList.length === 0) {
-                                // console.log('inserting', reading.siteCode);
                                 db("readings")
                                     .insert(reading)
                                     .then(function () { return reading; })
-                                    .catch(function (err) {
-                                    // throw new CommonError(`err adding reading ${err}`);
-                                });
+                                    .catch(function (err) { });
                             }
                         })
                             .then(this.updateGauge(reading.siteCode))
-                            .catch(function (err) {
-                            // throw new CommonError(`err updating gauge ${err}`);
-                        }))
+                            .catch(function (err) { }))
                             .catch(function (err) {
                             throw new CommonError(err);
                         })];
@@ -247,7 +242,7 @@ module.exports = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        siteURL = "http://waterservices.usgs.gov/nwis/iv/?format=json&stateCd=NC&siteStatus=active";
+                        siteURL = "http://waterservices.usgs.gov/nwis/iv/?format=json&sites=" + NC_SITES;
                         return [4 /*yield*/, axios_1.default.get(siteURL)];
                     case 1:
                         response = _a.sent();
