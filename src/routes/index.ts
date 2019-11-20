@@ -1,4 +1,5 @@
-const router = require("express").Router();
+import { Router } from "express";
+const router: Router = require("express").Router();
 const swaggerUi = require("swagger-ui-express");
 const graphqlHTTP = require("express-graphql");
 const weatherDataRouter = require("../controllers/weather/weatherDataController");

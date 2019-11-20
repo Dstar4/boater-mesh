@@ -55,7 +55,6 @@ router.route("/").get(asyncWrapper(function (req, res) { return __awaiter(_this,
         }
     });
 }); }));
-// TODO: FIX ERROR Cannot set headers after they are sent to client
 /// URL: api/gauges/:siteCode
 router
     .route("/:id")
@@ -68,10 +67,8 @@ router
                 return [4 /*yield*/, gaugesService.findBySiteCode(siteCodeId)];
             case 1:
                 data = _a.sent();
-                if (data.length > 0) {
-                    res.status(200).json(data);
-                }
-                throw new CommonError("Error finding a reading with that id.");
+                res.status(200).json(data);
+                return [2 /*return*/];
         }
     });
 }); }))

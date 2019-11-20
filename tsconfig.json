@@ -17,6 +17,5 @@
   "noImplicitThis": true,
   "alwaysStrict": true,
   "esModuleInterop": true
-
   // "skipLibCheck": true
 }

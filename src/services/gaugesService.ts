@@ -35,7 +35,7 @@ module.exports = class GaugesService implements GaugesServiceType {
   }
 
   async findBySiteCode(siteCode: string): Promise<GaugeType> {
-    return await db("gauges").where("siteCode", siteCode);
+    return await db("gauges").where({ siteCode: siteCode });
   }
 
   async addSite(gauge: GaugeType) {

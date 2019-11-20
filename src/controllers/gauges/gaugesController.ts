@@ -4,8 +4,13 @@ import { Request, Response } from "express";
 const GaugesService = require("../../services/gaugesService");
 const CommonError = require("../../errors/common-error");
 const asyncWrapper = require("../../util/asyncWrapper").AsyncWrapper;
-import { GaugeType, ReadingType, ReadingGaugeType } from "../../Types";
-const gaugesService = new GaugesService();
+import {
+  GaugeType,
+  ReadingType,
+  ReadingGaugeType,
+  GaugesServiceType,
+} from "../../Types";
+const gaugesService: GaugesServiceType = new GaugesService();
 // +++++++++++++++++++++++++++++++++++++++++ All Data +++++++++++++++++++++++++++++++++++++++++++++
 
 // api/gauges/
@@ -16,25 +21,21 @@ router.route("/").get(
   })
 );
 
-// TODO: FIX ERROR Cannot set headers after they are sent to client
 /// URL: api/gauges/:siteCode
 router
   .route("/:id")
   .get(
     asyncWrapper(async (req: Request, res: Response) => {
       const siteCodeId: string = req.params.id;
-      const data: GaugeType[] = await gaugesService.findBySiteCode(siteCodeId);
-      if (data.length > 0) {
-        res.status(200).json(data);
-      }
-      throw new CommonError("Error finding a reading with that id.");
+      const data = await gaugesService.findBySiteCode(siteCodeId);
+      res.status(200).json(data);
     })
   )
   .post(
     asyncWrapper(async (req: Request, res: Response) => {
       const siteCode = req.params.id;
       const locationId: number = req.body.locationId;
-      const data: number = await gaugesService.updateGaugeLocation(
+      const data = await gaugesService.updateGaugeLocation(
         siteCode,
         locationId
       );

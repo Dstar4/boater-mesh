@@ -45,7 +45,7 @@ export interface GaugesServiceType {
   populateSites(): Promise<GaugeType[]>;
   addSite(gauge: GaugeType);
   updateGauge(siteCode: string);
-  updateGaugeLocation(siteCode: string, locationId: number);
+  updateGaugeLocation(siteCode: string, locationId: number): Promise<number>;
   findAllReadings(): Promise<ReadingGaugeType[]>;
   addHasReading(siteCode: string);
   addReading(reading: ReadingType);

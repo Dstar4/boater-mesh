@@ -37,7 +37,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var graphql = require("graphql");
 var GaugesService = require("../services/gaugesService");
-var GraphQLObjectType = graphql.GraphQLObjectType, GraphQLString = graphql.GraphQLString, GraphQLSchema = graphql.GraphQLSchema, GraphQLID = graphql.GraphQLID, GraphQLList = graphql.GraphQLList, GraphQLNonNull = graphql.GraphQLNonNull, GraphQLInt = graphql.GraphQLInt, GraphQLFloat = graphql.GraphQLFloat;
+var GraphQLObjectType = graphql.GraphQLObjectType, GraphQLString = graphql.GraphQLString, GraphQLSchema = graphql.GraphQLSchema, GraphQLID = graphql.GraphQLID, GraphQLList = graphql.GraphQLList, GraphQLNonNull = graphql.GraphQLNonNull, GraphQLInt = graphql.GraphQLInt, GraphQLFloat = graphql.GraphQLFloat, GraphQLBoolean = graphql.GraphQLBoolean;
 var gaugesService = new GaugesService();
 var GaugeType = new GraphQLObjectType({
     name: "Gauge",
@@ -48,8 +48,9 @@ var GaugeType = new GraphQLObjectType({
         siteCode: { type: GraphQLString },
         latitude: { type: GraphQLFloat },
         longitude: { type: GraphQLFloat },
-        runName: { type: GraphQLString },
         description: { type: GraphQLString },
+        hasReading: { type: GraphQLBoolean },
+        locationId: { type: GraphQLInt },
     }); },
 });
 var ReadingType = new GraphQLObjectType({
@@ -125,14 +126,13 @@ var RootQuery = new GraphQLObjectType({
             type: new GraphQLList(ReadingType),
             args: {
                 siteCode: { type: GraphQLString },
-                units: { type: GraphQLString },
             },
             resolve: function (parent, args) {
                 return __awaiter(this, void 0, void 0, function () {
                     var data;
                     return __generator(this, function (_a) {
                         switch (_a.label) {
-                            case 0: return [4 /*yield*/, gaugesService.findReadingsBySiteCode(args.siteCode, args.units)];
+                            case 0: return [4 /*yield*/, gaugesService.findReadingsBySiteCode(args.siteCode)];
                             case 1:
                                 data = _a.sent();
                                 return [2 /*return*/, data];
