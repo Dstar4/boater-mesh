@@ -63,10 +63,8 @@ router.route("/:id").get(asyncWrapper(function (req, res) { return __awaiter(_th
                 return [4 /*yield*/, gaugesService.findReadingsBySiteCode(siteCodeId)];
             case 1:
                 data = _a.sent();
-                if (data.length > 0) {
-                    res.status(200).json(data);
-                }
-                throw new CommonError();
+                res.status(200).json(data);
+                return [2 /*return*/];
         }
     });
 }); }));

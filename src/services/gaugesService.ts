@@ -29,7 +29,9 @@ module.exports = class GaugesService implements GaugesServiceType {
   }
 
   async findSiteById(id: string): Promise<GaugeType> {
-    return await db("gauges").where("id", id);
+    return await db("gauges")
+      .where("id", id)
+      .catch(err => {});
   }
 
   async findBySiteCode(siteCode: string): Promise<GaugeType> {
@@ -76,7 +78,7 @@ module.exports = class GaugesService implements GaugesServiceType {
       .where({ siteCode })
       .insert({ hasReading: true })
       .catch((err: Error) => {
-        throw new CommonError(err);
+        throw new CommonError("Error adding HasReading");
       });
   }
 
@@ -102,7 +104,7 @@ module.exports = class GaugesService implements GaugesServiceType {
           .catch((err: Error) => {})
       )
       .catch((err: Error) => {
-        throw new CommonError(err);
+        throw new CommonError("Error Adding Reading");
       });
   }
 
@@ -111,8 +113,8 @@ module.exports = class GaugesService implements GaugesServiceType {
       .join("gauges", {
         "readings.siteCode": "gauges.siteCode",
       })
-      .where({ "readings.siteCode": siteCode, "readings.units": "ft3/s" })
-      .then((id: number) => id);
+      .where({ "readings.siteCode": siteCode, "readings.units": "ft3/s" });
+    // .then((id: number) => id);
   }
 
   async findReadingsBySiteCodeTimestamp(
@@ -167,7 +169,7 @@ module.exports = class GaugesService implements GaugesServiceType {
 
   // GetData Readings
   async populateReadings() {
-    const url = `http://waterservices.usgs.gov/nwis/iv/?format=json&sites=${NC_SITES}&period=P3D&siteType=ST&variable=00060,00065`;
+    const url = `http://waterservices.usgs.gov/nwis/iv/?format=json&sites=${NC_SITES}&period=P1D&siteType=ST&variable=00060,00065`;
     const { data }: AxiosResponse = await axios.get(encodeURI(url));
     if (!data) {
       throw new CommonError("Could not retrieve those readings.");

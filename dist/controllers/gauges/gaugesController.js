@@ -71,7 +71,7 @@ router
                 if (data.length > 0) {
                     res.status(200).json(data);
                 }
-                throw new CommonError();
+                throw new CommonError("Error finding a reading with that id.");
         }
     });
 }); }))

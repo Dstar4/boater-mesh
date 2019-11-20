@@ -18,21 +18,19 @@ const testReading = {
   hasReading: 1,
 };
 const testSite = {
-  id: 1121,
-  name: 'LINVILLE RIVER NEAR NEBO, NC',
-  siteCode: '02138500',
-  latitude: 35.79555556,
-  longitude: -81.8911111,
+  id: 1431,
+  name: 'CHATTOOGA RIVER AT BURRELLS FORD, NR PINE MTN, GA',
+  siteCode: '02176930',
+  latitude: 34.97452778,
+  longitude: -83.1161667,
   description: null,
   hasReading: 1,
-  locationId: 2,
-
+  locationId: null,
 };
 
 
 const keys = Object.keys(testSite).sort();
 
-// TODO: UPDATE ROUTE PATHS TO NEW ONES
 describe('GAUGES SERVICE', () => {
   describe('GET GAUGE INFORMATION', () => {
     it('returns defined data', async () => {
@@ -50,11 +48,11 @@ describe('GAUGES SERVICE', () => {
       expect(data).toBeTruthy();
     });
     it('should return an object that with the proper keys', async () => {
-      const data = await gaugesService.findBySiteCode('02138500');
+      const data = await gaugesService.findBySiteCode('02176930');
       expect(Object.keys(data[0]).sort()).toMatchObject(keys);
     });
     it('should return defined values for a site', async () => {
-      const data = await gaugesService.findBySiteCode('02138500');
+      const data = await gaugesService.findBySiteCode('02176930');
       expect(data[0]).toMatchObject(testSite);
     });
     it('should return an empty array with a bad site ID', async () => {
@@ -81,7 +79,7 @@ describe('GAUGES SERVICE', () => {
       expect(data.length).toEqual(0);
     });
     it('should return defined data on success', async () => {
-      const data = await gaugesService.findReadingsBySiteCode('03550000');
+      const data = await gaugesService.findReadingsBySiteCode('02176930');
       expect(data).toBeTruthy();
       expect(data.length).toBeGreaterThan(1);
     });

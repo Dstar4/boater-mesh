@@ -82,7 +82,9 @@ module.exports = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, db("gauges").where("id", id)];
+                    case 0: return [4 /*yield*/, db("gauges")
+                            .where("id", id)
+                            .catch(function (err) { })];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
             });
@@ -167,7 +169,7 @@ module.exports = /** @class */ (function () {
                             .where({ siteCode: siteCode })
                             .insert({ hasReading: true })
                             .catch(function (err) {
-                            throw new CommonError(err);
+                            throw new CommonError("Error adding HasReading");
                         })];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
@@ -197,7 +199,7 @@ module.exports = /** @class */ (function () {
                             .then(this.updateGauge(reading.siteCode))
                             .catch(function (err) { }))
                             .catch(function (err) {
-                            throw new CommonError(err);
+                            throw new CommonError("Error Adding Reading");
                         })];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
@@ -212,8 +214,7 @@ module.exports = /** @class */ (function () {
                             .join("gauges", {
                             "readings.siteCode": "gauges.siteCode",
                         })
-                            .where({ "readings.siteCode": siteCode, "readings.units": "ft3/s" })
-                            .then(function (id) { return id; })];
+                            .where({ "readings.siteCode": siteCode, "readings.units": "ft3/s" })];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
             });
@@ -273,7 +274,7 @@ module.exports = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        url = "http://waterservices.usgs.gov/nwis/iv/?format=json&sites=" + NC_SITES + "&period=P3D&siteType=ST&variable=00060,00065";
+                        url = "http://waterservices.usgs.gov/nwis/iv/?format=json&sites=" + NC_SITES + "&period=P1D&siteType=ST&variable=00060,00065";
                         return [4 /*yield*/, axios_1.default.get(encodeURI(url))];
                     case 1:
                         data = (_a.sent()).data;

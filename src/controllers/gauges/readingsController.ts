@@ -22,10 +22,7 @@ router.route("/:id").get(
     const data: ReadingGaugeType[] = await gaugesService.findReadingsBySiteCode(
       siteCodeId
     );
-    if (data.length > 0) {
-      res.status(200).json(data);
-    }
-    throw new CommonError();
+    res.status(200).json(data);
   })
 );
 module.exports = router;
