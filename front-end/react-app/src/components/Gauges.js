@@ -39,7 +39,7 @@ export default function (props) {
 
   useEffect(() => {
     if (dataFetched === false) {
-      axios.get(`${URL}/api/gauges/all`).then(res => {
+      axios.get(`${URL}/api/gauges/`).then(res => {
         rowBuilder(res.data)
         setData(res.data)
         setDataFetched(true)
