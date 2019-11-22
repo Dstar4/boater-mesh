@@ -37,7 +37,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var graphql = require("graphql");
 var GaugesService = require("../services/gaugesService");
-var GraphQLObjectType = graphql.GraphQLObjectType, GraphQLString = graphql.GraphQLString, GraphQLSchema = graphql.GraphQLSchema, GraphQLID = graphql.GraphQLID, GraphQLList = graphql.GraphQLList, GraphQLNonNull = graphql.GraphQLNonNull, GraphQLInt = graphql.GraphQLInt, GraphQLFloat = graphql.GraphQLFloat, GraphQLBoolean = graphql.GraphQLBoolean;
+var GraphQLObjectType = graphql.GraphQLObjectType, GraphQLString = graphql.GraphQLString, GraphQLSchema = graphql.GraphQLSchema, GraphQLID = graphql.GraphQLID, GraphQLList = graphql.GraphQLList, GraphQLInt = graphql.GraphQLInt, GraphQLFloat = graphql.GraphQLFloat, GraphQLBoolean = graphql.GraphQLBoolean;
 var gaugesService = new GaugesService();
 var GaugeType = new GraphQLObjectType({
     name: "Gauge",
@@ -68,6 +68,8 @@ var ReadingType = new GraphQLObjectType({
         longitude: { type: GraphQLFloat },
         runName: { type: GraphQLString },
         description: { type: GraphQLString },
+        hasReading: { type: GraphQLBoolean },
+        locationId: { type: GraphQLInt },
     }); },
 });
 var RootQuery = new GraphQLObjectType({
@@ -135,7 +137,7 @@ var RootQuery = new GraphQLObjectType({
                             case 0: return [4 /*yield*/, gaugesService.findReadingsBySiteCode(args.siteCode)];
                             case 1:
                                 data = _a.sent();
-                                return [2 /*return*/, data];
+                                return [2 /*return*/, data[0]];
                         }
                     });
                 });

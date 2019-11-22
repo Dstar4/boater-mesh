@@ -1,4 +1,10 @@
-import { GaugesServiceType, GaugeType, ReadingGaugeType } from "../Types";
+import {
+  GaugesServiceType,
+  GaugeType,
+  ReadingGaugeType,
+  fieldsType,
+  readingFieldsType,
+} from "../Types";
 
 const graphql = require("graphql");
 const GaugesService = require("../services/gaugesService");
@@ -9,17 +15,17 @@ const {
   GraphQLSchema,
   GraphQLID,
   GraphQLList,
-  GraphQLNonNull,
   GraphQLInt,
   GraphQLFloat,
   GraphQLBoolean,
 } = graphql;
+
 const gaugesService: GaugesServiceType = new GaugesService();
 
 const GaugeType: GaugeType = new GraphQLObjectType({
   name: "Gauge",
   description: "Gauges site information.",
-  fields: () => ({
+  fields: (): fieldsType => ({
     id: { type: GraphQLID },
     name: { type: GraphQLString },
     siteCode: { type: GraphQLString },
@@ -30,11 +36,10 @@ const GaugeType: GaugeType = new GraphQLObjectType({
     locationId: { type: GraphQLInt },
   }),
 });
-
-const ReadingType: ReadingGaugeType = new GraphQLObjectType({
+const ReadingType = new GraphQLObjectType({
   name: "Reading",
   description: "Gauges Readings.",
-  fields: () => ({
+  fields: (): readingFieldsType => ({
     id: { type: GraphQLID },
     name: { type: GraphQLString },
     siteCode: { type: GraphQLString },
@@ -46,6 +51,8 @@ const ReadingType: ReadingGaugeType = new GraphQLObjectType({
     longitude: { type: GraphQLFloat },
     runName: { type: GraphQLString },
     description: { type: GraphQLString },
+    hasReading: { type: GraphQLBoolean },
+    locationId: { type: GraphQLInt },
   }),
 });
 
@@ -55,7 +62,7 @@ const RootQuery = new GraphQLObjectType({
     gauge: {
       type: GaugeType,
       args: { siteCode: { type: GraphQLString } },
-      async resolve(parent, args) {
+      async resolve(parent, args: { siteCode: string }) {
         const data = await gaugesService.findBySiteCode(args.siteCode);
         return data[0];
       },
@@ -79,9 +86,9 @@ const RootQuery = new GraphQLObjectType({
       args: {
         siteCode: { type: GraphQLString },
       },
-      async resolve(parent, args) {
+      async resolve(parent, args: { siteCode: string }) {
         const data = await gaugesService.findReadingsBySiteCode(args.siteCode);
-        return data;
+        return data[0];
       },
     },
   },

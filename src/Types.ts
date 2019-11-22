@@ -16,15 +16,7 @@ export interface ReadingType {
   variableName: string;
   units: string;
 }
-export interface ReadingGaugeType {
-  id: number;
-  name: string;
-  siteCode: string;
-  latitude: number;
-  longitude: number;
-  runName: string | null;
-  description: string | null;
-  hasReading: string | null;
+export interface ReadingGaugeType extends GaugeType {
   gaugeReading: string;
   timeStamp: string;
   variableName: string;
@@ -43,17 +35,35 @@ export interface GaugesServiceType {
   findSiteById(id: string): Promise<GaugeType>;
   findBySiteCode(siteCode: string): Promise<GaugeType>;
   populateSites(): Promise<GaugeType[]>;
-  addSite(gauge: GaugeType);
-  updateGauge(siteCode: string);
+  addSite(gauge: GaugeType): Promise<any>;
+  updateGauge(siteCode: string): Promise<any>;
   updateGaugeLocation(siteCode: string, locationId: number): Promise<number>;
   findAllReadings(): Promise<ReadingGaugeType[]>;
-  addHasReading(siteCode: string);
-  addReading(reading: ReadingType);
+  addHasReading(siteCode: string): Promise<any>;
+  addReading(reading: ReadingType): Promise<any>;
   findReadingsBySiteCode(siteCode: string): Promise<ReadingGaugeType[]>;
   findReadingsBySiteCodeTimestamp(
     siteCode: number,
     timeStamp: string,
     units: string
   ): Promise<ReadingGaugeType[]>;
-  populateReadings();
+  populateReadings(): Promise<any>;
+}
+
+export interface fieldsType {
+  id: { type: string };
+  name: { type: string };
+  siteCode: { type: string };
+  latitude: { type: number };
+  longitude: { type: number };
+  description: { type: string };
+  hasReading: { type: string };
+  locationId: { type: number };
+}
+export interface readingFieldsType extends fieldsType {
+  gaugeReading: { type: string };
+  timeStamp: { type: string };
+  variableName: { type: string };
+  units: { type: string };
+  runName: { type: string };
 }
