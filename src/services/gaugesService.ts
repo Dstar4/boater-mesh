@@ -7,6 +7,7 @@ import {
   ReadingGaugeType,
   ReadingType,
 } from "../Types";
+
 const db = require("../data/db-config");
 const CommonError = require("../errors/common-error");
 
@@ -117,6 +118,16 @@ module.exports = class GaugesService implements GaugesServiceType {
     // .then((id: number) => id);
   }
 
+  async getSiteWithReadings(siteCode: string): Promise<any> {
+    const data = await db("gauges")
+      .join("readings", {
+        "gauges.siteCode": "readings.siteCode",
+      })
+      .where({ "readings.siteCode": siteCode });
+    console.log(data);
+    return data;
+  }
+
   async findReadingsBySiteCodeTimestamp(
     siteCode: number,
     timeStamp: string,
@@ -128,6 +139,7 @@ module.exports = class GaugesService implements GaugesServiceType {
       "readings.units": units,
     });
   }
+
   // ***************************************** Populate Data *****************************************
 
   // GetData Sites

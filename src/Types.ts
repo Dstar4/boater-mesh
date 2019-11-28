@@ -48,6 +48,7 @@ export interface GaugesServiceType {
     units: string
   ): Promise<ReadingGaugeType[]>;
   populateReadings(): Promise<any>;
+  getSiteWithReadings(siteCode: string): Promise<any>;
 }
 
 export interface fieldsType {

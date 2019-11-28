@@ -9,6 +9,7 @@ const gaugesController = require("../controllers/gauges/gaugesController");
 const readingsController = require("../controllers/gauges/readingsController");
 const swaggerDocument = require("../../swagger.json");
 const schema = require("../models/schema");
+require("dotenv").config();
 
 router.use("/api-docs", swaggerUi.serve);
 router.get("/api-docs", swaggerUi.setup(swaggerDocument));

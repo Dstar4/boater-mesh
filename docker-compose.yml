@@ -1,0 +1,33 @@
+version: "3"
+services:
+  db:
+    image: postgres
+    restart: always
+
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=mesh
+      - POSTGRES_HOST=db
+    ports:
+      - 5432:5432
+
+  boater-mesh:
+    depends_on:
+      - db
+    build: .
+    ports:
+      - "5000:5000"
+    links:
+      - db
+
+    volumes:
+      - ./usr/src/app
+    command: bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; npm run dev;'
+    # command: ["./wait-for-it.sh", "oi:3306"]
+
+    environment:
+      - POSTGRES_USER=boater
+      - POSTGRES_PASSWORD=qxZVf5d9
+      # - POSTGRES_DB=mesh
+      # - POSTGRES_CLIENT=pg

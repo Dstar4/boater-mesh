@@ -21,8 +21,8 @@ module.exports = {
     client: 'pg',
     connection: {
       database: 'mesh',
-      user: process.env.USER,
-      password: process.env.PASSWORD,
+      user: 'boater',
+      password: 'qxZVf5d9',
     },
     migrations: {
       directory: './src/data/migrations',
@@ -33,5 +33,9 @@ module.exports = {
     },
     useNullAsDefault: true,
     debug: true,
+    pool: {
+      min: 2,
+      max: 10,
+    },
   },
 };

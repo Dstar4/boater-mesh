@@ -45,5 +45,13 @@ router
 
 // +++++++++++++++++++++++++++++++++++++++++ Site Data ++++++++++++++++++++++++++++++++++++++++++++
 
+// api/gauges/
+router.route("/new/:id").get(
+  asyncWrapper(async (req: Request, res: Response) => {
+    const id = req.params.id;
+    const data: GaugeType[] = await gaugesService.getSiteWithReadings(id);
+    res.status(200).json(data);
+  })
+);
 module.exports = router;
 export {};

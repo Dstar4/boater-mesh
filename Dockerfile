@@ -1,13 +1,15 @@
-FROM node:10-slim
+FROM node:10
 
-EXPOSE 5000
 
-# WORKDIR /src
+WORKDIR /usr/src/app
 
-COPY package.json package-lock*.json ./
-RUN npm install && npm cache clean --force
+COPY package*.json ./
+
+RUN npm install
 
 
 COPY . .
+EXPOSE 5000
 
-CMD ["node", "./src/index.js"]
+
+CMD ["node", "./dist/index.js"]
