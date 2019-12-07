@@ -123,6 +123,8 @@ export default function Dashboard () {
   const classes = useStyles()
   const [open, setOpen] = React.useState(true)
   const [data, setData] = React.useState([])
+  const [dataFetched, setDataFetched] = React.useState(false)
+
   const handleDrawerOpen = () => {
     setOpen(true)
   }
@@ -130,8 +132,16 @@ export default function Dashboard () {
     setOpen(false)
   }
 
+  useEffect(() => {
+    const URL = process.env.BACKEND_URL || 'http://localhost:5000'
+      axios.get(`${URL}/api/gauges/`).then(res => {
+        // rowBuilder(res.data)
+        setData(res.data)
+        setDataFetched(true)
+      })
+  }, [])
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight)
-
+console.log("data",data)
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -189,8 +199,8 @@ export default function Dashboard () {
           <Grid container spacing={3}>
             <Grid item xs={12}>
               <Paper className={classes.paper}>
-                <Route exact path='/' component={Gauges} props={data} />
-                <Route exact path='/:siteCode' component={Gauge} props={data} />
+                <Route exact path='/' render={pr=> <Gauges data={data} {...pr}/> } />
+                <Route exact path='/:siteCode' component={Gauge} data={data} />
               </Paper>
             </Grid>
           </Grid>

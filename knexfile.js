@@ -32,6 +32,6 @@ module.exports = {
       directory: './src/data/seeds',
     },
     useNullAsDefault: true,
-    debug: true,
+    // debug: true,
   },
 };

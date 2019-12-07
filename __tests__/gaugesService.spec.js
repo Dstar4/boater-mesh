@@ -1,30 +1,30 @@
 /* eslint-disable no-undef */
-const GaugesService = require('../dist/services/gaugesService');
+const GaugesService = require('../src/services/gaugesService');
 
 const gaugesService = new GaugesService();
 
 const testReading = {
-  id: 4507,
-  siteCode: '03550000',
-  gaugeReading: '93.1',
-  timeStamp: '2019-11-16T18:30:00.000-05:00',
+  id: 19,
+  siteCode: '03446000',
+  gaugeReading: '218',
+  timeStamp: '2019-12-02T12:00:00.000-05:00',
   variableName: 'Streamflow, ft&#179;/s',
   units: 'ft3/s',
-  name: 'VALLEY RIVER AT TOMOTLA, NC',
-  latitude: 35.13888889,
-  longitude: -83.9805556,
-  runName: null,
+  name: 'MILLS RIVER NEAR MILLS RIVER, NC',
+  latitude: 35.39805556,
+  longitude: -82.595,
   description: null,
-  hasReading: 1,
+  hasReading: null,
+  locationId: null,
 };
 const testSite = {
-  id: 1431,
-  name: 'CHATTOOGA RIVER AT BURRELLS FORD, NR PINE MTN, GA',
-  siteCode: '02176930',
-  latitude: 34.97452778,
-  longitude: -83.1161667,
+  id: 19,
+  name: 'MILLS RIVER NEAR MILLS RIVER, NC',
+  siteCode: '03446000',
+  latitude: 35.39805556,
+  longitude: -82.595,
   description: null,
-  hasReading: 1,
+  hasReading: null,
   locationId: null,
 };
 
@@ -44,15 +44,15 @@ describe('GAUGES SERVICE', () => {
   });
   describe('GET SITE BY ID', () => {
     it('returns defined data', async () => {
-      const data = await gaugesService.findBySiteCode('02138500');
+      const data = await gaugesService.findBySiteCode('03446000');
       expect(data).toBeTruthy();
     });
     it('should return an object that with the proper keys', async () => {
-      const data = await gaugesService.findBySiteCode('02176930');
+      const data = await gaugesService.findBySiteCode('03446000');
       expect(Object.keys(data[0]).sort()).toMatchObject(keys);
     });
     it('should return defined values for a site', async () => {
-      const data = await gaugesService.findBySiteCode('02176930');
+      const data = await gaugesService.findBySiteCode('03446000');
       expect(data[0]).toMatchObject(testSite);
     });
     it('should return an empty array with a bad site ID', async () => {
@@ -79,7 +79,7 @@ describe('GAUGES SERVICE', () => {
       expect(data.length).toEqual(0);
     });
     it('should return defined data on success', async () => {
-      const data = await gaugesService.findReadingsBySiteCode('02176930');
+      const data = await gaugesService.findReadingsBySiteCode('03446000');
       expect(data).toBeTruthy();
       expect(data.length).toBeGreaterThan(1);
     });

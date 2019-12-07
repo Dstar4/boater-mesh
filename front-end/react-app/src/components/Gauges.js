@@ -36,16 +36,16 @@ export default function (props) {
   const [rowsPerPage, setRowsPerPage] = React.useState(50)
   const [data, setData] = React.useState(null)
   const [dataFetched, setDataFetched] = React.useState(false)
-
+console.log("props", props)
   useEffect(() => {
-    if (dataFetched === false) {
-      axios.get(`${URL}/api/gauges/`).then(res => {
-        rowBuilder(res.data)
-        setData(res.data)
-        setDataFetched(true)
-      })
-    }
-  }, [])
+    // if (dataFetched === false) {
+      // axios.get(`${URL}/api/gauges/`).then(res => {
+        rowBuilder(props.data)
+        setData(props.data)
+        // setDataFetched(true)
+      // })
+    // }
+  }, [props.data.length])
   function handleRequestSort (event, property) {
     const isDesc = orderBy === property && order === 'desc'
     setOrder(isDesc ? 'asc' : 'desc')
@@ -194,7 +194,7 @@ export default function (props) {
   }
 }
 function rowBuilder (data) {
-  // console.log(data)
+  console.log("ROWBUILDER", data)
   for (let i in data) {
     rows.push(data[i])
   }

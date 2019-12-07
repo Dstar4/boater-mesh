@@ -143,7 +143,7 @@ export default function Gauge (props) {
   )
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight)
   if (data) {
-    console.log("data",data)
+    // console.log("data",data)
     return (
       <div className={classes.root}>
         <main className={classes.content}>
@@ -167,7 +167,6 @@ export default function Gauge (props) {
               </Grid>
             </Grid>
           </Container>
-          <Copyright />
         </main>
       </div>
     )
