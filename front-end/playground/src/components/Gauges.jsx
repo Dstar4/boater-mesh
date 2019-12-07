@@ -1,19 +1,11 @@
 import React, { Component } from 'react'
 import Table from 'react-bootstrap/Table'
 import Gauge from './Gauge'
+import { Link } from 'react-router-dom'
 export default class Gauges extends Component {
   constructor(props) {
     super(props)
   }
-  componentDidMount() {
-    // console.log('this.props CDM', this.props)
-  }
-  componentDidUpdate(prevProps, prevState) {
-    // if (this.props.data) {
-    // console.log('this.props CDU', this.props)
-    // }
-  }
-
   render() {
     if (this.props.data) {
       return (

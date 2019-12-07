@@ -19,7 +19,7 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 import NotificationsIcon from '@material-ui/icons/Notifications'
 import { mainListItems } from './Listitems'
 import Chart from './Chart'
-import { Link, Route,useRouteMatch } from 'react-router-dom'
+import { Link, Route, useRouteMatch } from 'react-router-dom'
 import Reading from './Reading'
 import GaugeDetails from './GaugeDetails'
 import axios from 'axios'
@@ -129,11 +129,8 @@ export default function Gauge (props) {
 
   useEffect(
     () => {
-      axios
-      .get(`${URL}/api/readings${match.url}`)
-      .then(res => {
-        if (res.data.length>1){
-
+      axios.get(`${URL}/api/readings${match.url}`).then(res => {
+        if (res.data.length > 1) {
           setData(res.data)
           setHasRun(true)
         }

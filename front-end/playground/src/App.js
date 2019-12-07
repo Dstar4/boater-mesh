@@ -5,7 +5,9 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import  Gauges  from './components/Gauges'
 import  Gauge  from './components/Gauge'
 import  Readings  from './components/Readings'
+import Home from './views/Home'
 import {Route} from 'react-router-dom'
+import ReadingDashboard from './views/ReadingDashboard'
 function App () {
 
   return (

@@ -21,10 +21,12 @@ function createData (time, amount) {
 
 export default function Chart (props) {
   function transformData (arr) {
+    console.log('ARR______________', arr)
     let returnArr = []
     arr.forEach(el => {
       returnArr.push(createData(el.timeStamp, el.gaugeReading))
     })
+    console.log('RETURN ARR________', returnArr)
     return returnArr
   }
   return (
