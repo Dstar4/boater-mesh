@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
 import Spinner from 'react-bootstrap/Spinner'
-import Navigation from '../components/Navigation'
-import Footer from '../components/Footer'
-class Loader extends Component {
+
+import Navigation from './Navigation'
+import Footer from './Footer'
+
+export default class Loader extends Component {
   render() {
     return (
       <div className="loading-wrapper ">
@@ -13,5 +15,3 @@ class Loader extends Component {
     )
   }
 }
-
-export default Loader

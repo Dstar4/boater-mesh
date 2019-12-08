@@ -7,10 +7,11 @@ export default class Gauge extends Component {
 
   render() {
     const { sourceInfo, values, variable } = this.props.data
-    const { siteCode, siteName, name } = sourceInfo
+    const { siteCode, siteName, name, geoLocation } = sourceInfo
+    // const { latitude, longitude } = geoLocation.geogLocation
     const reading = values[0].value[0]
     const { unitCode } = variable.unit
-    // console.log('this.props.data', variable.unit.unitCode)
+
     if (
       siteCode &&
       siteName &&
@@ -22,14 +23,22 @@ export default class Gauge extends Component {
       return (
         <>
           <td>{siteName}</td>
-          <td>{reading.dateTime}</td>
           <td>
             {reading.value} {unitCode}
           </td>
+          <td>{shapeTimeData(reading.dateTime).time}</td>
+          <td>{shapeTimeData(reading.dateTime).year}</td>
         </>
       )
     } else {
       return <tr>null</tr>
     }
   }
+}
+function shapeTimeData(string) {
+  const returnTime = {
+    time: string.slice(11, 16),
+    year: string.slice(0, 10),
+  }
+  return returnTime
 }

@@ -1,16 +1,13 @@
 import React, { Component } from 'react'
-import { LineChart, Line, XAxis, YAxis, Label } from 'recharts'
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Label,
+} from 'recharts'
+
 import '../App.css'
-function createData(time, amount) {
-  if (time) {
-    let newTime = time
-      .split('')
-      .slice(11, 16)
-      .join('')
-    return { newTime, amount }
-  }
-  return { time, amount }
-}
 
 export default class Chart extends Component {
   constructor(props) {
@@ -25,25 +22,44 @@ export default class Chart extends Component {
   }
   render() {
     return (
-      <LineChart
-        width={1300}
-        height={650}
-        data={this.transformData(this.props.data)}
-        margin={{
-          top: 50,
-          left: 100,
-        }}
-      >
-        <XAxis dataKey="time" />
-        <YAxis>
-          <Label
-            angle={270}
-            position="left"
-            style={{ textAnchor: 'middle' }}
-          ></Label>
-        </YAxis>
-        <Line type="monotone" dataKey="amount" stroke="#556CD6" dot={false} />
-      </LineChart>
+      <div className="chart-wrapper">
+        <LineChart
+          width={1250}
+          height={450}
+          data={this.transformData(this.props.data)}
+          margin={{
+            top: 50,
+            left: 50,
+          }}
+        >
+          <XAxis dataKey="time">
+            <Label
+              angle={90}
+              position="middle"
+              style={{ textAnchor: 'middle' }}
+            >
+              Time
+            </Label>
+          </XAxis>
+          <YAxis>
+            <Label angle={90} position="left" style={{ textAnchor: 'middle' }}>
+              {this.props.unit}
+            </Label>
+          </YAxis>
+          <Line type="monotone" dataKey="amount" stroke="#556CD6" dot={false} />
+        </LineChart>
+      </div>
     )
   }
+}
+
+function createData(time, amount) {
+  if (time) {
+    let newTime = time
+      .split('')
+      .slice(11, 16)
+      .join('')
+    return { newTime, amount }
+  }
+  return { time, amount }
 }

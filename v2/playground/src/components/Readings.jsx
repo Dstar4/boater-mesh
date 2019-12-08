@@ -1,12 +1,17 @@
 import React, { Component } from 'react'
 import Axios from 'axios'
+import { Table, Row, Container, Col, Jumbotron } from 'react-bootstrap'
+
 import Chart from './Chart'
-import Table from 'react-bootstrap/Table'
 import Navigation from './Navigation'
-import Loader from '../views/Loader'
+import Loader from './Loader'
 import Footer from './Footer'
-const URL = `http://localhost:5000`
-class Readings extends Component {
+import Sidebar from './Sidebar'
+
+require('dotenv').config()
+
+const URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000'
+export default class Readings extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -28,39 +33,65 @@ class Readings extends Component {
   render() {
     const { readings, data } = this.state
     if (readings && readings.name && data) {
+      const timeSeries = this.state.data.data.value.timeSeries[0]
+      // const {siteProperty} = timeSeries.sourceInfo
+      console.log(data)
+      const {
+        longitude,
+        latitude,
+      } = timeSeries.sourceInfo.geoLocation.geogLocation
+      const tmpReadings = [...readings.readings]
       return (
-        <div>
+        <div id="readings-dashboard">
           <Navigation />
-          <h1>{readings.name}</h1>
-          <Chart data={readings.readings} />
-          <p>Reading siteCode: {readings.siteCode}</p>
-          <p>Units: {data.data.value.timeSeries[0].variable.unit.unitCode}</p>
-          <Table responsive striped bordered hover variant="dark">
-            <thead>
-              <tr>
-                <th>TimeStamp</th>
-                <th>Reading</th>
-              </tr>
-            </thead>
-            <tbody>
-              {readings.readings.map(item => {
-                return (
+          <div style={{ display: 'flex' }}>
+            {/* <Col xs={2}> */}
+            {/* <Sidebar /> */}
+            {/* </Col> */}
+            <Col>
+              <Jumbotron fluid className="jumbotron">
+                {/* <Container> */}
+                {/* </Container> */}
+              </Jumbotron>
+              <h1>{readings.name}</h1>
+              <Chart
+                data={readings.readings}
+                unit={data.data.value.timeSeries[0].variable.unit.unitCode}
+              />
+              <h4>Longitude: {longitude}</h4>
+              <h4>Latitude: {latitude}</h4>
+              <Table responsive striped bordered hover variant="dark">
+                <thead>
                   <tr>
-                    <td>Timestamp: {item.timestamp}</td>
-                    <td>Reading: {item.reading}</td>
+                    <th>Reading</th>
+                    <th>Time</th>
+                    <th>Date</th>
                   </tr>
-                )
-              })}
-            </tbody>
-          </Table>
+                </thead>
+                <tbody>
+                  {tmpReadings.reverse().map(item => {
+                    // console.log(item)
+                    return (
+                      <tr key={item.timestamp || ''}>
+                        <td>
+                          {item.reading}{' '}
+                          {data.data.value.timeSeries[0].variable.unit.unitCode}
+                        </td>
+                        <td>{shapeTimeData(item.timestamp).time}</td>
+                        <td>{shapeTimeData(item.timestamp).year} </td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </Table>
+            </Col>
+          </div>
           <Footer />
         </div>
       )
-    } else return <Loader/>
+    } else return <Loader />
   }
 }
-
-export default Readings
 
 function shapeChartData(arr) {
   if (
@@ -70,8 +101,9 @@ function shapeChartData(arr) {
     arr.data.value.timeSeries[0] &&
     arr.data.value.timeSeries[0].values[0]
   ) {
+    const tmp = arr.data.value.timeSeries[0].values[0].value
     const tmpArr = []
-    arr.data.value.timeSeries[0].values[0].value.map(el => {
+    tmp.map(el => {
       const tmp = {
         timestamp: el.dateTime,
         reading: el.value,
@@ -85,4 +117,11 @@ function shapeChartData(arr) {
     }
     return returnObject
   }
+}
+function shapeTimeData(string) {
+  const returnTime = {
+    time: string.slice(11, 16),
+    year: string.slice(0, 10),
+  }
+  return returnTime
 }

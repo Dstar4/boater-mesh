@@ -1,5 +1,5 @@
 const axios = require('axios')
-const CachingService = require('./cachingService')
+// const CachingService = require('./cachingService')
 const CommonError = require('../errors/common-error')
 
 const NC_SITES = [
@@ -85,12 +85,12 @@ const NC_SITES = [
   '03510577',
   '03076500'
 ]
-const c = new CachingService()
+// const c = new CachingService()
 
 module.exports = class GaugesService {
   // GetData Sites
   async getGauges () {
-    const siteURL = `http://waterservices.usgs.gov/nwis/iv/?format=json&sites=${NC_SITES}`
+    const siteURL = `http://waterservices.usgs.gov/nwis/iv/?format=json&sites=${NC_SITES}&siteType=ST&variable=00060`
     const { data } = await axios.get(siteURL)
 
     // const tmp = await c.storeGauge(data)
@@ -105,7 +105,7 @@ module.exports = class GaugesService {
 
   // GetData Readings
   async getReadings (site) {
-    const url = `http://waterservices.usgs.gov/nwis/iv/?format=json&sites=${site}&period=P1D&`
+    const url = `http://waterservices.usgs.gov/nwis/iv/?format=json&sites=${site}&period=P6D&siteType=ST&variable=00060`
     const { data } = await axios.get(encodeURI(url))
     if (!data) {
       throw new CommonError('Could not retrieve those readings.')

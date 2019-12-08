@@ -1,15 +1,13 @@
 import React, { Component } from 'react'
 import Table from 'react-bootstrap/Table'
 import Gauge from './Gauge'
-// import { Link, Redirect } from 'react-router-dom'
-import Loader from '../views/Loader'
+import Loader from './Loader'
 export default class Gauges extends Component {
   constructor(props) {
     super(props)
   }
   clickRedirect = e => {
     window.location.href = `/readings/${e}`
-    // return <Redirect to={`/readings/${e}`}/>
   }
   render() {
     if (this.props.data) {
@@ -18,8 +16,9 @@ export default class Gauges extends Component {
           <thead>
             <tr>
               <th>Name</th>
-              <th>Timestamp</th>
               <th>Reading</th>
+              <th>Time</th>
+              <th>Date</th>
             </tr>
           </thead>
           <tbody>
@@ -30,6 +29,7 @@ export default class Gauges extends Component {
                     onClick={() =>
                       this.clickRedirect(el.sourceInfo.siteCode[0].value)
                     }
+                    key={el.sourceInfo.siteCode[0].value}
                   >
                     <Gauge data={el} />
                   </tr>
@@ -39,6 +39,6 @@ export default class Gauges extends Component {
           </tbody>
         </Table>
       )
-    } else return <Loader/>
+    } else return <Loader />
   }
 }

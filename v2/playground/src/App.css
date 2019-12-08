@@ -18,3 +18,10 @@
 .help {
   border: 2px solid red;
 }
+.jumbotron {
+  background-image: url('./resources/banner.jpeg');
+  background-repeat: no-repeat;
+  object-fit: contain;
+  height: 300px;
+  margin: auto;
+}

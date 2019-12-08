@@ -1,10 +1,10 @@
 /// <reference types="Cypress" />
 
+
 context('Querying', () => {
   beforeEach(() => {
     cy.visit('https://example.cypress.io/commands/querying')
   })
-
   // The most commonly used query is 'cy.get()', you can
   // think of this like the '$' in jQuery
 
