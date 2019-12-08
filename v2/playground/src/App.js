@@ -1,7 +1,7 @@
 import React from 'react'
 import './App.css'
 import Dashboard from './views/Dashboard'
-import 'bootstrap/dist/css/bootstrap.min.css'
+import '../node_modules/bootstrap/dist/css/bootstrap.min.css'
 import  Gauges  from './components/Gauges'
 import  Gauge  from './components/Gauge'
 import  Readings  from './components/Readings'

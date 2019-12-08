@@ -1,10 +1,15 @@
 import React, { Component } from 'react'
 import Table from 'react-bootstrap/Table'
 import Gauge from './Gauge'
-import { Link } from 'react-router-dom'
+// import { Link, Redirect } from 'react-router-dom'
+import Loader from '../views/Loader'
 export default class Gauges extends Component {
   constructor(props) {
     super(props)
+  }
+  clickRedirect = e => {
+    window.location.href = `/readings/${e}`
+    // return <Redirect to={`/readings/${e}`}/>
   }
   render() {
     if (this.props.data) {
@@ -19,11 +24,21 @@ export default class Gauges extends Component {
           </thead>
           <tbody>
             {this.props.data.map(el => {
-              return <Gauge data={el} />
+              return (
+                <>
+                  <tr
+                    onClick={() =>
+                      this.clickRedirect(el.sourceInfo.siteCode[0].value)
+                    }
+                  >
+                    <Gauge data={el} />
+                  </tr>
+                </>
+              )
             })}
           </tbody>
         </Table>
       )
-    } else return <h1>Gauges Loading ... </h1>
+    } else return <Loader/>
   }
 }

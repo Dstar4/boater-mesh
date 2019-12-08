@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import '../App.css'
 import Gauges from '../components/Gauges'
 import Axios from 'axios'
 import Navigation from '../components/Navigation'
@@ -7,6 +8,8 @@ import SideBar from '../components/Sidebar'
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
+import Spinner from 'react-bootstrap/Spinner'
+import Loader from './Loader'
 const NC_SITES = [
   '03524000',
   '03512000',
@@ -98,7 +101,8 @@ class Dashboard extends Component {
     data: null,
   }
   componentDidMount() {
-    const URL = `http://waterservices.usgs.gov/nwis/iv/?format=json&sites=${NC_SITES}&period=PT12H`
+    const URL = `http://localhost:5000/api/gauges/`
+    // const URL = `http://waterservices.usgs.gov/nwis/iv/?format=json&sites=${NC_SITES}&period=PT12H`
     Axios.get(URL).then(data => {
       this.setState({ data: data.data.value.timeSeries })
     })
@@ -109,18 +113,20 @@ class Dashboard extends Component {
         <div>
           <Navigation />
           {/* <div style={{ display: 'flex' }}> */}
-            {/* <Col xs={2}> */}
-              {/* <SideBar /> */}
-            {/* </Col> */}
-            {/* <Col> */}
-              <Gauges data={this.state.data} />
-            {/* </Col> */}
+          {/* <Col xs={2}> */}
+          {/* <SideBar /> */}
+          {/* </Col> */}
+          {/* <Col> */}
+          <Gauges data={this.state.data} />
+          {/* </Col> */}
           {/* </div> */}
           <Footer />
         </div>
       )
     } else {
-      return <h1>Dashboard Loading. . . </h1>
+      return (
+        <Loader/>
+      )
     }
   }
 }

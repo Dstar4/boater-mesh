@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { Link } from 'react-router-dom'
 
 export default class Gauge extends Component {
   constructor(props) {
@@ -7,9 +6,11 @@ export default class Gauge extends Component {
   }
 
   render() {
-    const { sourceInfo, values } = this.props.data
+    const { sourceInfo, values, variable } = this.props.data
     const { siteCode, siteName, name } = sourceInfo
     const reading = values[0].value[0]
+    const { unitCode } = variable.unit
+    // console.log('this.props.data', variable.unit.unitCode)
     if (
       siteCode &&
       siteName &&
@@ -19,16 +20,13 @@ export default class Gauge extends Component {
       reading.dateTime
     ) {
       return (
-        <tr key={name}>
-          <Link
-            to={`/readings/${sourceInfo.siteCode[0].value}`}
-            style={{ color: 'black', textDecoration: 'none' }}
-          >
-            <td>{siteName}</td>
-          </Link>
+        <>
+          <td>{siteName}</td>
           <td>{reading.dateTime}</td>
-          <td>{reading.value}</td>
-        </tr>
+          <td>
+            {reading.value} {unitCode}
+          </td>
+        </>
       )
     } else {
       return <tr>null</tr>
