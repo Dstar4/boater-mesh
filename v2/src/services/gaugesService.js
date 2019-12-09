@@ -1,5 +1,6 @@
 const axios = require('axios')
-// const CachingService = require('./cachingService')
+const redis = require('redis')
+
 const CommonError = require('../errors/common-error')
 
 const NC_SITES = [
@@ -85,25 +86,18 @@ const NC_SITES = [
   '03510577',
   '03076500'
 ]
-// const c = new CachingService()
 
 module.exports = class GaugesService {
-  // GetData Sites
   async getGauges () {
-    const siteURL = `http://waterservices.usgs.gov/nwis/iv/?format=json&sites=${NC_SITES}&siteType=ST&variable=00060`
-    const { data } = await axios.get(siteURL)
-
-    // const tmp = await c.storeGauge(data)
-    // const tmp = await c.getGauge()
-
+    const url = `http://waterservices.usgs.gov/nwis/iv/?format=json&sites=${NC_SITES}&siteType=ST&variable=00060`
+    const { data } = await axios.get(url )
+    console.log(console.dir(data))
     if (!data) {
       throw new CommonError('Could not retrieve those readings.')
     }
-    // console.dir('tmp', tmp)
     return data
   }
 
-  // GetData Readings
   async getReadings (site) {
     const url = `http://waterservices.usgs.gov/nwis/iv/?format=json&sites=${site}&period=P6D&siteType=ST&variable=00060`
     const { data } = await axios.get(encodeURI(url))
@@ -113,23 +107,3 @@ module.exports = class GaugesService {
     return data
   }
 }
-
-// Helper function to build an object to insert into readings db from an array
-//   async buildArr(arr) {
-//     const tmp = [];
-//     arr.forEach(async (item) => {
-//       for (let i = 0; i < item.values[0].value.length; i += 1) {
-//         const reading = {
-//           siteCode: item.sourceInfo.siteCode[0].value,
-//           gaugeReading: item.values[0].value[i].value,
-//           timeStamp: item.values[0].value[i].dateTime,
-//           variableName: item.variable.variableName,
-//           units: item.variable.unit.unitCode,
-//         };
-//         tmp.push(reading);
-//         tmp.push(this.addReading(reading));
-//       }
-//     });
-//     return tmp;
-//   }
-// };
