@@ -1,9 +1,9 @@
 /* eslint-disable array-callback-return */
 /* eslint-disable class-methods-use-this */
-const axios = require('axios');
+const axios = require('axios')
 
-const db = require('../data/db-config');
-const CommonError = require('../errors/common-error');
+const db = require('../data/db-config')
+const CommonError = require('../errors/common-error')
 
 const NC_SITES = [
   '03524000',
@@ -86,206 +86,201 @@ const NC_SITES = [
   '03463300',
   '03463300',
   '03510577',
-  '03076500',
-];
+  '03076500'
+]
 
 module.exports = class GaugesService {
   // Locations
-  async findAllLocations() {
-    return db('locations');
+  async findAllLocations () {
+    return db('locations')
   }
 
-  async addLocation(location) {
+  async addLocation (location) {
     return db('locations')
       .insert(location)
-      .catch((err) => {
-        throw new CommonError(err);
-      });
+      .catch(err => {
+        throw new CommonError(err)
+      })
   }
 
   // Sites
-  async findAllSites() {
-    return db('gauges');
+  async findAllSites () {
+    return db('gauges')
     // .where({ hasReading: true });
   }
 
-  async findSiteById(id) {
+  async findSiteById (id) {
     return db('gauges')
       .where('id', id)
-      .catch((err) => {
-        throw new CommonError(err);
-      });
+      .catch(err => {
+        throw new CommonError(err)
+      })
   }
 
-  async findBySiteCode(siteCode) {
-    return db('gauges').where({ siteCode });
+  async findBySiteCode (siteCode) {
+    return db('gauges').where({ siteCode })
   }
 
-  async addSite(gauge) {
+  async addSite (gauge) {
     return db('gauges')
       .insert(gauge)
-      .catch((err) => {
-        throw new CommonError(err);
-      });
+      .catch(err => {
+        throw new CommonError(err)
+      })
   }
 
-  async updateGauge(siteCode) {
+  async updateGauge (siteCode) {
     return db('gauges')
       .where({ siteCode })
       .update({ hasReading: true })
-      .catch((err) => {
-        throw new CommonError(err);
-      });
+      .catch(err => {
+        throw new CommonError(err)
+      })
   }
 
-  async updateGaugeLocation(siteCode, locationId) {
+  async updateGaugeLocation (siteCode, locationId) {
     return db('gauges')
       .where({ siteCode })
       .update({ locationId })
-      .catch((err) => {
-        throw new CommonError(err);
-      });
+      .catch(err => {
+        throw new CommonError(err)
+      })
   }
 
   // Readings
-  async findAllReadings() {
+  async findAllReadings () {
     return db('readings')
       .join('gauges', {
-        'readings.siteCode': 'gauges.siteCode',
+        'readings.siteCode': 'gauges.siteCode'
       })
-      .catch((err) => {
-        throw new CommonError(err);
-      });
+      .catch(err => {
+        throw new CommonError(err)
+      })
   }
 
-  async addHasReading(siteCode) {
+  async addHasReading (siteCode) {
     return db('readings')
       .where({ siteCode })
       .insert({ hasReading: true })
-      .catch((err) => {
-        throw new CommonError('Error adding HasReading');
-      });
+      .catch(err => {
+        throw new CommonError('Error adding HasReading')
+      })
   }
 
-  async addReading(reading) {
+  async addReading (reading) {
     db('gauges')
       .where({ siteCode: reading.siteCode })
       .insert({ hasReading: true })
       .then(
         db('readings')
           .where({
-            'readings.siteCode': reading.siteCode,
+            'readings.siteCode': reading.siteCode
           })
           .andWhere({ 'readings.timeStamp': reading.timeStamp })
-          .then((readingList) => {
+          .then(readingList => {
             if (readingList.length === 0) {
               db('readings')
                 .insert(reading)
-                .catch((err) => {
-                  throw new CommonError(err);
-                });
+                .catch(err => {
+                  throw new CommonError(err)
+                })
               // console.log('READING', reading);
-              return reading;
+              return reading
             }
             // console.log('else');
-            return 'no reading';
-          }),
+            return 'no reading'
+          })
         // .then(this.updateGauge(reading.siteCode))
         // .catch((err) => {
         // throw new CommonError(err);
         // console.log('Error Updating Reading');
         // }),
       )
-      .catch((err) => {
+      .catch(err => {
         // throw new CommonError('Error Adding Reading', err);
-      });
+      })
   }
 
-  async findReadingsBySiteCode(siteCode) {
+  async findReadingsBySiteCode (siteCode) {
     return db('readings')
       .join('gauges', {
-        'readings.siteCode': 'gauges.siteCode',
+        'readings.siteCode': 'gauges.siteCode'
       })
-      .where({ 'readings.siteCode': siteCode, 'readings.units': 'ft3/s' });
+      .where({ 'readings.siteCode': siteCode, 'readings.units': 'ft3/s' })
     // .then((id: number) => id);
   }
 
-  async findReadingsBySiteCodeTimestamp(
-    siteCode,
-    timeStamp,
-    units,
-  ) {
+  async findReadingsBySiteCodeTimestamp (siteCode, timeStamp, units) {
     return db('readings').where({
       'readings.siteCode': siteCode,
       'readings.timeStamp': timeStamp,
-      'readings.units': units,
-    });
+      'readings.units': units
+    })
   }
   // ***************************************** Populate Data *****************************************
 
   // GetData Sites
-  async populateSites() {
-    const siteURL = `http://waterservices.usgs.gov/nwis/iv/?format=json&sites=${NC_SITES}`;
-    const response = await axios.get(siteURL);
+  async populateSites () {
+    const siteURL = `http://waterservices.usgs.gov/nwis/iv/?format=json&sites=${NC_SITES}`
+    const response = await axios.get(siteURL)
     if (!response) {
       throw new CommonError(
-        'There was no data returned from that source. Check your URL and try again.',
-      );
+        'There was no data returned from that source. Check your URL and try again.'
+      )
     }
-    const allSitesData = [];
-    const geoData = response.data.value.timeSeries;
+    const allSitesData = []
+    const geoData = response.data.value.timeSeries
 
-    geoData.map((item) => {
+    geoData.map(item => {
       if (item.sourceInfo.siteCode && item.sourceInfo.siteCode[0].value) {
         const siteData = {
           name: item.sourceInfo.siteName,
           siteCode: item.sourceInfo.siteCode[0].value,
           latitude: item.sourceInfo.geoLocation.geogLocation.latitude,
-          longitude: item.sourceInfo.geoLocation.geogLocation.longitude,
-        };
-        allSitesData.push(siteData);
-        this.addSite(siteData);
+          longitude: item.sourceInfo.geoLocation.geogLocation.longitude
+        }
+        allSitesData.push(siteData)
+        this.addSite(siteData)
       }
-    });
-    return allSitesData;
+    })
+    return allSitesData
   }
 
   // GetData Readings
-  async populateReadings() {
-    const url = `http://waterservices.usgs.gov/nwis/iv/?format=json&sites=${NC_SITES}&period=P3D&siteType=ST&variable=00060,00065`;
-    const { data } = await axios.get(encodeURI(url));
+  async populateReadings () {
+    const url = `http://waterservices.usgs.gov/nwis/iv/?format=json&sites=${NC_SITES}&period=P3D&siteType=ST&variable=00060,00065`
+    const { data } = await axios.get(encodeURI(url))
     if (!data) {
-      throw new CommonError('Could not retrieve those readings.');
+      throw new CommonError('Could not retrieve those readings.')
     }
-    const responseData = data.value.timeSeries;
-    const allSitesData = [];
+    const responseData = data.value.timeSeries
+    const allSitesData = []
 
-    responseData.forEach((item) => {
+    responseData.forEach(item => {
       if (item.values[0].value && item.values[0].value.length > 0) {
-        allSitesData.push(item);
+        allSitesData.push(item)
       }
-    });
-    const returnData = await this.buildArr(allSitesData);
-    // console.log('RETURN DATA', returnData);
-    return returnData;
+    })
+    const returnData = await this.buildArr(allSitesData)
+    return returnData
   }
 
   // Helper function to build an object to insert into readings db from an array
-  async buildArr(arr) {
-    const tmp = [];
-    arr.forEach(async (item) => {
+  async buildArr (arr) {
+    const tmp = []
+    arr.forEach(async item => {
       for (let i = 0; i < item.values[0].value.length; i += 1) {
         const reading = {
           siteCode: item.sourceInfo.siteCode[0].value,
           gaugeReading: item.values[0].value[i].value,
           timeStamp: item.values[0].value[i].dateTime,
           variableName: item.variable.variableName,
-          units: item.variable.unit.unitCode,
-        };
-        tmp.push(reading);
-        tmp.push(this.addReading(reading));
+          units: item.variable.unit.unitCode
+        }
+        tmp.push(reading)
+        tmp.push(this.addReading(reading))
       }
-    });
-    return tmp;
+    })
+    return tmp
   }
-};
+}
