@@ -1,6 +1,6 @@
 [build]
-base = "music-app/"
-publish = "music-app/build/"
+base = "playground/"
+publish = "playground/build/"
 command = "yarn build"
 
 [[redirects]]
