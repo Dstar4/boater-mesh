@@ -1,13 +1,13 @@
 import React, { Component } from 'react'
 import Axios from 'axios'
-import { Table, Row, Container, Col, Jumbotron } from 'react-bootstrap'
+import { Table, Row, Container, Col, Jumbotron, ButtonGroup, Form, FormControl, Button } from 'react-bootstrap'
 
 import Chart from './Chart'
 import Navigation from './Navigation'
 import Loader from './Loader'
 import Footer from './Footer'
 import Sidebar from './Sidebar'
-
+import Search from './Search'
 require('dotenv').config()
 
 const URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000'
@@ -16,24 +16,68 @@ export default class Readings extends Component {
     super(props)
     this.state = {
       data: null,
-      readings: null
+      readings: null,
+      period: this.props.match.params.siteCode,
+      siteCode: '03453000'
     }
   }
 
   componentDidMount() {
-    const {siteCode, period} = this.props.match.params
+    const { siteCode, period } = this.props.match.params
     const postData = {
       siteCode: [siteCode],
       period: period
     }
-    console.log("post data", postData)
+    console.log('post data', postData)
     Axios.post(`${URL}/api/gauges/search`, postData).then(res => {
-      console.log("data", res)
+      console.log('data', res)
       const tmp = shapeChartData(res)
-      this.setState({ readings: tmp ,  data: res })
+      this.setState({ readings: tmp, data: res })
     })
   }
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.period !== this.state.period) {
+      const postData = {
+        siteCode: [this.state.siteCode],
+        period: this.state.period
+      }
+      Axios.post(`${URL}/api/gauges/search`, postData).then(res => {
+        console.log('data', res)
+        const tmp = shapeChartData(res)
+        this.setState({ readings: tmp, data: res })
+      })
+    }
+  }
+  handleChange = event => {
+    // console.log('handle change', event)
+    const value = event.target.value
+    this.setState({
+      siteCode: value
+    })
+    console.log(this.state)
+  }
+  handlePeriod = e => {
+    // console.log('handle Period', e)
+    this.setState({ period: e })
+    console.log(this.state)
+    // const postData = {
+    //   siteCode: [this.state.siteCode],
+    //   period: this.state.period
+    // }
+    // Axios.post(`${URL}/api/gauges/search`, postData).then(res => {
+    //   console.log('data', res)
+    //   const tmp = shapeChartData(res)
+    //   this.setState({ readings: tmp, data: res })
+    // })
+  }
 
+  clickHandle = e => {
+    e.preventDefault()
+
+    // console.log("submit", this.props)
+    // this.props.history.push(`/details/${this.state.siteCode}/${this.state.period}`)
+    // this.setState({readings: shapeChartData})
+  }
   render() {
     // console.log('this.props gauge detailed', this.props)
 
@@ -56,6 +100,20 @@ export default class Readings extends Component {
                 {/* <Container> */}
                 {/* </Container> */}
               </Jumbotron>
+              <ButtonGroup aria-label='Basic example'>
+                <Button onClick={() => this.handlePeriod('PT12H')} variant='secondary'>
+                  12 Hours
+                </Button>
+                <Button variant='secondary' onClick={() => this.handlePeriod('P1D')}>
+                  1 Day
+                </Button>
+                <Button variant='secondary' onClick={() => this.handlePeriod('P3D')}>
+                  3 Days
+                </Button>
+                <Button variant='secondary' onClick={() => this.handlePeriod('P6D')}>
+                  6 Days
+                </Button>
+              </ButtonGroup>
               <h1>{readings.name}</h1>
               <Chart data={readings.readings} unit={data.data.value.timeSeries[0].variable.unit.unitCode} />
               <h4>Longitude: {longitude}</h4>
