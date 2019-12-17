@@ -7,12 +7,15 @@ export default class Gauges extends Component {
     super(props)
   }
   clickRedirect = e => {
-    window.location.href = `/readings/${e}`
+    console.log('this.props gauges',this.props)
+    // window.location.href = `/readings/${e}`
+    this.props.history.push(`/readings/${e}`)
   }
+
   render() {
-    if (this.props.data) {
+    if (this.props.data && !this.props.searched) {
       return (
-        <Table responsive striped bordered hover variant="dark">
+        <Table responsive striped bordered hover variant='dark'>
           <thead>
             <tr>
               <th>Name</th>
@@ -25,12 +28,7 @@ export default class Gauges extends Component {
             {this.props.data.map(el => {
               return (
                 <>
-                  <tr
-                    onClick={() =>
-                      this.clickRedirect(el.sourceInfo.siteCode[0].value)
-                    }
-                    key={el.sourceInfo.siteCode[0].value}
-                  >
+                  <tr onClick={() => this.clickRedirect(el.sourceInfo.siteCode[0].value)} key={el.sourceInfo.siteCode[0].value}>
                     <Gauge data={el} />
                   </tr>
                 </>

@@ -1,14 +1,6 @@
 import React, { Component } from 'react'
 import Axios from 'axios'
-import {
-  Form,
-  FormControl,
-  Button,
-  Container,
-  Col,
-  Jumbotron,
-  Image,
-} from 'react-bootstrap'
+import { Form, FormControl, Button, Container, Col, Jumbotron, Image } from 'react-bootstrap'
 
 import '../App.css'
 
@@ -17,6 +9,7 @@ import Gauges from './Gauges'
 import Navigation from './Navigation'
 import Footer from './Footer'
 import SideBar from './Sidebar'
+import Search from './Search'
 
 require('dotenv').config()
 
@@ -27,18 +20,18 @@ export default class Dashboard extends Component {
   }
   state = {
     data: null,
-    search: '',
+    search: ''
   }
   componentDidMount() {
     Axios.get(`${URL}/api/gauges/`).then(data => {
-      console.log(data)
+      // console.log(data)
       this.setState({ data: data.data.value.timeSeries })
     })
   }
   handleChange = event => {
     const value = event.target.value
     this.setState({
-      search: value,
+      search: value
     })
     // this.state.data.filter(el => {
     //   console.log(value)
@@ -60,10 +53,11 @@ export default class Dashboard extends Component {
     })
   }
   render() {
+    console.log(this.props)
     if (this.state.data) {
       // console.log(this.state.data)
       return (
-        <div id="dashboard">
+        <div id='dashboard'>
           <Navigation />
           {/* <Form inline>
             <FormControl
@@ -80,12 +74,10 @@ export default class Dashboard extends Component {
             {/* <SideBar /> */}
             {/* </Col> */}
             <Col>
-              <Jumbotron fluid className="jumbotron">
-                <Container>
-                  {/* <img src={require('../resources/banner1.jpg')} /> */}
-                </Container>
+              <Jumbotron fluid className='jumbotron'>
+                <Container>{/* <img src={require('../resources/banner1.jpg')} /> */}</Container>
               </Jumbotron>
-              <Form inline>
+              {/* <Form inline>
                 <FormControl
                   type="text"
                   placeholder="Search"
@@ -100,8 +92,9 @@ export default class Dashboard extends Component {
                 >
                   Search
                 </Button>
-              </Form>
-              <Gauges data={this.state.data} />
+              </Form> */}
+              <Search history={this.props.history} />
+              <Gauges data={this.state.data} history={this.props.history} />
             </Col>
           </div>
           <Footer />
