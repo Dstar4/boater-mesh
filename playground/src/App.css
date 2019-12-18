@@ -1,0 +1,28 @@
+.App {
+  max-width: 1600px;
+  /* width: 100%; */
+  margin: auto;
+}
+.chart {
+  height: 300px;
+}
+.spinner {
+  display: flex;
+  margin: auto;
+}
+.loading-wrapper {
+  height: 100vh;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+}
+.help {
+  border: 2px solid red;
+}
+.jumbotron {
+  background-image: url('./resources/banner.jpeg');
+  background-repeat: no-repeat;
+  object-fit: contain;
+  height: 300px;
+  margin: auto;
+}
