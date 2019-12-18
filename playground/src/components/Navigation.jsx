@@ -30,12 +30,12 @@ export default class Navigation extends Component {
   render() {
     return (
       <Navbar bg="light" expand="lg">
-        <Navbar.Brand href="#home">Boater Mesh</Navbar.Brand>
+        <Navbar.Brand href="/">Boater Mesh</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
-        <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="mr-auto">
-            <Link to="/">Home</Link>
-            <Nav.Link href="#link">Link</Nav.Link>
+        {/* <Navbar.Collapse id="basic-navbar-nav"> */}
+          {/* <Nav className="mr-auto"> */}
+            {/* <Link to="/">Home</Link> */}
+            {/* <Nav.Link href="#link">Link</Nav.Link>
             <NavDropdown title="Dropdown" id="basic-nav-dropdown">
               <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
               <NavDropdown.Item href="#action/3.2">
@@ -48,23 +48,7 @@ export default class Navigation extends Component {
               </NavDropdown.Item>
             </NavDropdown>
           </Nav>
-          <Form inline>
-            <FormControl
-              type="text"
-              placeholder="Search"
-              className="mr-sm-2"
-              onChange={e => this.handleChange(e)}
-              value={this.state.search}
-            />
-            <Button
-              type="submit"
-              onClick={e => this.clickHandle(e)}
-              variant="outline-success"
-            >
-              Search
-            </Button>
-          </Form>
-        </Navbar.Collapse>
+        </Navbar.Collapse> */}
       </Navbar>
     )
   }

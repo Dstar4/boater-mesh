@@ -6,7 +6,6 @@ import '../node_modules/bootstrap/dist/css/bootstrap.min.css'
 
 import Dashboard from './components/Dashboard'
 import Readings from './components/Readings'
-import GaugeDetailed from './components/GaugeDetailed'
 
 export default function App () {
   return (
@@ -19,11 +18,7 @@ export default function App () {
           path='/readings/:siteCode'
           render={props => <Readings {...props} />}
         />
-        <Route
-          exact
-          path='/details/:siteCode/:period'
-          render={props => <GaugeDetailed {...props} />}
-        />
+
       </header>
     </div>
   )

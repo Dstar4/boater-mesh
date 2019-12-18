@@ -22,11 +22,9 @@ export default class Dashboard extends Component {
     data: null,
     search: '',
     nameArr: []
-
   }
   componentDidMount() {
     Axios.get(`${URL}/api/gauges/`).then(data => {
-      // console.log(data)
       this.setState({ data: data.data.value.timeSeries })
       let nameArr = []
       this.state.data.forEach(item => {
@@ -42,21 +40,12 @@ export default class Dashboard extends Component {
     })
     const tmp = this.state.nameArr
     const newTmp = filterItems(tmp, value)
-    // console.log("newTmp", newTmp)
-    this.setState({nameArr:newTmp})
-    // this.state.data.filter(el => {
-    //   console.log(value)
-    //   if (el.sourceInfo.siteName === this.state.search) {
-    //     this.setState({ data: [el] })
-    //     console.log('el', el)
-    //   }
-    // })
+    this.setState({ nameArr: newTmp })
   }
   clickHandle = e => {
     e.preventDefault()
     let siteNames = []
     this.state.data.filter(el => {
-      // console.log(el)
       if (el.sourceInfo.siteName === this.state.search) {
         const newData = [el]
         this.setState({ data: newData })
@@ -64,38 +53,18 @@ export default class Dashboard extends Component {
     })
   }
   render() {
-    // console.log(this.props)
     if (this.state.data) {
-      // console.log(this.state.data)
       return (
         <div id='dashboard'>
           <Navigation />
-
           <div style={{ display: 'flex' }}>
             {/* <Col xs={2}> */}
-            {/* <SideBar /> */}
+              {/* <SideBar /> */}
             {/* </Col> */}
             <Col>
               <Jumbotron fluid className='jumbotron'>
-                <Container>{/* <img src={require('../resources/banner1.jpg')} /> */}</Container>
+                {/* <Container><img src={require('../resources/banner1.jpg')} /></Container> */}
               </Jumbotron>
-              {/* <Form inline>
-                <FormControl
-                  type="text"
-                  placeholder="Search"
-                  className="mr-sm-2"
-                  onChange={e => this.handleChange(e)}
-                  value={this.state.search}
-                />
-                <Button
-                  type="submit"
-                  onClick={e => this.clickHandle(e)}
-                  variant="outline-success"
-                >
-                  Search
-                </Button>
-              </Form> */}
-              {/* <Search history={this.props.history} data={this.state.data} /> */}
               <Gauges data={this.state.data} history={this.props.history} filter={this.state.nameArr} />
             </Col>
           </div>
@@ -108,5 +77,5 @@ export default class Dashboard extends Component {
   }
 }
 const filterItems = (arr, query) => {
-  return arr.filter(el => el.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+  return arr.filter(el => el.toLowerCase().indexOf(query.toLowerCase()) !== -1)
 }

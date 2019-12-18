@@ -20,19 +20,6 @@ export default class Gauges extends Component {
       })
     }
   }
-  componentDidUpdate(prevProps, prevState) {
-    if (prevProps.filter.length !== this.props.filter.length) {
-      console.log('CDM', this.props)
-      // console.log("newFilter", newFilter)
-      // let nameArr = []
-      // this.state.gauges.forEach(item => {
-      //   nameArr.push(item.sourceInfo.siteName)
-      // })
-      // if(this.props.filter.includes())
-      // const newFilter = filterItems(this.props.data, this.props.filter[0])
-      // this.setState({gauges:newFilter})
-    }
-  }
   handlePeriod = e => {
     this.setState({ period: e })
     // console.log(this.state)
@@ -60,7 +47,6 @@ export default class Gauges extends Component {
   }
 
   render() {
-    console.log('props', this.props, 'state', this.state)
     if (this.props.data) {
       return (
         <>
@@ -68,7 +54,7 @@ export default class Gauges extends Component {
             <Form inline>
               <FormControl
                 type='text'
-                placeholder='03453000'
+                placeholder='Search River Names'
                 className='mr-sm-2'
                 onChange={e => this.handleChange(e)}
                 value={this.state.siteCode}
