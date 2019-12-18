@@ -9,33 +9,39 @@ class Search extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      period: null,
-      siteCode: '03453000'
+      period: '',
+      search: '',
+      gaugesList: [],
+      nameArr: []
     }
   }
+  componentDidMount() {
+    console.log(this.props.data)
+    // let nameArr = []
+    // this.props.data.forEach(item => {
+    // nameArr.push(item.sourceInfo.siteName)
+    // })
+
+    // console.log('nameArr', nameArr)
+    // this.setState({ nameArr: nameArr })
+  }
   handleChange = event => {
-    // console.log('handle change', event)
     const value = event.target.value
     this.setState({
-      siteCode: value
+      search: value
     })
-    console.log(this.state)
   }
   handlePeriod = e => {
-    // console.log('handle Period', e)
     this.setState({ period: e })
-    console.log(this.state)
+    // console.log(this.state)
   }
 
   clickHandle = e => {
     e.preventDefault()
-    // console.log("submit", this.props)
     this.props.history.push(`/details/${this.state.siteCode}/${this.state.period}`)
   }
 
   render() {
-    // console.log('this.state Search', this.state)
-    // console.log('this.props Search', this.props)
     return (
       <div>
         <Form inline>
@@ -70,3 +76,6 @@ class Search extends Component {
 }
 
 export default Search
+const filterItems = (arr, query) => {
+  return arr.filter(el => el.toLowerCase().indexOf(query.toLowerCase()) !== -1)
+}

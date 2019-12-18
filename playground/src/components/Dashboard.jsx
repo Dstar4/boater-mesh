@@ -20,12 +20,19 @@ export default class Dashboard extends Component {
   }
   state = {
     data: null,
-    search: ''
+    search: '',
+    nameArr: []
+
   }
   componentDidMount() {
     Axios.get(`${URL}/api/gauges/`).then(data => {
       // console.log(data)
       this.setState({ data: data.data.value.timeSeries })
+      let nameArr = []
+      this.state.data.forEach(item => {
+        nameArr.push(item.sourceInfo.siteName)
+      })
+      this.setState({ nameArr: nameArr })
     })
   }
   handleChange = event => {
@@ -33,6 +40,10 @@ export default class Dashboard extends Component {
     this.setState({
       search: value
     })
+    const tmp = this.state.nameArr
+    const newTmp = filterItems(tmp, value)
+    // console.log("newTmp", newTmp)
+    this.setState({nameArr:newTmp})
     // this.state.data.filter(el => {
     //   console.log(value)
     //   if (el.sourceInfo.siteName === this.state.search) {
@@ -53,22 +64,13 @@ export default class Dashboard extends Component {
     })
   }
   render() {
-    console.log(this.props)
+    // console.log(this.props)
     if (this.state.data) {
       // console.log(this.state.data)
       return (
         <div id='dashboard'>
           <Navigation />
-          {/* <Form inline>
-            <FormControl
-              type="text"
-              placeholder="Search"
-              className="mr-sm-2"
-              onChange={e => this.handleChanges(e)}
-              value={this.state.search}
-            />
-            <Button variant="outline-success">Search</Button>
-          </Form> */}
+
           <div style={{ display: 'flex' }}>
             {/* <Col xs={2}> */}
             {/* <SideBar /> */}
@@ -93,8 +95,8 @@ export default class Dashboard extends Component {
                   Search
                 </Button>
               </Form> */}
-              <Search history={this.props.history} />
-              <Gauges data={this.state.data} history={this.props.history} />
+              {/* <Search history={this.props.history} data={this.state.data} /> */}
+              <Gauges data={this.state.data} history={this.props.history} filter={this.state.nameArr} />
             </Col>
           </div>
           <Footer />
@@ -104,4 +106,7 @@ export default class Dashboard extends Component {
       return <Loader />
     }
   }
+}
+const filterItems = (arr, query) => {
+  return arr.filter(el => el.toLowerCase().indexOf(query.toLowerCase()) !== -1);
 }

@@ -107,7 +107,7 @@ module.exports = class GaugesService {
     return data
   }
 
-  async dynamicReadings ({ period='PT12H', siteCode='03512000' }) {
+  async dynamicReadings ({ period, siteCode }) {
 
     const url = `http://waterservices.usgs.gov/nwis/iv/?format=json&sites=${siteCode}&period=${period}`
     const { data } = await axios.get(encodeURI(url))
