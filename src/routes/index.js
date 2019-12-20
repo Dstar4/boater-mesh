@@ -2,8 +2,10 @@ const router = require('express').Router()
 
 const locationsController = require('../controllers/gauges/locationsController')
 const gaugesController = require('../controllers/gauges/gaugesController')
+const authController = require('../controllers/authController')
 
-// Routes to get gauge data from db
+router.use('/auth', authController)
+
 router.use('/gauges', gaugesController)
 
 router.use('/locations', locationsController)
