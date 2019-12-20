@@ -91,7 +91,6 @@ module.exports = class GaugesService {
   async getGauges () {
     const url = `http://waterservices.usgs.gov/nwis/iv/?format=json&sites=${NC_SITES}&siteType=ST&variable=00060`
     const { data } = await axios.get(url)
-    console.log(console.dir(data))
     if (!data) {
       throw new CommonError('Could not retrieve those readings.')
     }
@@ -108,7 +107,6 @@ module.exports = class GaugesService {
   }
 
   async dynamicReadings ({ period, siteCode }) {
-
     const url = `http://waterservices.usgs.gov/nwis/iv/?format=json&sites=${siteCode}&period=${period}`
     const { data } = await axios.get(encodeURI(url))
 

@@ -1,0 +1,124 @@
+<site xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" timezone="GMT" originator="RNK" name="WATAUGA RIVER AT Watauga River/Foscoe IFLOWS" id="FOSN7" xsi:noNamespaceSchemaLocation="https://weather.gov/ohd/hydroxc/schemas/hydrogen/HydroGenData.xsd" generationtime="2019-12-17T23:39:05+00:00">
+<sigstages>
+<low units="ft">-9999</low>
+<action units="ft">7</action>
+<bankfull units="ft">6</bankfull>
+<flood units="ft">9</flood>
+<moderate units="ft">15</moderate>
+<major units="ft">19</major>
+<record/>
+</sigstages>
+<sigflows>
+<low units="kcfs">-9999.000</low>
+<action/>
+<bankfull units="ft">6</bankfull>
+<flood/>
+<moderate/>
+<major/>
+<record/>
+</sigflows>
+<zerodatum units="ft MSL">2919</zerodatum>
+<rating/>
+<alt_rating/>
+<observed>
+<datum>
+<valid timezone="UTC">2019-12-17T23:30:00-00:00</valid>
+<primary name="Stage" units="ft">3.06</primary>
+<secondary name="Flow" units="kcfs">-999</secondary>
+<pedts>HGIRR</pedts>
+</datum>
+<datum>
+<valid timezone="UTC">2019-12-17T17:30:00-00:00</valid>
+<primary name="Stage" units="ft">3.06</primary>
+<secondary name="Flow" units="kcfs">-999</secondary>
+<pedts>HGIRR</pedts>
+</datum>
+<datum>
+<valid timezone="UTC">2019-12-16T17:30:00-00:00</valid>
+<primary name="Stage" units="ft">2.98</primary>
+<secondary name="Flow" units="kcfs">-999</secondary>
+<pedts>HGIRR</pedts>
+</datum>
+<datum>
+<valid timezone="UTC">2019-12-16T11:30:00-00:00</valid>
+<primary name="Stage" units="ft">2.98</primary>
+<secondary name="Flow" units="kcfs">-999</secondary>
+<pedts>HGIRR</pedts>
+</datum>
+<datum>
+<valid timezone="UTC">2019-12-15T04:40:00-00:00</valid>
+<primary name="Stage" units="ft">3.12</primary>
+<secondary name="Flow" units="kcfs">-999</secondary>
+<pedts>HGIRR</pedts>
+</datum>
+<datum>
+<valid timezone="UTC">2019-12-14T13:45:00-00:00</valid>
+<primary name="Stage" units="ft">3.52</primary>
+<secondary name="Flow" units="kcfs">-999</secondary>
+<pedts>HGIRR</pedts>
+</datum>
+<datum>
+<valid timezone="UTC">2019-12-14T10:00:00-00:00</valid>
+<primary name="Stage" units="ft">3.54</primary>
+<secondary name="Flow" units="kcfs">-999</secondary>
+<pedts>HGIRR</pedts>
+</datum>
+<datum>
+<valid timezone="UTC">2019-12-14T09:05:00-00:00</valid>
+<primary name="Stage" units="ft">3.44</primary>
+<secondary name="Flow" units="kcfs">-999</secondary>
+<pedts>HGIRR</pedts>
+</datum>
+<datum>
+<valid timezone="UTC">2019-12-14T05:30:00-00:00</valid>
+<primary name="Stage" units="ft">3.12</primary>
+<secondary name="Flow" units="kcfs">-999</secondary>
+<pedts>HGIRR</pedts>
+</datum>
+<datum>
+<valid timezone="UTC">2019-12-14T04:55:00-00:00</valid>
+<primary name="Stage" units="ft">3.10</primary>
+<secondary name="Flow" units="kcfs">-999</secondary>
+<pedts>HGIRR</pedts>
+</datum>
+<datum>
+<valid timezone="UTC">2019-12-13T23:30:00-00:00</valid>
+<primary name="Stage" units="ft">3.00</primary>
+<secondary name="Flow" units="kcfs">-999</secondary>
+<pedts>HGIRR</pedts>
+</datum>
+<datum>
+<valid timezone="UTC">2019-12-13T17:30:00-00:00</valid>
+<primary name="Stage" units="ft">2.98</primary>
+<secondary name="Flow" units="kcfs">-999</secondary>
+<pedts>HGIRR</pedts>
+</datum>
+<datum>
+<valid timezone="UTC">2019-12-13T11:30:00-00:00</valid>
+<primary name="Stage" units="ft">2.94</primary>
+<secondary name="Flow" units="kcfs">-999</secondary>
+<pedts>HGIRR</pedts>
+</datum>
+<datum>
+<valid timezone="UTC">2019-12-13T10:15:00-00:00</valid>
+<primary name="Stage" units="ft">2.90</primary>
+<secondary name="Flow" units="kcfs">-999</secondary>
+<pedts>HGIRR</pedts>
+</datum>
+<datum>
+<valid timezone="UTC">2019-12-13T05:30:00-00:00</valid>
+<primary name="Stage" units="ft">2.80</primary>
+<secondary name="Flow" units="kcfs">-999</secondary>
+<pedts>HGIRR</pedts>
+</datum>
+<datum>
+<valid timezone="UTC">2019-12-12T05:30:00-00:00</valid>
+<primary name="Stage" units="ft">2.82</primary>
+<secondary name="Flow" units="kcfs">-999</secondary>
+<pedts>HGIRR</pedts>
+</datum>
+</observed>
+<forecast>
+There Is No Displayable Forecast Data In The Given Time Frame
+</forecast>
+</site>

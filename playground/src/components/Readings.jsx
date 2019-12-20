@@ -66,6 +66,7 @@ export default class Readings extends Component {
               </Jumbotron>
               <h1>{readings.name}</h1>
               <Chart data={readings.readings} unit={data.data.value.timeSeries[0].variable.unit.unitCode} />
+              <h3>Filter:</h3>
               <ButtonGroup aria-label='Basic example'>
                 <Button onClick={() => this.handlePeriod('PT12H')} variant='secondary'>
                   12 Hours
@@ -80,6 +81,7 @@ export default class Readings extends Component {
                   6 Days
                 </Button>
               </ButtonGroup>
+              <hr/>
               <h4>Longitude: {longitude}</h4>
               <h4>Latitude: {latitude}</h4>
               <Table responsive striped bordered hover variant='dark'>

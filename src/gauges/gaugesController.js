@@ -11,7 +11,7 @@ router
   .get(
     asyncWrapper(async (req, res) => {
       const data = await gaugesService.getGauges()
-      console.log('controller data', data)
+      // console.log('controller data', data)
       res.status(200).json(data)
     })
   )

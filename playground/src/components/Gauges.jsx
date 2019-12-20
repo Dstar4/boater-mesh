@@ -58,6 +58,7 @@ export default class Gauges extends Component {
                 className='mr-sm-2'
                 onChange={e => this.handleChange(e)}
                 value={this.state.siteCode}
+
               />
               <Button type='submit' onClick={e => this.clickHandle(e)} variant='outline-success'>
                 Search Sites

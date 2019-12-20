@@ -1,0 +1,21 @@
+{
+  "name": "WATAUGA RIVER AT Watauga River/Foscoe IFLOWS",
+  "readings": [
+    { "timeStamp": "2019-12-17T23:30:00-00:00", "primary": "3.06", "units": "ft" },
+    { "timeStamp": "2019-12-17T17:30:00-00:00", "primary": "3.06", "units": "ft" },
+    { "timeStamp": "2019-12-16T17:30:00-00:00", "primary": "2.98", "units": "ft" },
+    { "timeStamp": "2019-12-16T11:30:00-00:00", "primary": "2.98", "units": "ft" },
+    { "timeStamp": "2019-12-15T04:40:00-00:00", "primary": "3.12", "units": "ft" },
+    { "timeStamp": "2019-12-14T13:45:00-00:00", "primary": "3.52", "units": "ft" },
+    { "timeStamp": "2019-12-14T10:00:00-00:00", "primary": "3.54", "units": "ft" },
+    { "timeStamp": "2019-12-14T09:05:00-00:00", "primary": "3.44", "units": "ft" },
+    { "timeStamp": "2019-12-14T05:30:00-00:00", "primary": "3.12", "units": "ft" },
+    { "timeStamp": "2019-12-14T04:55:00-00:00", "primary": "3.10", "units": "ft" },
+    { "timeStamp": "2019-12-13T23:30:00-00:00", "primary": "3.00", "units": "ft" },
+    { "timeStamp": "2019-12-13T17:30:00-00:00", "primary": "2.98", "units": "ft" },
+    { "timeStamp": "2019-12-13T11:30:00-00:00", "primary": "2.94", "units": "ft" },
+    { "timeStamp": "2019-12-13T10:15:00-00:00", "primary": "2.90", "units": "ft" },
+    { "timeStamp": "2019-12-13T05:30:00-00:00", "primary": "2.80", "units": "ft" },
+    { "timeStamp": "2019-12-12T05:30:00-00:00", "primary": "2.82", "units": "ft" }
+  ]
+}

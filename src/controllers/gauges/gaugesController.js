@@ -38,8 +38,8 @@ router.route('/:siteCode').get(
 // api/gauges/
 router.route('/search').post(
   asyncWrapper(async (req, res) => {
-    console.log(req)
-    console.log('req.body',req.body)
+    // console.log(req)
+    // console.log('req.body',req.body)
     const data = await gaugesService.dynamicReadings(req.body)
     res.status(200).json(data)
   })
