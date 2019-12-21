@@ -25,7 +25,9 @@ module.exports = class AuthService {
   }
 
   async signIn (email, password) {
+    console.log("sign in")
     let user = await this.findByEmail(email)
+    console.log("sign in user ", user)
     if (!user) {
       return null
     }

@@ -22,13 +22,17 @@ router.route('/register').post(
   })
 )
 router.post("/sign-in", asyncWrapper(async (req, res) => {
-  let {email, password} = req.body;
-  let token = await authService.signIn(email, password);
+  const {email, password} = req.body;
+  const token = await authService.signIn(email, password)
+
+  // console.log("token", token)
   if (!token) {
-      throw new AuthenticationError("Invalid credentials");
+    console.log('!token')
+    throw new AuthenticationError("Invalid credentials");
   }
   else {
-      res.send(token);
+    console.log("ELSE", token)
+    res.status(200).json(token)
   }
 }));
 module.exports = router
